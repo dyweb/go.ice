@@ -63,6 +63,35 @@ type Context interface {
 - https://github.com/gobuffalo/buffalo/blob/master/default_context.go is the default implementation
 - [ ] TODO: in its test, context.Background() is used, why it does not make use of context in http.Request
 
+To use your own context, a middleware is needed to wrap the default context to your own context
+
+- [ ] TODO: is a type assertion needed in handler? based on same mechanism in echo, it is
+
+````go
+type MyContext struct {
+  buffalo.Context
+}
+
+func (my MyContext) Error(status int, err error) error {
+  my.Logger().Fatal(err)
+  return err
+}
+
+func App() *buffalo.App {
+  if app != nil {
+    // ...
+    app.Use(func (next buffalo.Handler) buffalo.Handler {
+      return func(c buffalo.Context) error {
+      // change the context to MyContext
+      return next(MyContext{c})
+      }
+    })
+    // ...
+  }
+  return app
+}
+````
+
 ````go
 type DefaultContext struct {
 	context.Context
