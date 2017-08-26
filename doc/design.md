@@ -90,9 +90,12 @@ Good to have (never gonna implement /w\ )
 ### HTTP
 
 - http2 is support automatically as long as you provide private key (just generate one locally and tell your browser to go ahead)
+- custom context 
+  - user info
+  - ? tracing
 
 ### gRPC
-  
+
 ## Frontend
 
 We expect you to use a SPA (single page application) and interact with go.ice in REST API only, there is no template support, 

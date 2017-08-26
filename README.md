@@ -1,2 +1,3 @@
 # go.ice
-A Go Framework For Gophers
+
+A Web Framework For Gophers
