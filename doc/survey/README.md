@@ -18,6 +18,11 @@ Context
 
 - what to put
 - how to pass, it's a common practice to put `ctx context.Context` as first argument instead of put in struct, though `http.Request` includes context in a struct (due to compatibility)
+- some frameworks like [chi](chi.md) replace default context with own base context in order to pass some value
+  - detailed discussion is in [chi.md](chi.md)
+  - this loses ability of having the context canceled when client close connection
+  - see https://golang.org/pkg/net/http/#CloseNotifier and `net/http/server/go`
+  - though people argue if context is carrying too much https://dave.cheney.net/2017/08/20/context-isnt-for-cancellation 
 
 Access log with out going body size
 

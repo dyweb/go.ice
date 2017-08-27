@@ -1,0 +1,23 @@
+hash: 9bd916bae463558498806909dd69001c97c9230d8e56d9a404b59d2e600da920
+updated: 2017-08-26T20:22:39.679865408-07:00
+imports:
+- name: github.com/dyweb/gommon
+  version: 121cf3258ee39c5e970aa3ce55a1b329c1099b05
+  vcs: git
+- name: github.com/gorilla/mux
+  version: ac112f7d75a0714af1bd86ab17749b31f7809640
+  vcs: git
+- name: github.com/gorilla/securecookie
+  version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
+  vcs: git
+- name: github.com/spf13/cobra
+  version: 4a7b7e65864c064d48dce82efbbfed2bdc0bf2aa
+  vcs: git
+- name: golang.org/x/crypto
+  version: 9477e0b78b9ac3d0b03822fd95422e2fe07627cd
+- name: gopkg.in/ldap.v2
+  version: 8168ee085ee43257585e50c6441aadf54ecb2c9f
+testImports:
+- name: github.com/stretchr/testify
+  version: f6abca593680b2315d2075e0f5e2a9751e3f431a
+  vcs: git
