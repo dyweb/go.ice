@@ -120,6 +120,7 @@ type DefaultContext struct {
 ## Task
 
 - https://github.com/markbates/grift like rake in rails
+  - similar to https://github.com/magefile/mage
 - buffalo task list
 
 ## Auth
