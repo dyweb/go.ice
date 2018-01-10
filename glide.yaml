@@ -3,6 +3,7 @@ import:
 - package: github.com/spf13/cobra
   vcs: git
   version: 4a7b7e65864c064d48dce82efbbfed2bdc0bf2aa
+# FIXME: we are using sync_local.py to get latest gommon
 - package: github.com/dyweb/gommon
   vcs: git
   version: 121cf3258ee39c5e970aa3ce55a1b329c1099b05
