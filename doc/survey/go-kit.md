@@ -18,3 +18,51 @@
 
 - the service is an interface, and you can have both client and server implementation
 - the service concept in go kit is like a endpoint, i.e. https://gokit.io/examples/stringsvc.html
+
+## Why gave up go-kit
+
+https://github.com/at15/go.ice/issues/3
+
+Good
+
+- it's good to have the interface and let both server and client implement it
+- multiple transport
+
+Bad
+
+- for each endpoint, need to explicit pass encoder, decoder
+  - this can simply solved by adding another factory function to avoid factory function for each handler
+- don't like pass a function which is a result of function that accepts a function and return a function
+  
+````go
+infoHandler := httptransport.NewServer(
+  infoSvcHTTPFactory.MakeEndpoint(infoSvc),
+  infoSvcHTTPFactory.MakeDecode(),
+  infoSvcHTTPFactory.MakeEncode(),
+  options...,
+)
+
+func (InfoServiceHTTPFactory) MakeEndpoint(service Service) endpoint.Endpoint {
+	infoSvc, ok := service.(InfoService)
+	if !ok {
+		log.Panic("must pass info service to info service factory")
+	}
+	// FIXME: the naming here is misleading, the info actually return all the info, more than just version
+	// and how to hand things like info/version in go-kit
+	return func(_ context.Context, _ interface{}) (interface{}, error) {
+		v := infoSvc.Version()
+
+		return infoResponse{Version: v}, nil
+	}
+}
+
+func (InfoServiceHTTPFactory) MakeDecode() httptransport.DecodeRequestFunc {
+	return func(_ context.Context, r *http.Request) (interface{}, error) {
+		return infoRequest{}, nil
+	}
+}
+
+func (InfoServiceHTTPFactory) MakeEncode() httptransport.EncodeResponseFunc {
+	return httptransport.EncodeJSONResponse
+}
+````
