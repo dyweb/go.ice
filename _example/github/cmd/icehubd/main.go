@@ -8,7 +8,11 @@ import (
 	"github.com/at15/go.ice/ice/db"
 
 	_ "github.com/mattn/go-sqlite3" // nameless import to register driver
+	_ "github.com/jackc/pgx/stdlib" // TODO: pgx also support its native access, and how is JSONB handled
+	_ "github.com/go-sql-driver/mysql"
 )
+
+// TODO: flags for enable debug logging etc. it should also be passed to sub commands like db
 
 // specified in makefile
 var version string

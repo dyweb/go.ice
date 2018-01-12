@@ -6,6 +6,7 @@ import (
 
 // TODO: future
 // - each service should register which table it is using in manager, so it can print out the relationship
+// - generate logger interface function
 type Manager struct {
 }
 
