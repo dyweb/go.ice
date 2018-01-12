@@ -1,5 +1,5 @@
-hash: 875a8ce97318e5fc58b2f657db2deb4f0ffb86f1384d75b5e90fdb62f6b1e28f
-updated: 2018-01-12T00:33:22.865638644-08:00
+hash: 15b45442112436ebf2dd757bd8f3a0efb37a1e31c62145fec87ad2bd9dea6624
+updated: 2018-01-12T01:04:33.124439407-08:00
 imports:
 - name: github.com/dyweb/gommon
   version: 121cf3258ee39c5e970aa3ce55a1b329c1099b05
@@ -24,7 +24,7 @@ imports:
   version: 8168ee085ee43257585e50c6441aadf54ecb2c9f
 testImports:
 - name: github.com/mattn/go-sqlite3
-  version: d5ffb5c0cca8778699a929b236766f4a7af674e8
+  version: 6c771bb9887719704b210e87e934f08be014bdb1
   vcs: git
 - name: github.com/stretchr/testify
   version: f6abca593680b2315d2075e0f5e2a9751e3f431a
