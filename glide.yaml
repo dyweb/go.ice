@@ -1,8 +1,13 @@
 package: github.com/at15/go.ice
 import:
+# NOTE: using latest version of cobera, it does not have semver until 2.0 (which may take a long time ...
 - package: github.com/spf13/cobra
   vcs: git
-  version: 4a7b7e65864c064d48dce82efbbfed2bdc0bf2aa
+  version: b95ab734e27d33e0d8fbabf71ca990568d4e2020
+# NOTE: using latest version of pflag, it is not included by glide because icehub is in _example and ignored when scan
+- package: github.com/spf13/pflag
+  vcs: git
+  version: 4c012f6dcd9546820e378d0bdda4d8fc772cdfea
 # FIXME: we are using sync_local.py to get latest gommon
 - package: github.com/dyweb/gommon
   vcs: git

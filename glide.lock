@@ -1,5 +1,5 @@
-hash: 9bd916bae463558498806909dd69001c97c9230d8e56d9a404b59d2e600da920
-updated: 2017-08-26T20:22:39.679865408-07:00
+hash: b9b3dce155ffd828f54ea18d97f0ed8b46e3e848bdbcf8f0e41bc55b4198f57a
+updated: 2018-01-11T17:01:49.137996156-08:00
 imports:
 - name: github.com/dyweb/gommon
   version: 121cf3258ee39c5e970aa3ce55a1b329c1099b05
@@ -11,7 +11,10 @@ imports:
   version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
   vcs: git
 - name: github.com/spf13/cobra
-  version: 4a7b7e65864c064d48dce82efbbfed2bdc0bf2aa
+  version: b95ab734e27d33e0d8fbabf71ca990568d4e2020
+  vcs: git
+- name: github.com/spf13/pflag
+  version: 4c012f6dcd9546820e378d0bdda4d8fc772cdfea
   vcs: git
 - name: golang.org/x/crypto
   version: 9477e0b78b9ac3d0b03822fd95422e2fe07627cd
