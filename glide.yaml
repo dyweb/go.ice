@@ -24,3 +24,8 @@ testImport:
 - package: github.com/stretchr/testify
   vcs: git
   version: f6abca593680b2315d2075e0f5e2a9751e3f431a
+# FIXME: for icehub example
+# FIXME: we manually edit its x/net/context to context https://github.com/at15/go.ice/issues/6
+- package: github.com/mattn/go-sqlite3
+  vcs: git
+  version: d5ffb5c0cca8778699a929b236766f4a7af674e8

@@ -1,5 +1,5 @@
-hash: b9b3dce155ffd828f54ea18d97f0ed8b46e3e848bdbcf8f0e41bc55b4198f57a
-updated: 2018-01-11T17:01:49.137996156-08:00
+hash: 875a8ce97318e5fc58b2f657db2deb4f0ffb86f1384d75b5e90fdb62f6b1e28f
+updated: 2018-01-12T00:33:22.865638644-08:00
 imports:
 - name: github.com/dyweb/gommon
   version: 121cf3258ee39c5e970aa3ce55a1b329c1099b05
@@ -10,6 +10,8 @@ imports:
 - name: github.com/gorilla/securecookie
   version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
   vcs: git
+- name: github.com/inconshreveable/mousetrap
+  version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/spf13/cobra
   version: b95ab734e27d33e0d8fbabf71ca990568d4e2020
   vcs: git
@@ -21,6 +23,9 @@ imports:
 - name: gopkg.in/ldap.v2
   version: 8168ee085ee43257585e50c6441aadf54ecb2c9f
 testImports:
+- name: github.com/mattn/go-sqlite3
+  version: d5ffb5c0cca8778699a929b236766f4a7af674e8
+  vcs: git
 - name: github.com/stretchr/testify
   version: f6abca593680b2315d2075e0f5e2a9751e3f431a
   vcs: git
