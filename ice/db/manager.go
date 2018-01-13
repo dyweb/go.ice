@@ -2,8 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"github.com/at15/go.ice/ice/config"
 	"fmt"
+
+	"github.com/at15/go.ice/ice/config"
 )
 
 // TODO: future
@@ -20,6 +21,10 @@ func NewManager(config config.DatabaseManagerConfig) *Manager {
 }
 
 func (mgr *Manager) PrintConfig() {
+	if mgr == nil {
+		// TODO: warn using logger
+		fmt.Println("empty mgr")
+	}
 	fmt.Printf("default %s\n", mgr.config.Default)
 	fmt.Printf("enabled %s\n", mgr.config.Enabled)
 	for i, c := range mgr.config.Databases {

@@ -9,7 +9,7 @@ sync-local:
 
 .PHONY: fmt
 fmt:
-	gofmt -d -l -w ./playground
+	gofmt -d -l -w ./ice ./playground
 .PHONY: test-playground
 test-playground:
 	go test -v ./playground/...
