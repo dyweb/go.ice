@@ -5,17 +5,26 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
-	"github.com/at15/go.ice/ice/db"
+	"github.com/dyweb/gommon/config"
 
+	"github.com/at15/go.ice/ice/db"
+	"github.com/at15/go.ice/_example/github/pkg/server"
 	_ "github.com/mattn/go-sqlite3" // nameless import to register driver
 	_ "github.com/jackc/pgx/stdlib" // TODO: pgx also support its native access, and how is JSONB handled
-	_ "github.com/go-sql-driver/mysql"
 )
 
+//_ "github.com/go-sql-driver/mysql"
+
 // TODO: flags for enable debug logging etc. it should also be passed to sub commands like db
+// TODO: load and check config file using gommon config
 
 // specified in makefile
 var version string
+// specified using flags
+var cfgFile string
+// global configuration instance
+var cfg server.Config
+var dbMgr *db.Manager
 
 var rootCmd = &cobra.Command{
 	Use:   "icehubd",
@@ -64,11 +73,19 @@ var versionCmd = &cobra.Command{
 	},
 }
 
-// TODO: icehub ice, can cobar command be nested and have flag proper parsed?
+// TODO: icehub ice, can cobra command be nested and have flag proper parsed?
 func main() {
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "icehub.yml", "config file location")
 	rootCmd.AddCommand(versionCmd)
-	// TODO: initialize db manager based on config
-	dbCmd := db.NewCommand(nil)
+	// load config
+	// TODO: set logging level based on flag
+	if err := config.LoadYAMLAsStruct(cfgFile, &cfg); err != nil {
+		// TODO: use log
+		fmt.Printf("can't load %s %v\n", cfgFile, err)
+	}
+	// TODO: we are initializing db config even when we are not using it ...
+	dbMgr = db.NewManager(cfg.DatabaseManager)
+	dbCmd := db.NewCommand(dbMgr)
 	rootCmd.AddCommand(dbCmd)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)

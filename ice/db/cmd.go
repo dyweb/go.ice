@@ -33,10 +33,22 @@ var driverCmd = &cobra.Command{
 	},
 }
 
+func makeConfigCmd(mgr *Manager) *cobra.Command {
+	return &cobra.Command{
+		Use:   "config",
+		Short: "print configuration",
+		Long:  "Print configuration of manager and databases",
+		Run: func(cmd *cobra.Command, args []string) {
+			mgr.PrintConfig()
+		},
+	}
+}
+
 // TODO: command for migrating database (create table, fill in dummy data)
 
 func NewCommand(mgr *Manager) *cobra.Command {
 	root := *rootCmd
 	root.AddCommand(driverCmd)
+	root.AddCommand(makeConfigCmd(mgr))
 	return &root
 }

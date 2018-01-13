@@ -1,5 +1,5 @@
-hash: a3be9e84a31f569ef214bb407a437ab44f2d49a7685945eb8e681227dbe92251
-updated: 2018-01-12T13:47:08.584333358-08:00
+hash: be429d00617c138ee3ec431614851878ddc9588723ce00427cab8c08278b98ce
+updated: 2018-01-12T14:58:18.362790357-08:00
 imports:
 - name: github.com/gorilla/mux
   version: ac112f7d75a0714af1bd86ab17749b31f7809640
@@ -18,12 +18,7 @@ imports:
 - name: github.com/spf13/pflag
   version: 4c012f6dcd9546820e378d0bdda4d8fc772cdfea
   vcs: git
-- name: golang.org/x/crypto
-  version: 9477e0b78b9ac3d0b03822fd95422e2fe07627cd
 testImports:
-- name: github.com/go-sql-driver/mysql
-  version: 4a0c3d73d8579f9fc535cf5e654a651cbd57dd6e
-  vcs: git
 - name: github.com/jackc/pgx
   version: 4fb47ac8c9677c49cfa0f4ae61c0d0116c0a07fc
   vcs: git
