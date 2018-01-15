@@ -79,8 +79,7 @@ var rootCmd = &cobra.Command{
 			return
 		}
 		if verbose {
-			// TODO: use set level recursive
-			log.SetLevel(dlog.DebugLevel)
+			dlog.SetLevelRecursive(log, dlog.DebugLevel)
 			log.Debug("using debug level due to verbose flag")
 		}
 	},
@@ -92,6 +91,17 @@ var versionCmd = &cobra.Command{
 	Long:  "Print current version " + version,
 	Run: func(cmd *cobra.Command, args []string) {
 		fmt.Println(version)
+	},
+}
+
+// TODO: just here for testing out the log command, though it might possible to make it like db command to be part
+// of go.ice's built in command for managing common config
+var logCmd = &cobra.Command{
+	Use:   "log",
+	Short: "test log config",
+	Long:  "Test log tree printer etc.",
+	Run: func(cmd *cobra.Command, args []string) {
+		log.PrintTree()
 	},
 }
 
@@ -124,6 +134,7 @@ func main() {
 		}
 	})
 	rootCmd.AddCommand(dbc.Root)
+	rootCmd.AddCommand(logCmd)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
