@@ -2,6 +2,6 @@ package common
 
 // common error structs
 
-type UserExists struct {
+type ErrUserExists struct {
 	name string
 }

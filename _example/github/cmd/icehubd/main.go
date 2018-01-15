@@ -6,8 +6,10 @@ import (
 
 	"github.com/dyweb/gommon/config"
 	"github.com/spf13/cobra"
+	dlog "github.com/dyweb/gommon/log"
 
 	"github.com/at15/go.ice/_example/github/pkg/server"
+	"github.com/at15/go.ice/_example/github/pkg/util/logutil"
 	"github.com/at15/go.ice/ice/db"
 	_ "github.com/jackc/pgx/stdlib" // TODO: pgx also support its native access, and how is JSONB handled
 	_ "github.com/mattn/go-sqlite3" // nameless import to register driver
@@ -15,22 +17,28 @@ import (
 
 //_ "github.com/go-sql-driver/mysql"
 
+const (
+	myname = "icehubd" // 你的名字
+)
+
+var log *dlog.Logger = logutil.Registry
 // TODO: flags for enable debug logging etc. it should also be passed to sub commands like db
-// TODO: load and check config file using gommon config
 
 // specified in makefile
 var version string
 
 // specified using flags
 var cfgFile string
+var verbose = false
 
 // global configuration instance
 var cfgLoaded = false
 var cfg server.Config
+// TODO: might need a registry of application instead of scatter variables around in main
 var dbMgr *db.Manager
 
 var rootCmd = &cobra.Command{
-	Use:   "icehubd",
+	Use:   myname,
 	Short: "icehub daemon",
 	Long:  "IceHub is an example GitHub integration service using go.ice",
 	Run: func(cmd *cobra.Command, args []string) {
@@ -66,6 +74,16 @@ var rootCmd = &cobra.Command{
 		//
 		//	Use "icehubd [command] --help" for more information about a command.
 	},
+	PersistentPreRun: func(cmd *cobra.Command, args []string) {
+		if cmd.Use == "version" || cmd.Use == myname {
+			return
+		}
+		if verbose {
+			// TODO: use set level recursive
+			log.SetLevel(dlog.DebugLevel)
+			log.Debug("using debug level due to verbose flag")
+		}
+	},
 }
 
 var versionCmd = &cobra.Command{
@@ -77,6 +95,7 @@ var versionCmd = &cobra.Command{
 	},
 }
 
+// TODO: check config file using gommon config
 func loadConfig() {
 	if !cfgLoaded {
 		// TODO: set logging level based on flag
@@ -89,14 +108,19 @@ func loadConfig() {
 	}
 }
 
-// TODO: icehub ice, can cobra command be nested and have flag proper parsed?
+// TODO: icehub ice, can cobra command be nested and have flag proper parsed? icehub db is there ...
 func main() {
+	// TODO: common root command should be put into a struct, but need another struct to store the flags
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "icehub.yml", "config file location")
+	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "verbose output and set log level to debug")
 	rootCmd.AddCommand(versionCmd)
 	dbc := db.NewCommand(func(dbc *db.Command, cmd *cobra.Command, args []string) {
-		if dbc.Mgr == nil {
+		if dbMgr == nil {
 			loadConfig()
-			dbc.Mgr = db.NewManager(cfg.DatabaseManager)
+			dbMgr = db.NewManager(cfg.DatabaseManager)
+		}
+		if dbc.Mgr == nil {
+			dbc.Mgr = dbMgr
 		}
 	})
 	rootCmd.AddCommand(dbc.Root)
