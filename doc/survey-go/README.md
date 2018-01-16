@@ -23,6 +23,8 @@ Context
   - this loses ability of having the context canceled when client close connection
   - see https://golang.org/pkg/net/http/#CloseNotifier and `net/http/server/go`
   - though people argue if context is carrying too much https://dave.cheney.net/2017/08/20/context-isnt-for-cancellation 
+- `context.Context` is an interface, its implementation in standard library are private, `buffalo.Context` is also an interface,
+the implementation is in `default_context.go` as `buffalo.DefaultContext`
 
 Access log with out going body size
 
