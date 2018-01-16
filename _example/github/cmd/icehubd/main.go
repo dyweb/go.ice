@@ -108,7 +108,6 @@ var logCmd = &cobra.Command{
 // TODO: check config file using gommon config
 func loadConfig() {
 	if !cfgLoaded {
-		// TODO: set logging level based on flag
 		// TODO: config file also specify logging (which package to log etc.)
 		if err := config.LoadYAMLAsStruct(cfgFile, &cfg); err != nil {
 			// TODO: use log
