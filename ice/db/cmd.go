@@ -30,6 +30,7 @@ var driverCmd = &cobra.Command{
 	Short: "registered database drivers",
 	Long:  "Show registered database drivers",
 	Run: func(cmd *cobra.Command, args []string) {
+		// TODO: now we have our wrapper and underlying driver
 		drivers := Drivers()
 		if len(drivers) == 0 {
 			fmt.Println("not driver registered for database/sql")
@@ -54,6 +55,18 @@ func makeConfigCmd(dbc *Command) *cobra.Command {
 	}
 }
 
+func makePingCmd(dbc *Command) *cobra.Command {
+	return &cobra.Command{
+		Use:   "ping",
+		Short: "check database connectivity",
+		Long:  "Check if database is reachable",
+		Run: func(cmd *cobra.Command, args []string) {
+			dbc.PreRun(dbc, cmd, args)
+			// TODO: implement based on config
+		},
+	}
+}
+
 // TODO: command for migrating database (create table, fill in dummy data)
 // TODO: dbshell https://docs.djangoproject.com/en/2.0/ref/django-admin/#dbshell
 // - also consider support docker container ...
@@ -62,6 +75,7 @@ func NewCommand(preRun func(dbc *Command, cmd *cobra.Command, args []string)) *C
 	root := *rootCmd
 	root.AddCommand(driverCmd)
 	root.AddCommand(makeConfigCmd(dbc))
+	root.AddCommand(makePingCmd(dbc))
 	dbc.Root = &root
 	return dbc
 }

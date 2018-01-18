@@ -11,8 +11,8 @@ import (
 	"github.com/at15/go.ice/_example/github/pkg/server"
 	"github.com/at15/go.ice/_example/github/pkg/util/logutil"
 	"github.com/at15/go.ice/ice/db"
-	_ "github.com/jackc/pgx/stdlib" // TODO: pgx also support its native access, and how is JSONB handled
-	_ "github.com/mattn/go-sqlite3" // nameless import to register driver
+	_ "github.com/at15/go.ice/ice/db/drivers/sqlite"
+	_ "github.com/at15/go.ice/ice/db/drivers/postgres"
 )
 
 //_ "github.com/go-sql-driver/mysql"
@@ -108,6 +108,7 @@ var logCmd = &cobra.Command{
 // TODO: check config file using gommon config
 func loadConfig() {
 	if !cfgLoaded {
+		// TODO: have a config reader struct instead of using static package level method
 		// TODO: config file also specify logging (which package to log etc.)
 		if err := config.LoadYAMLAsStruct(cfgFile, &cfg); err != nil {
 			// TODO: use log

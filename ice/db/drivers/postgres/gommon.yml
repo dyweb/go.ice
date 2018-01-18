@@ -1,0 +1,3 @@
+loggers:
+  - struct: "*Driver"
+    receiver: "d"
