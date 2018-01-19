@@ -1,6 +1,6 @@
-package db
+package migration
 
-type MigrationTask interface {
+type Task interface {
 	Id() string
 	Name() string
 	Description() string

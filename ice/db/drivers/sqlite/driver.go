@@ -2,8 +2,10 @@ package sqlite
 
 import (
 	dlog "github.com/dyweb/gommon/log"
-	"github.com/at15/go.ice/ice/db/drivers"
+	"github.com/at15/go.ice/ice/db"
 )
+
+var _ db.Driver = (*Driver)(nil)
 
 type Driver struct {
 	log *dlog.Logger
@@ -15,6 +17,6 @@ func New() *Driver {
 	return d
 }
 
-func (d *Driver) DefaultConfig() drivers.DefaultConfig {
-	return defaultConfig
+func (d *Driver) Defaults() db.DriverDefaults {
+	return defaults
 }

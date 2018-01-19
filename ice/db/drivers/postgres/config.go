@@ -1,18 +1,18 @@
 package postgres
 
-var defaultConfig = &Config{}
+var defaults = &Default{}
 
-type Config struct {
+type Default struct {
 }
 
-func (c *Config) DockerImage() string {
+func (c *Default) DockerImage() string {
 	return "postgres"
 }
 
-func (c *Config) Port() int {
+func (c *Default) Port() int {
 	return 5432
 }
 
-func (c *Config) NativeShell() string {
+func (c *Default) NativeShell() string {
 	return "psql"
 }

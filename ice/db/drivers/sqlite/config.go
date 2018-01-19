@@ -1,20 +1,20 @@
 package sqlite
 
 
-var defaultConfig = &Config{}
+var defaults = &Default{}
 
-type Config struct {
+type Default struct {
 }
 
 // FIXME: there is not official docker image for sqlite, and we need to use docker for sqlite3 shell
-func (c *Config) DockerImage() string {
+func (c *Default) DockerImage() string {
 	return ""
 }
 
-func (c *Config) Port() int {
+func (c *Default) Port() int {
 	return 0
 }
 
-func (c *Config) NativeShell() string {
+func (c *Default) NativeShell() string {
 	return "sqlite3"
 }

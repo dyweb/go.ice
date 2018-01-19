@@ -31,12 +31,12 @@ var driverCmd = &cobra.Command{
 	Long:  "Show registered database drivers",
 	Run: func(cmd *cobra.Command, args []string) {
 		// TODO: now we have our wrapper and underlying driver
-		drivers := Drivers()
+		drivers := NativeDrivers()
 		if len(drivers) == 0 {
-			fmt.Println("not driver registered for database/sql")
+			fmt.Println("not native driver registered for database/sql")
 			return
 		}
-		fmt.Printf("%d drivers found\n", len(drivers))
+		fmt.Printf("%d native drivers found\n", len(drivers))
 		for _, d := range drivers {
 			fmt.Println(d)
 		}

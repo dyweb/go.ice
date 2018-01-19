@@ -4,20 +4,23 @@ import (
 	"database/sql"
 	"fmt"
 
+	dlog "github.com/dyweb/gommon/log"
 	"github.com/at15/go.ice/ice/config"
 )
 
 // TODO: future
 // - each service should register which table it is using in manager, so it can print out the relationship
-// - generate logger interface function
 type Manager struct {
 	config config.DatabaseManagerConfig
+	log    *dlog.Logger
 }
 
 func NewManager(config config.DatabaseManagerConfig) *Manager {
-	return &Manager{
+	m :=  &Manager{
 		config: config,
 	}
+	m.log = dlog.NewStructLogger(log, m)
+	return m
 }
 
 func (mgr *Manager) PrintConfig() {
@@ -32,24 +35,10 @@ func (mgr *Manager) PrintConfig() {
 	}
 }
 
-func (mgr *Manager) HasDriver(driver string) bool {
-	return HasDriver(driver)
+func (mgr *Manager) NativeDrivers() []string {
+	return NativeDrivers()
 }
 
-func (mgr *Manager) Drivers() []string {
-	return Drivers()
-}
-
-func HasDriver(driver string) bool {
-	// TODO: tolerate common names?
-	for _, d := range Drivers() {
-		if d == driver {
-			return true
-		}
-	}
-	return false
-}
-
-func Drivers() []string {
+func NativeDrivers() []string {
 	return sql.Drivers()
 }
