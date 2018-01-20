@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
-	"context"
 	"time"
 )
 
@@ -64,20 +63,23 @@ func makePingCmd(dbc *Command) *cobra.Command {
 		Long:  "Check if database is reachable",
 		Run: func(cmd *cobra.Command, args []string) {
 			dbc.PreRun(dbc, cmd, args)
-			if a, err := dbc.Mgr.Default(); err != nil {
-				log.Fatal(err)
-				return
+			var (
+				w        *Wrapper
+				duration time.Duration
+				err      error
+			)
+			if len(args) > 0 {
+				w, err = dbc.Mgr.Wrapper(args[0])
 			} else {
-				db := a.GetDB()
-				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-				defer cancel()
-				if err := db.PingContext(ctx); err != nil {
-					log.Fatalf("ping failed %v", err)
-				} else {
-					// TODO: log ping time, this should be wrapped in adapter ...
-					// TODO: it might be better if we have a struct for adapter, and change current adapters to dialects ....
-					log.Info("ping success")
-				}
+				w, err = dbc.Mgr.Default()
+			}
+			if err != nil {
+				log.Fatal(err)
+			}
+			if duration, err = w.Ping(5 * time.Second); err != nil {
+				log.Fatal(err)
+			} else {
+				log.Infof("ping took %s", duration)
 			}
 		},
 	}

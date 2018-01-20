@@ -8,6 +8,8 @@ type DatabaseManagerConfig struct {
 	Databases []DatabaseConfig `yaml:"databases"`
 }
 
+var EmptyDatabaseConfig = DatabaseConfig{}
+
 type DatabaseConfig struct {
 	Name     string `yaml:"name"`
 	Adapter  string `yaml:"adapter"`

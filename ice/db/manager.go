@@ -13,61 +13,68 @@ import (
 // TODO: future
 // - each service should register which table it is using in manager, so it can print out the relationship
 type Manager struct {
-	mu     sync.RWMutex
-	config config.DatabaseManagerConfig
-	log    *dlog.Logger
-	dbs    map[string]Adapter
+	mu       sync.RWMutex
+	config   config.DatabaseManagerConfig
+	log      *dlog.Logger
+	wrappers map[string]*Wrapper
 }
 
 func NewManager(config config.DatabaseManagerConfig) *Manager {
 	m := &Manager{
-		config: config,
-		dbs:    make(map[string]Adapter, 1),
+		config:   config,
+		wrappers: make(map[string]*Wrapper, 1),
 	}
 	m.log = dlog.NewStructLogger(log, m)
 	return m
 }
 
-func (mgr *Manager) Default() (Adapter, error) {
+func (mgr *Manager) Default() (*Wrapper, error) {
+	return mgr.Wrapper(mgr.config.Default)
+}
+
+func (mgr *Manager) Wrapper(name string) (*Wrapper, error) {
 	mgr.mu.Lock()
+	if w, ok := mgr.wrappers[name]; ok {
+		mgr.mu.Unlock()
+		return w, nil
+	}
 	defer mgr.mu.Unlock()
 	var (
-		a     Adapter
-		found = false
-	)
-	dbName := mgr.config.Default
-	if a, found = mgr.dbs[dbName]; found {
-		return a, nil
-	}
-	var c *config.DatabaseConfig = nil
-	for _, d := range mgr.config.Databases {
-		if d.Name == dbName {
-			c = &d
-			break
-		}
-	}
-	if c == nil {
-		return nil, errors.Errorf("default database %s is not configured", dbName)
-	}
-	var (
-		err error
-		dsn string
+		a   Adapter
+		c   config.DatabaseConfig
 		db  *sql.DB
+		dsn string
+		err error
 	)
+	if c, err = mgr.Config(name); err != nil {
+		return nil, errors.WithMessage(err, "can't get config for "+name)
+	}
 	adapterName := c.Adapter
 	if a, err = GetAdapter(adapterName); err != nil {
-		return nil, errors.WithMessage(err, fmt.Sprintf("can't get %s adapter for database %s", adapterName, dbName))
+		return nil, errors.WithMessage(err, fmt.Sprintf("can't get %s adapter for database %s", adapterName, name))
 	}
-	if dsn, err = a.FormatDSN(*c); err != nil {
-		return nil, errors.WithMessage(err, fmt.Sprintf("can't use %s adapter to format dsn for database %s", adapterName, dbName))
+	if dsn, err = a.FormatDSN(c); err != nil {
+		return nil, errors.WithMessage(err, fmt.Sprintf("can't use %s adapter to format dsn for database %s", adapterName, name))
 	}
 	// NOTE: sql.Open does not make connection, so it won't throw error if remote db server is not ready
 	if db, err = sql.Open(a.DriverName(), dsn); err != nil {
 		return nil, errors.WithMessage(err, "can't open database handle")
 	}
-	a.SetDB(db)
-	mgr.dbs[dbName] = a
-	return a, nil
+	w := NewWrapper(a)
+	w.SetDB(db)
+	mgr.wrappers[name] = w
+	return w, nil
+}
+
+func (mgr *Manager) Config(name string) (config.DatabaseConfig, error) {
+	var known []string
+	for _, d := range mgr.config.Databases {
+		if d.Name == name {
+			return d, nil
+		}
+		known = append(known, d.Name)
+	}
+	return config.EmptyDatabaseConfig, errors.Errorf("%s is not in known configs %s", name, known)
 }
 
 func (mgr *Manager) PrintConfig() {

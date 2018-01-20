@@ -6,7 +6,6 @@ import (
 
 	"github.com/at15/go.ice/ice/config"
 	"github.com/pkg/errors"
-	"database/sql"
 )
 
 var (
@@ -22,8 +21,6 @@ type AdapterDefaults interface {
 
 // Adapter is high level wrapper around underlying drivers
 type Adapter interface {
-	SetDB(db *sql.DB)
-	GetDB() *sql.DB // TODO: add error in return value? now we just warn if its nil ...
 	DriverName() string
 	Defaults() AdapterDefaults
 	FormatDSN(c config.DatabaseConfig) (string, error)
@@ -31,6 +28,7 @@ type Adapter interface {
 
 type AdapterFactory func() Adapter
 
+// TODO: future, adapter factory functions should allow passing config
 func GetAdapter(name string) (Adapter, error) {
 	adaptersMu.RLock()
 	defer adaptersMu.RUnlock()

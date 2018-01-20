@@ -14,3 +14,15 @@ func (mgr *Manager) GetLogger() *dlog.Logger {
 func (mgr *Manager) LoggerIdentity(justCallMe func() *dlog.Identity) *dlog.Identity {
 	return justCallMe()
 }
+
+func (w *Wrapper) SetLogger(logger *dlog.Logger) {
+	w.log = logger
+}
+
+func (w *Wrapper) GetLogger() *dlog.Logger {
+	return w.log
+}
+
+func (w *Wrapper) LoggerIdentity(justCallMe func() *dlog.Identity) *dlog.Identity {
+	return justCallMe()
+}
