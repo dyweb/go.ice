@@ -12,7 +12,13 @@ db-manager:
       adapter: postgres
       host: localhost
       port: 5432
-      user: postgres
-      password: password
-      dbname: icehub
+      user: pguser
+      password: pgpassword
+#      dbname: icehub
       sslmode: disable
+    - name: mysql
+      adapter: mysql
+      host: localhost
+      port: 3306
+      user: root
+      password: mysqlpassword

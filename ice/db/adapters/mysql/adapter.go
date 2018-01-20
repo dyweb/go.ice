@@ -1,8 +1,9 @@
-package postgres
+package mysql
 
 import (
 	"fmt"
 
+	"github.com/go-sql-driver/mysql"
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
 	dlog "github.com/dyweb/gommon/log"
@@ -33,26 +34,12 @@ func (a *Adapter) FormatDSN(c config.DatabaseConfig) (string, error) {
 		a.log.Debugf("using DSN in config directly %s", c.DSN)
 		return c.DSN, nil
 	}
-	user := c.User
-	password := c.Password
-	host := c.Host
-	port := c.Port
-	database := c.DBName
-	sslmode := c.SSLMode
-	if host == "" {
-		host = "localhost"
-	}
-	if port <= 0 {
-		port = defaults.Port()
-	}
-	dsn := fmt.Sprintf("user=%s password=%s host=%s port=%d", user, password, host, port)
-	if database != "" {
-		dsn += " database=" + database
-	}
-	// TODO: what are valid sslmodes? should throw error here
-	if sslmode != "" {
-		dsn += " sslmode=" + sslmode
-	}
+	mc := mysql.NewConfig()
+	mc.User = c.User
+	mc.Passwd = c.Password
+	mc.Addr = fmt.Sprintf("%s:%d", c.Host, c.Port)
+	mc.DBName = c.DBName
+	dsn := mc.FormatDSN()
 	a.log.Debugf("format DSN based on config %s", dsn)
 	return dsn, nil
 }

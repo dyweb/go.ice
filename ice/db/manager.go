@@ -56,6 +56,7 @@ func (mgr *Manager) Wrapper(name string) (*Wrapper, error) {
 	if dsn, err = a.FormatDSN(c); err != nil {
 		return nil, errors.WithMessage(err, fmt.Sprintf("can't use %s adapter to format dsn for database %s", adapterName, name))
 	}
+	mgr.log.Debugf("connect using dsn %s", dsn)
 	// NOTE: sql.Open does not make connection, so it won't throw error if remote db server is not ready
 	if db, err = sql.Open(a.DriverName(), dsn); err != nil {
 		return nil, errors.WithMessage(err, "can't open database handle")

@@ -14,6 +14,7 @@ import (
 
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
+	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 )
 
 //_ "github.com/go-sql-driver/mysql"
