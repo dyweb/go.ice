@@ -5,6 +5,8 @@ import (
 	"sync"
 
 	"github.com/at15/go.ice/ice/config"
+	"github.com/pkg/errors"
+	"database/sql"
 )
 
 var (
@@ -20,12 +22,24 @@ type AdapterDefaults interface {
 
 // Adapter is high level wrapper around underlying drivers
 type Adapter interface {
+	SetDB(db *sql.DB)
+	GetDB() *sql.DB // TODO: add error in return value? now we just warn if its nil ...
 	DriverName() string
 	Defaults() AdapterDefaults
 	FormatDSN(c config.DatabaseConfig) (string, error)
 }
 
 type AdapterFactory func() Adapter
+
+func GetAdapter(name string) (Adapter, error) {
+	adaptersMu.RLock()
+	defer adaptersMu.RUnlock()
+	if f, ok := adaptersFactories[name]; !ok {
+		return nil, errors.Errorf("adapter %s is not registered", name)
+	} else {
+		return f(), nil
+	}
+}
 
 func RegisterAdapterFactory(name string, factory AdapterFactory) {
 	adaptersMu.Lock()

@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"github.com/spf13/cobra"
 	"os"
+	"context"
+	"time"
 )
 
 // cobra command for database related operations
@@ -25,7 +27,7 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-// TODO: adapters registered and adapters configured
+// TODO: dbs registered and dbs configured
 var driverCmd = &cobra.Command{
 	Use:   "drivers",
 	Short: "registered database drivers",
@@ -62,7 +64,21 @@ func makePingCmd(dbc *Command) *cobra.Command {
 		Long:  "Check if database is reachable",
 		Run: func(cmd *cobra.Command, args []string) {
 			dbc.PreRun(dbc, cmd, args)
-			// TODO: implement based on config
+			if a, err := dbc.Mgr.Default(); err != nil {
+				log.Fatal(err)
+				return
+			} else {
+				db := a.GetDB()
+				ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+				defer cancel()
+				if err := db.PingContext(ctx); err != nil {
+					log.Fatalf("ping failed %v", err)
+				} else {
+					// TODO: log ping time, this should be wrapped in adapter ...
+					// TODO: it might be better if we have a struct for adapter, and change current adapters to dialects ....
+					log.Info("ping success")
+				}
+			}
 		},
 	}
 }

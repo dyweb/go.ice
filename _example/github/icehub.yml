@@ -1,6 +1,7 @@
 # example icehub config
 db-manager:
-  default: local_sqlite
+#  default: local_sqlite
+  default: pgsql
   enabled:
     - local_sqlite
   databases:
