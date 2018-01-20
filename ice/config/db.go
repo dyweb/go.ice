@@ -10,15 +10,17 @@ type DatabaseManagerConfig struct {
 
 type DatabaseConfig struct {
 	Name     string `yaml:"name"`
-	Driver   string `yaml:"driver"`
+	Adapter  string `yaml:"adapter"`
 	DSN      string `yaml:"dsn"`
 	Host     string `yaml:"host"`
 	Port     int    `yaml:"port"`
 	User     string `yaml:"user"`
 	Password string `yaml:"password"`
 	DBName   string `yaml:"dbname"`
+	SSLMode  string `yaml:"sslmode"`
 }
 
+// FIXME: remove this, different driver use different DSN, this should be dealt with in Adapter
 func (c DatabaseConfig) GetDSN() string {
 	if c.DSN != "" {
 		return c.DSN
@@ -28,5 +30,5 @@ func (c DatabaseConfig) GetDSN() string {
 }
 
 func (c DatabaseConfig) String() string {
-	return fmt.Sprintf("name %s driver %s dsn %s", c.Name, c.Driver, c.GetDSN())
+	return fmt.Sprintf("name %s driver %s dsn %s", c.Name, c.Adapter, c.GetDSN())
 }

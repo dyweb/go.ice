@@ -5,14 +5,15 @@ import (
 	"os"
 
 	"github.com/dyweb/gommon/config"
-	"github.com/spf13/cobra"
 	dlog "github.com/dyweb/gommon/log"
+	"github.com/spf13/cobra"
 
 	"github.com/at15/go.ice/_example/github/pkg/server"
 	"github.com/at15/go.ice/_example/github/pkg/util/logutil"
 	"github.com/at15/go.ice/ice/db"
-	_ "github.com/at15/go.ice/ice/db/drivers/sqlite"
-	_ "github.com/at15/go.ice/ice/db/drivers/postgres"
+
+	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
+	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 )
 
 //_ "github.com/go-sql-driver/mysql"
@@ -21,7 +22,8 @@ const (
 	myname = "icehubd" // 你的名字
 )
 
-var log *dlog.Logger = logutil.Registry
+var log = logutil.Registry
+
 // TODO: flags for enable debug logging etc. it should also be passed to sub commands like db
 
 // specified in makefile
@@ -34,6 +36,7 @@ var verbose = false
 // global configuration instance
 var cfgLoaded = false
 var cfg server.Config
+
 // TODO: might need a registry of application instead of scatter variables around in main
 var dbMgr *db.Manager
 

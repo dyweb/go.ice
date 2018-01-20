@@ -1,8 +1,6 @@
-# Database
+# Database config format in different framework
 
-## Config
-
-### Laravel
+## Laravel
 
 - https://laravel.com/docs/5.5/database
 - https://github.com/laravel/laravel/blob/master/config/database.php
@@ -50,7 +48,7 @@ DB::rollBack();
 DB::commit();
 ````
 
-### Ruby on Rails
+## Ruby on Rails
 
 - http://guides.rubyonrails.org/configuring.html 3.1.4 Configurating a database
 - `pool` limit max number of concurrent connections to database
@@ -78,7 +76,7 @@ development:
   statement_limit: 200
 ````
 
-### Django
+## Django
 
 - https://docs.djangoproject.com/en/2.0/ref/databases/
 - https://docs.djangoproject.com/en/2.0/ref/settings/#databases
@@ -99,7 +97,7 @@ DATABASES = {
 }
 ````
 
-### Flask
+## Flask
 
 ````python
 # Load default config and override config from an environment variable
@@ -111,7 +109,7 @@ app.config.update(dict(
 ))
 ````
 
-### Spring
+## Spring
 
 ````text
 spring.datasource.url=jdbc:mysql://localhost/test
@@ -125,7 +123,7 @@ spring.datasource.driver-class-name=com.mysql.jdbc.Driver
   - `JDBC` is a standard for database access
   - `JPA` is a standard for ORM 
 
-### Dropwizard
+## Dropwizard
 
 - it is using a new interface called jdbi ...
 - http://www.dropwizard.io/0.7.1/docs/manual/jdbi.html#configuration

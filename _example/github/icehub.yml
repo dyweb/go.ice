@@ -5,13 +5,13 @@ db-manager:
     - local_sqlite
   databases:
     - name: local_sqlite
-      driver: sqlite3
+      adapter: sqlite
       dsn: icehub.db
-    # TODO: figure out how to use postgres
     - name: pgsql
-      driver: pgx
+      adapter: postgres
       host: localhost
       port: 5432
       user: postgres
       password: password
       dbname: icehub
+      sslmode: disable

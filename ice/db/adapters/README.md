@@ -1,4 +1,4 @@
-# Drivers for RDBMS
+# Adapters for RDBMS
 
 - mysql
 - postgres
@@ -6,7 +6,7 @@
 
 TODO
 
-- [ ] driver interface
+- [ ] adapter interface
   - format DSN
   - native shell name
   - default port

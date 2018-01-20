@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
-	dlog "github.com/dyweb/gommon/log"
 	"github.com/at15/go.ice/ice/config"
+	dlog "github.com/dyweb/gommon/log"
 )
 
 // TODO: future
@@ -16,7 +16,7 @@ type Manager struct {
 }
 
 func NewManager(config config.DatabaseManagerConfig) *Manager {
-	m :=  &Manager{
+	m := &Manager{
 		config: config,
 	}
 	m.log = dlog.NewStructLogger(log, m)
@@ -35,10 +35,14 @@ func (mgr *Manager) PrintConfig() {
 	}
 }
 
-func (mgr *Manager) NativeDrivers() []string {
-	return NativeDrivers()
+func (mgr *Manager) RegisteredDrivers() []string {
+	return Drivers()
 }
 
-func NativeDrivers() []string {
+func (mgr *Manager) RegisteredAdapters() []string {
+	return Adapters()
+}
+
+func Drivers() []string {
 	return sql.Drivers()
 }

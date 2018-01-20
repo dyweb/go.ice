@@ -1,6 +1,5 @@
 package sqlite
 
-
 var defaults = &Default{}
 
 type Default struct {
