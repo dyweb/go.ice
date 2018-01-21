@@ -1,14 +1,33 @@
-hash: be429d00617c138ee3ec431614851878ddc9588723ce00427cab8c08278b98ce
-updated: 2018-01-12T14:58:18.362790357-08:00
+hash: 27dc5c72daed3c86f4fcfb502309bae0e394bdee8518336025d271522c6d7e82
+updated: 2018-01-21T13:57:17.575635945-08:00
 imports:
-- name: github.com/gorilla/mux
-  version: ac112f7d75a0714af1bd86ab17749b31f7809640
+- name: github.com/dyweb/gommon
+  version: 415a3166123eb80230e9d9e3fb6623efa51530ba
   vcs: git
-- name: github.com/gorilla/securecookie
-  version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
+  subpackages:
+  - log
+  - structure
+  - util/hashutil
+  - util/logutil
+  - util/runtimeutil
+- name: github.com/go-sql-driver/mysql
+  version: 4a0c3d73d8579f9fc535cf5e654a651cbd57dd6e
   vcs: git
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
+- name: github.com/jackc/pgx
+  version: 4fb47ac8c9677c49cfa0f4ae61c0d0116c0a07fc
+  vcs: git
+  subpackages:
+  - chunkreader
+  - internal/sanitize
+  - pgio
+  - pgproto3
+  - pgtype
+  - stdlib
+- name: github.com/mattn/go-sqlite3
+  version: 6c771bb9887719704b210e87e934f08be014bdb1
+  vcs: git
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
   vcs: git
@@ -18,13 +37,13 @@ imports:
 - name: github.com/spf13/pflag
   version: 4c012f6dcd9546820e378d0bdda4d8fc772cdfea
   vcs: git
+- name: google.golang.org/appengine
+  version: 5bee14b453b4c71be47ec1781b0fa61c2ea182db
+  subpackages:
+  - cloudsql
+- name: gopkg.in/yaml.v2
+  version: a83829b6f1293c91addabc89d0571c246397bbf4
 testImports:
-- name: github.com/jackc/pgx
-  version: 4fb47ac8c9677c49cfa0f4ae61c0d0116c0a07fc
-  vcs: git
-- name: github.com/mattn/go-sqlite3
-  version: 6c771bb9887719704b210e87e934f08be014bdb1
-  vcs: git
 - name: github.com/stretchr/testify
   version: f6abca593680b2315d2075e0f5e2a9751e3f431a
   vcs: git

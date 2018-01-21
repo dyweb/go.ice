@@ -3,7 +3,7 @@ import:
 - package: github.com/pkg/errors
   vcs: git
   version: 0.8.0
-# NOTE: using latest version of cobera, it does not have semver until 2.0 (which may take a long time ...
+# NOTE: using latest version of cobra, it does not have semver until 2.0 (which may take a long time ...
 - package: github.com/spf13/cobra
   vcs: git
   version: b95ab734e27d33e0d8fbabf71ca990568d4e2020
@@ -11,27 +11,27 @@ import:
 - package: github.com/spf13/pflag
   vcs: git
   version: 4c012f6dcd9546820e378d0bdda4d8fc772cdfea
-# FIXME: we are using local version in workspace
-#- package: github.com/dyweb/gommon
-#  vcs: git
-#  version: 121cf3258ee39c5e970aa3ce55a1b329c1099b05
-- package: github.com/gorilla/mux
+- package: github.com/dyweb/gommon
   vcs: git
-  version: ac112f7d75a0714af1bd86ab17749b31f7809640
-- package: github.com/gorilla/securecookie
-  vcs: git
-  version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
-testImport:
-- package: github.com/stretchr/testify
-  vcs: git
-  version: f6abca593680b2315d2075e0f5e2a9751e3f431a
-# FIXME: for icehub example
+  version: 415a3166123eb80230e9d9e3fb6623efa51530ba
+- package: gopkg.in/yaml.v2
+# sql drivers
 - package: github.com/mattn/go-sqlite3
   vcs: git
   version: 6c771bb9887719704b210e87e934f08be014bdb1
 - package: github.com/jackc/pgx
   vcs: git
   version: 4fb47ac8c9677c49cfa0f4ae61c0d0116c0a07fc
-#- package: github.com/go-sql-driver/mysql
+- package: github.com/go-sql-driver/mysql
+  vcs: git
+  version: 4a0c3d73d8579f9fc535cf5e654a651cbd57dd6e
+#- package: github.com/gorilla/mux
 #  vcs: git
-#  version: 4a0c3d73d8579f9fc535cf5e654a651cbd57dd6e
+#  version: ac112f7d75a0714af1bd86ab17749b31f7809640
+#- package: github.com/gorilla/securecookie
+#  vcs: git
+#  version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
+testImport:
+- package: github.com/stretchr/testify
+  vcs: git
+  version: f6abca593680b2315d2075e0f5e2a9751e3f431a
