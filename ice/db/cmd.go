@@ -2,9 +2,12 @@ package db
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
 	"time"
+	"database/sql"
+
+	"github.com/at15/go.ice/ice/db/migration"
+	"github.com/spf13/cobra"
 )
 
 // cobra command for database related operations
@@ -14,11 +17,24 @@ type Command struct {
 	Root   *cobra.Command
 	PreRun func(dbc *Command, cmd *cobra.Command, args []string)
 	Mgr    *Manager
+	db     string // database selected by user
 }
 
-// TODO: move code from ping
 func (dbc *Command) MustWrapper() *Wrapper {
-	return nil
+	var (
+		w    *Wrapper
+		name string
+		err  error
+	)
+	if dbc.db != "" {
+		name = dbc.db
+	} else if name, err = dbc.Mgr.DefaultName(); err != nil {
+		log.Fatal(err)
+	}
+	if w, err = dbc.Mgr.Wrapper(name); err != nil {
+		log.Fatal(err)
+	}
+	return w
 }
 
 var rootCmd = &cobra.Command{
@@ -83,7 +99,29 @@ func makeShellCmd(dbc *Command) *cobra.Command {
 	// mysql -u user --password -h database_host database_name
 	// https://dev.mysql.com/doc/refman/5.7/en/multiple-server-clients.html need to use 127.0.0.1 to avoid using sock
 	// mysql -u root -pmysqlpassword -h 127.0.0.1
+	// pg TODO: how to pass password in command option ...
+	// psql -h 127.0.0.1 -U pguser -W icehub
 	return nil
+}
+
+// TODO: create database (the user need to be root ... but this is normally the case in local dev ...)
+
+func makePingCmd(dbc *Command) *cobra.Command {
+	return &cobra.Command{
+		Use:   "ping",
+		Short: "check database connectivity",
+		Long:  "Check if database is reachable",
+		Run: func(cmd *cobra.Command, args []string) {
+			dbc.PreRun(dbc, cmd, args)
+			w := dbc.MustWrapper()
+			if duration, err := w.Ping(5 * time.Second); err != nil {
+				log.Fatal(err)
+			} else {
+				log.Infof("ping took %s", duration)
+			}
+			// TODO: dbc should have cleanup
+		},
+	}
 }
 
 func makeMigrationCmd(dbc *Command) *cobra.Command {
@@ -93,38 +131,25 @@ func makeMigrationCmd(dbc *Command) *cobra.Command {
 		Long:  "Run registered migration tasks to update schema and feed fixture",
 		Run: func(cmd *cobra.Command, args []string) {
 			dbc.PreRun(dbc, cmd, args)
-			// TODO: reuse code base w/ ping ...
-		},
-	}
-}
-
-func makePingCmd(dbc *Command) *cobra.Command {
-	return &cobra.Command{
-		Use:   "ping",
-		Short: "check database connectivity",
-		Long:  "Check if database is reachable",
-		Run: func(cmd *cobra.Command, args []string) {
-			dbc.PreRun(dbc, cmd, args)
 			var (
-				w        *Wrapper
-				duration time.Duration
-				err      error
-				name     string
+				tx  *sql.Tx
+				err error
 			)
-			if len(args) > 0 {
-				name = args[0]
-			} else if name, err = dbc.Mgr.DefaultName(); err != nil {
+			w := dbc.MustWrapper()
+			if tx, err = w.Transaction(); err != nil {
 				log.Fatal(err)
 			}
-			w, err = dbc.Mgr.Wrapper(name)
-			if err != nil {
-				log.Fatal(err)
-			}
-			if duration, err = w.Ping(5 * time.Second); err != nil {
+			init := migration.InitTask()
+			if err = init.Up(tx); err != nil {
 				log.Fatal(err)
 			} else {
-				log.Infof("ping took %s", duration)
+				if err = tx.Commit(); err != nil {
+					log.Fatalf("failed to commit %v", err)
+				}
 			}
+			log.Info("migration finished")
+			// TODO: dbc should have cleanup
+			// Aborted connection 6 to db: 'icehub' user: 'root' host: '172.19.0.1' (Got an error reading communication packets)
 		},
 	}
 }
@@ -132,10 +157,12 @@ func makePingCmd(dbc *Command) *cobra.Command {
 // TODO: command for migrating database (create table, fill in dummy data)
 // TODO: dbshell https://docs.djangoproject.com/en/2.0/ref/django-admin/#dbshell
 // - also consider support docker container ...
-// TODO: add flag to allow specify which database to use in ping, migrate etc.
 func NewCommand(preRun func(dbc *Command, cmd *cobra.Command, args []string)) *Command {
 	dbc := &Command{Mgr: nil, PreRun: preRun}
 	root := *rootCmd
+	// flags
+	root.PersistentFlags().StringVar(&dbc.db, "db", "", "database to run command on, ping/migrate etc.")
+	// sub commands
 	root.AddCommand(driverCmd)
 	root.AddCommand(adapterCmd)
 	root.AddCommand(makeConfigCmd(dbc))

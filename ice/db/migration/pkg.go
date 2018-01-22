@@ -4,7 +4,7 @@ import (
 	"github.com/at15/go.ice/ice/util/logutil"
 )
 
-// InitialMigration is an reserved migration task, which creates migration table
-const InitialMigration = "_initial"
+const initTaskName = "create_migration_table"
+const migrationTableNameQuoted = "`_ice_migration`"
 
 var log = logutil.NewPackageLogger()

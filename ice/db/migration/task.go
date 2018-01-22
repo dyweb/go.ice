@@ -9,8 +9,8 @@ import (
 
 var initialTask = NewTask(
 	time.Date(2018, 1, 21, 23, 43, 01, 0, time.UTC),
-	"create migration table",
-	"create migration table to track future migration tasks", createMigrationTable, dropMigrationTable)
+	initTaskName, "create migration table to track future migration tasks",
+	createMigrationTable, dropMigrationTable)
 
 type TaskFunc func(tx *sql.Tx) error
 
@@ -28,6 +28,10 @@ type BasicTask struct {
 	description string
 	up          TaskFunc
 	down        TaskFunc
+}
+
+func InitTask() Task {
+	return initialTask
 }
 
 func NewTask(t time.Time, name string, desc string, up TaskFunc, down TaskFunc) Task {
@@ -61,14 +65,15 @@ func (t *BasicTask) Down(tx *sql.Tx) error {
 }
 
 func createMigrationTable(tx *sql.Tx) error {
-	c := `CREATE TABLE '_ice_migration' (
-  id INT,
-  name VARCHAR(255),
-  description TEXT,
-  create_time INT,
-  apply_time INT
-)
-`
+	// we need to use ` to quote the table name `_ice_migration`, which is why we concat string instead of using literal
+	c := "CREATE TABLE " + migrationTableNameQuoted + " (" +
+		` id INT,
+		  name VARCHAR(255),
+		  description TEXT,
+		  create_time INT,
+		  apply_time INT
+		)
+		`
 	if _, err := tx.Exec(c); err != nil {
 		return errors.Wrap(err, "can't create migration table")
 	}
@@ -76,7 +81,7 @@ func createMigrationTable(tx *sql.Tx) error {
 }
 
 func dropMigrationTable(tx *sql.Tx) error {
-	d := `DROP TABLE '_ice_migration'`
+	d := "DROP TABLE " + migrationTableNameQuoted
 	if _, err := tx.Exec(d); err != nil {
 		return errors.Wrap(err, "can't drop migration table")
 	}
