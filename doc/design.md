@@ -10,6 +10,29 @@ Mainly follow https://github.com/gobuffalo/buffalo but with less features on fro
 
 ## directory layout
 
+### ice
+
+- app application struct with common structs, avoid scatter config, dbmgr around in main.go,
+  - client
+  - server
+- cache kv cache, remote & in process cache (might do something like group cache? https://github.com/golang/groupcache)
+- config configuration structs to avoid cycle import
+- db relational database
+  - drivers wrapper around existing sql drivers
+  - migration 
+  - cmd.go handy db command to be used in application
+  - manager.go a singleton for each application
+- [ ] interface and util for server client, might look at swagger?
+- util
+  - logutil logger registry for the library
+  
+### application using ice
+
+- db
+  - migration migration tasks
+- server server implementation
+- client client wrapper
+- service interface and common error code etc.
 
 ## FAQ
 
