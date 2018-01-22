@@ -16,6 +16,11 @@ type Command struct {
 	Mgr    *Manager
 }
 
+// TODO: move code from ping
+func (dbc *Command) MustWrapper() *Wrapper {
+	return nil
+}
+
 var rootCmd = &cobra.Command{
 	Use:   "db",
 	Short: "database maintenance",
@@ -82,7 +87,15 @@ func makeShellCmd(dbc *Command) *cobra.Command {
 }
 
 func makeMigrationCmd(dbc *Command) *cobra.Command {
-	return nil
+	return &cobra.Command{
+		Use:   "migrate",
+		Short: "Migrate database",
+		Long:  "Run registered migration tasks to update schema and feed fixture",
+		Run: func(cmd *cobra.Command, args []string) {
+			dbc.PreRun(dbc, cmd, args)
+			// TODO: reuse code base w/ ping ...
+		},
+	}
 }
 
 func makePingCmd(dbc *Command) *cobra.Command {
@@ -119,6 +132,7 @@ func makePingCmd(dbc *Command) *cobra.Command {
 // TODO: command for migrating database (create table, fill in dummy data)
 // TODO: dbshell https://docs.djangoproject.com/en/2.0/ref/django-admin/#dbshell
 // - also consider support docker container ...
+// TODO: add flag to allow specify which database to use in ping, migrate etc.
 func NewCommand(preRun func(dbc *Command, cmd *cobra.Command, args []string)) *Command {
 	dbc := &Command{Mgr: nil, PreRun: preRun}
 	root := *rootCmd
@@ -126,6 +140,7 @@ func NewCommand(preRun func(dbc *Command, cmd *cobra.Command, args []string)) *C
 	root.AddCommand(adapterCmd)
 	root.AddCommand(makeConfigCmd(dbc))
 	root.AddCommand(makePingCmd(dbc))
+	root.AddCommand(makeMigrationCmd(dbc))
 	dbc.Root = &root
 	return dbc
 }

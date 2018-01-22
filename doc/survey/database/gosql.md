@@ -97,4 +97,5 @@ for rows.Next() {
 
 - https://github.com/VividCortex/go-database-sql-tutorial
   - Unknown columns http://go-database-sql.org/varcols.html useful when building shell and admin UI
+- https://www.vividcortex.com/blog/2015/09/22/common-pitfalls-go/
 - https://astaxie.gitbooks.io/build-web-application-with-golang/en/05.0.html
