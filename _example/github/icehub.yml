@@ -2,13 +2,11 @@
 db-manager:
 #  default: local_sqlite
   default: pgsql
-  enabled:
-    - local_sqlite
   databases:
-    - name: local_sqlite
+    - name: sqlite_local
       adapter: sqlite
       dsn: icehub.db
-    - name: pgsql
+    - name: postgres_local
       adapter: postgres
       host: localhost
       port: 5432
@@ -16,9 +14,10 @@ db-manager:
       password: pgpassword
 #      dbname: icehub
       sslmode: disable
-    - name: mysql
+    - name: mysql_local
       adapter: mysql
       host: localhost
       port: 3306
       user: root
       password: mysqlpassword
+#      dbname: icehub

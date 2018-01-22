@@ -4,7 +4,6 @@ import "fmt"
 
 type DatabaseManagerConfig struct {
 	Default   string           `yaml:"default"`
-	Enabled   []string         `yaml:"enabled"`
 	Databases []DatabaseConfig `yaml:"databases"`
 }
 
@@ -22,15 +21,7 @@ type DatabaseConfig struct {
 	SSLMode  string `yaml:"sslmode"`
 }
 
-// FIXME: remove this, different driver use different DSN, this should be dealt with in Adapter
-func (c DatabaseConfig) GetDSN() string {
-	if c.DSN != "" {
-		return c.DSN
-	} else {
-		return fmt.Sprintf("host=%s port=%d user=%s passowrd=%s name=%s", c.Host, c.Port, c.User, c.Password, c.DBName)
-	}
-}
-
 func (c DatabaseConfig) String() string {
-	return fmt.Sprintf("name %s driver %s dsn %s", c.Name, c.Adapter, c.GetDSN())
+	return fmt.Sprintf("name=%s adapter=%s host=%s port=%d user=%s dbname=%s",
+		c.Name, c.Adapter, c.Host, c.Port, c.User, c.DBName)
 }

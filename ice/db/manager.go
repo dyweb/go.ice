@@ -28,8 +28,19 @@ func NewManager(config config.DatabaseManagerConfig) *Manager {
 	return m
 }
 
+func (mgr *Manager) DefaultName() (string, error) {
+	if mgr.config.Default == "" {
+		return "", errors.New("default database is not specified")
+	}
+	return mgr.config.Default, nil
+}
+
 func (mgr *Manager) Default() (*Wrapper, error) {
-	return mgr.Wrapper(mgr.config.Default)
+	if name, err := mgr.DefaultName(); err != nil {
+		return nil, err
+	} else {
+		return mgr.Wrapper(name)
+	}
 }
 
 func (mgr *Manager) Wrapper(name string) (*Wrapper, error) {
@@ -84,7 +95,6 @@ func (mgr *Manager) PrintConfig() {
 		return
 	}
 	fmt.Printf("default %s\n", mgr.config.Default)
-	fmt.Printf("enabled %s\n", mgr.config.Enabled)
 	for i, c := range mgr.config.Databases {
 		fmt.Printf("%d %s\n", i, c.String())
 	}

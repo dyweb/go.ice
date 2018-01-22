@@ -26,7 +26,6 @@ var rootCmd = &cobra.Command{
 	},
 }
 
-// TODO: dbs registered and dbs configured
 var driverCmd = &cobra.Command{
 	Use:   "drivers",
 	Short: "registered database drivers",
@@ -37,9 +36,26 @@ var driverCmd = &cobra.Command{
 			fmt.Println("not database/sql driver registered")
 			return
 		}
-		fmt.Printf("%d drivers registered \n", len(drivers))
+		fmt.Printf("%d drivers registered\n", len(drivers))
 		for _, d := range drivers {
 			fmt.Println(d)
+		}
+	},
+}
+
+var adapterCmd = &cobra.Command{
+	Use:   "adapters",
+	Short: "registered database adapters",
+	Long:  "Show registered ice/db/adapters",
+	Run: func(cmd *cobra.Command, args []string) {
+		adapters := Adapters()
+		if len(adapters) == 0 {
+			fmt.Println("not ice/db/adapters adapter registered")
+			return
+		}
+		fmt.Printf("%d adapters registered\n", len(adapters))
+		for _, a := range adapters {
+			fmt.Println(a)
 		}
 	},
 }
@@ -56,6 +72,19 @@ func makeConfigCmd(dbc *Command) *cobra.Command {
 	}
 }
 
+func makeShellCmd(dbc *Command) *cobra.Command {
+	// TODO: leave it to adapter
+	// TODO: we can also use docker exec to use container shell ....
+	// mysql -u user --password -h database_host database_name
+	// https://dev.mysql.com/doc/refman/5.7/en/multiple-server-clients.html need to use 127.0.0.1 to avoid using sock
+	// mysql -u root -pmysqlpassword -h 127.0.0.1
+	return nil
+}
+
+func makeMigrationCmd(dbc *Command) *cobra.Command {
+	return nil
+}
+
 func makePingCmd(dbc *Command) *cobra.Command {
 	return &cobra.Command{
 		Use:   "ping",
@@ -67,12 +96,14 @@ func makePingCmd(dbc *Command) *cobra.Command {
 				w        *Wrapper
 				duration time.Duration
 				err      error
+				name     string
 			)
 			if len(args) > 0 {
-				w, err = dbc.Mgr.Wrapper(args[0])
-			} else {
-				w, err = dbc.Mgr.Default()
+				name = args[0]
+			} else if name, err = dbc.Mgr.DefaultName(); err != nil {
+				log.Fatal(err)
 			}
+			w, err = dbc.Mgr.Wrapper(name)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -92,6 +123,7 @@ func NewCommand(preRun func(dbc *Command, cmd *cobra.Command, args []string)) *C
 	dbc := &Command{Mgr: nil, PreRun: preRun}
 	root := *rootCmd
 	root.AddCommand(driverCmd)
+	root.AddCommand(adapterCmd)
 	root.AddCommand(makeConfigCmd(dbc))
 	root.AddCommand(makePingCmd(dbc))
 	dbc.Root = &root
