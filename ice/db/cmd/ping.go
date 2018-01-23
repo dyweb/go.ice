@@ -12,8 +12,8 @@ func makePingCmd(dbc *Command) *cobra.Command {
 		Short: "check database connectivity",
 		Long:  "Check if database is reachable",
 		Run: func(cmd *cobra.Command, args []string) {
-			dbc.PreRun(dbc, cmd, args)
-			w := dbc.MustWrapper()
+			dbc.mustConfigManager()
+			w := dbc.mustWrapper()
 			if duration, err := w.Ping(5 * time.Second); err != nil {
 				log.Fatal(err)
 			} else {

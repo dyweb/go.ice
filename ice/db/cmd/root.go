@@ -12,6 +12,6 @@ var rootCmd = &cobra.Command{
 	Long:  "Database drivers, migration, status, REPL",
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
-		os.Exit(1)
+		os.Exit(1) // TODO: should we exit 1?
 	},
 }

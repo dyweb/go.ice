@@ -8,8 +8,8 @@ func makeConfigCmd(dbc *Command) *cobra.Command {
 		Short: "print configuration",
 		Long:  "Print configuration of manager and databases",
 		Run: func(cmd *cobra.Command, args []string) {
-			dbc.PreRun(dbc, cmd, args)
-			dbc.Mgr.PrintConfig()
+			dbc.mustConfigManager()
+			dbc.mgr.PrintConfig()
 		},
 	}
 }

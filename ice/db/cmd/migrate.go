@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"database/sql"
+
 	"github.com/at15/go.ice/ice/db/migration"
 	"github.com/spf13/cobra"
 )
@@ -12,12 +13,12 @@ func makeMigrationCmd(dbc *Command) *cobra.Command {
 		Short: "Migrate database",
 		Long:  "Run registered migration tasks to update schema and feed fixture",
 		Run: func(cmd *cobra.Command, args []string) {
-			dbc.PreRun(dbc, cmd, args)
+			dbc.mustConfigManager()
 			var (
 				tx  *sql.Tx
 				err error
 			)
-			w := dbc.MustWrapper()
+			w := dbc.mustWrapper()
 			if tx, err = w.Transaction(); err != nil {
 				log.Fatal(err)
 			}

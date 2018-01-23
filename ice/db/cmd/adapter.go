@@ -10,7 +10,7 @@ import (
 var adapterCmd = &cobra.Command{
 	Use:   "adapters",
 	Short: "registered database adapters",
-	Long:  "Show registered ice/db/adapters",
+	Long:  "Show registered ice/db/adapters, not to be confused with drivers",
 	Run: func(cmd *cobra.Command, args []string) {
 		adapters := db.Adapters()
 		if len(adapters) == 0 {
