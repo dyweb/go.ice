@@ -11,6 +11,7 @@ import (
 	"github.com/at15/go.ice/_example/github/pkg/server"
 	"github.com/at15/go.ice/_example/github/pkg/util/logutil"
 	"github.com/at15/go.ice/ice/db"
+	dbcmd "github.com/at15/go.ice/ice/db/cmd"
 
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
@@ -128,7 +129,7 @@ func main() {
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "icehub.yml", "config file location")
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "verbose output and set log level to debug")
 	rootCmd.AddCommand(versionCmd)
-	dbc := db.NewCommand(func(dbc *db.Command, cmd *cobra.Command, args []string) {
+	dbc := dbcmd.NewCommand(func(dbc *dbcmd.Command, cmd *cobra.Command, args []string) {
 		if dbMgr == nil {
 			loadConfig()
 			dbMgr = db.NewManager(cfg.DatabaseManager)

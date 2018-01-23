@@ -19,6 +19,11 @@ buffalo pop/soda
   - https://github.com/markbates/pop/blob/master/schema_migrations.go#L7:5 `version (string & index)`
   - `migrate Up` https://github.com/markbates/pop/blob/master/migrator.go#L42:19
     - **use transaction for each migration** https://github.com/markbates/pop/blob/master/migrator.go#L55 
+- migrator
+  - file [file_migrator.go](https://github.com/markbates/pop/blob/master/file_migrator.go#L23:6)
+    - walk the directory, read the content and execute them as sql ...
+  - file embed in binary [migration_box.go](https://github.com/markbates/pop/blob/master/migration_box.go)
+    - use https://github.com/gobuffalo/packr to embed static files into go binary, including migration files
 
 sql-migrate
 

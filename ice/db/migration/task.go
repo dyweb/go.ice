@@ -67,13 +67,11 @@ func (t *BasicTask) Down(tx *sql.Tx) error {
 func createMigrationTable(tx *sql.Tx) error {
 	// we need to use ` to quote the table name `_ice_migration`, which is why we concat string instead of using literal
 	c := "CREATE TABLE " + migrationTableNameQuoted + " (" +
-		` id INT,
-		  name VARCHAR(255),
+		` name VARCHAR(255),
 		  description TEXT,
 		  create_time INT,
 		  apply_time INT
-		)
-		`
+		)`
 	if _, err := tx.Exec(c); err != nil {
 		return errors.Wrap(err, "can't create migration table")
 	}

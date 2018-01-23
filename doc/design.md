@@ -16,12 +16,12 @@ Mainly follow https://github.com/gobuffalo/buffalo but with less features on fro
 - use timestamp as id, instead of manually assign number
   - need a generator (might take the chance to update gommon's generator code as well)
 
-migration table schema
+migration table schema, create_time (unix timestamp) is used to identify the order of migration
 
-- id int
 - name varchar(255)
-- apply time timestamp
-- description varchar or text?
+- description text
+- create_time INT
+- apply_time INT
 
 current version should be the last id
 
