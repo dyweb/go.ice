@@ -3,10 +3,10 @@ package mysql
 import (
 	"fmt"
 
-	"github.com/go-sql-driver/mysql"
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
 	dlog "github.com/dyweb/gommon/log"
+	"github.com/go-sql-driver/mysql"
 )
 
 var _ db.Adapter = (*Adapter)(nil)

@@ -6,7 +6,24 @@ that just work, and don't focus on security and reliability (not that gateway).
 Mainly follow https://github.com/gobuffalo/buffalo but with less features on frontend, auth etc.
 
 - cli for generating code sketch or specific functions (json & protobuf)
-  - [ ] requires gommon/runner to update
+  - [ ] requires `gommon/runner` to update
+
+## db
+
+### migration
+
+- don't allow specify dependency like django, it's true we can build a DAG for plan, but that's overkill (控制住自己啊,不能再挖坑了)
+- use timestamp as id, instead of manually assign number
+  - need a generator (might take the chance to update gommon's generator code as well)
+
+migration table schema, create_time (unix timestamp) is used to identify the order of migration
+
+- name varchar(255)
+- description text
+- create_time INT
+- apply_time INT
+
+current version should be the last id
 
 ## directory layout
 

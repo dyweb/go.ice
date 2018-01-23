@@ -10,8 +10,9 @@ import (
 	"sync"
 )
 
-// TODO: future
-// - each service should register which table it is using in manager, so it can print out the relationship
+// backlog
+// - each service can register which table it is using in manager, so it can print out the relationship between services
+
 type Manager struct {
 	mu       sync.RWMutex
 	config   config.DatabaseManagerConfig
@@ -106,8 +107,4 @@ func (mgr *Manager) RegisteredDrivers() []string {
 
 func (mgr *Manager) RegisteredAdapters() []string {
 	return Adapters()
-}
-
-func Drivers() []string {
-	return sql.Drivers()
 }

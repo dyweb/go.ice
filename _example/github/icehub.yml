@@ -20,4 +20,4 @@ db-manager:
       port: 3306
       user: root
       password: mysqlpassword
-#      dbname: icehub
+      dbname: icehub

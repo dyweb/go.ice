@@ -44,6 +44,19 @@ func (w *Wrapper) GetDB() *sql.DB {
 	return w.db
 }
 
+func (w *Wrapper) Transaction() (*sql.Tx, error) {
+	w.mu.RLock()
+	defer w.mu.RUnlock()
+	if w.db == nil {
+		return nil, errors.New("sql.DB pointer is nil")
+	}
+	if tx, err := w.db.BeginTx(context.Background(), nil); err != nil {
+		return tx, errors.Wrap(err, "can't begin transaction")
+	} else {
+		return tx, nil
+	}
+}
+
 func (w *Wrapper) Ping(timeout time.Duration) (time.Duration, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), timeout)
 	defer cancel()
