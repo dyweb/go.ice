@@ -6,8 +6,8 @@
 
 TODO
 
-- [ ] adapter interface
+- [x] adapter interface
   - format DSN
   - native shell name
   - default port
-- 
+- [ ] tracing?
