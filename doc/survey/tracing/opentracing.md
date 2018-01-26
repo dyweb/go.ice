@@ -3,6 +3,15 @@
 - https://github.com/opentracing
 - http://opentracing.io/documentation/
 
+Caveats
+
+- https://github.com/opentracing/opentracing-go/blob/master/gocontext.go it's still using `x/net/context` instead of `context`
+  - but it seems it work because the alias feature added in go1.9 https://golang.org/doc/go1.9#language
+
+Integrations
+
+- https://github.com/opentracing-contrib/java-jdbc
+
 ## Introduction
 
 - no vendor lock-in

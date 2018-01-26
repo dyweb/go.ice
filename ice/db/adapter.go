@@ -8,6 +8,8 @@ import (
 	"github.com/pkg/errors"
 )
 
+// TODO: allow adapter to wrap common sql operation and trace it? or it should be done at wrapper level?
+
 var (
 	adaptersMu        sync.RWMutex
 	adaptersFactories = make(map[string]AdapterFactory)

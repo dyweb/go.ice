@@ -13,6 +13,10 @@ TODO
   - https://istio.io/docs/tasks/telemetry/distributed-tracing.html
 - https://gist.github.com/adriancole/3c4b70925b8f87d7c98e369216b916aa
 
+Integrations
+
+- gRPC OpenTracing https://github.com/grpc-ecosystem/grpc-opentracing/tree/master/go/otgrpc
+
 Questions
 
 - [ ] where does traces go, put on local disk and get collected, or stream to central repo?
