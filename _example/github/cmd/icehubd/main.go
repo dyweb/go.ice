@@ -3,7 +3,11 @@ package main
 import (
 	"fmt"
 	"os"
+	"time"
+	"io"
 
+	"github.com/opentracing/opentracing-go"
+	jgconfig "github.com/uber/jaeger-client-go/config"
 	"github.com/dyweb/gommon/config"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/pkg/errors"
@@ -14,15 +18,12 @@ import (
 	icfg "github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
-
 	"github.com/at15/go.ice/_example/github/pkg/common"
 
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
 )
-
-//_ "github.com/go-sql-driver/mysql"
 
 const (
 	myname = "icehubd" // 你的名字
@@ -42,6 +43,8 @@ var cfg server.Config
 
 // TODO: might need a registry of application instead of scatter variables around in main
 var dbMgr *db.Manager
+var tracer opentracing.Tracer
+var closer io.Closer
 
 var rootCmd = &cobra.Command{
 	Use:   myname,
@@ -98,6 +101,10 @@ var startCmd = &cobra.Command{
 		log.Info("TODO: I need to start it ....")
 		// TODO: p3 check if there is already icehubd running, by port, process name etc.
 		// TODO: p1 config tracer
+		if err := configTracer(); err != nil {
+			log.Fatal(err)
+		}
+		log.Info("tracer created")
 		// TODO: p2 config database
 		// TODO: p1 initial services (components?)
 		// TODO: p1 user service, cache service etc.
@@ -122,6 +129,34 @@ func mustLoadConfig() {
 	if err := loadConfig(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// FIXME: hacky function to play with tracing libraries
+// https://github.com/jaegertracing/jaeger/blob/master/examples/hotrod/pkg/tracing/init.go#L31
+func configTracer() error {
+	tcfg := jgconfig.Configuration{
+		Sampler: &jgconfig.SamplerConfig{
+			Type:  "const",
+			Param: 1,
+		},
+		Reporter: &jgconfig.ReporterConfig{
+			LogSpans: false, // TODO: when true, enables LoggingReporter that runs in parallel with the main reporter
+			// and logs all submitted spans. Main Configuration.Logger must be initialized in the code
+			// for this option to have any effect.
+			BufferFlushInterval: 1 * time.Second,
+			LocalAgentHostPort:  "localhost:6831",
+		},
+	}
+	// TODO: a better way to use gommon/log, current tree level hierarchy may not be enough ...
+	// TODO: the jaeger.Logger interface is so strange, Error(string) instead of Error(string, args ...interface{})
+	// jgconfig.Logger(log)
+	// TODO: Observer can be registered with the Tracer to receive notifications about new Spans.
+	var err error
+	tracer, closer, err = tcfg.New("service-a")
+	if err != nil {
+		return errors.Wrap(err, "can't create jaeger tracer")
+	}
+	return nil
 }
 
 func main() {

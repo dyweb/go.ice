@@ -1,6 +1,12 @@
-hash: 27dc5c72daed3c86f4fcfb502309bae0e394bdee8518336025d271522c6d7e82
-updated: 2018-01-21T13:57:17.575635945-08:00
+hash: e5812c19a3401577d3837d1e99c999e462086955effc3fcc2abc334a739920f9
+updated: 2018-01-26T21:48:06.424559543-08:00
 imports:
+- name: github.com/apache/thrift
+  version: 53dd39833a08ce33582e5ff31fa18bb4735d6731
+  subpackages:
+  - lib/go/thrift
+- name: github.com/codahale/hdrhistogram
+  version: f8ad88b59a584afeee9d334eff879b104439117b
 - name: github.com/dyweb/gommon
   version: 415a3166123eb80230e9d9e3fb6623efa51530ba
   vcs: git
@@ -28,6 +34,10 @@ imports:
 - name: github.com/mattn/go-sqlite3
   version: 6c771bb9887719704b210e87e934f08be014bdb1
   vcs: git
+- name: github.com/opentracing/opentracing-go
+  version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
+- name: github.com/openzipkin/zipkin-go-opentracing
+  version: 6bb822a7f15fdc5800b9822a6ac1bfa0b7d9195d
 - name: github.com/pkg/errors
   version: 645ef00459ed84a119197bfb8d8205042c6df63d
   vcs: git
@@ -37,12 +47,20 @@ imports:
 - name: github.com/spf13/pflag
   version: 4c012f6dcd9546820e378d0bdda4d8fc772cdfea
   vcs: git
+- name: github.com/uber/jaeger-client-go
+  version: ff3efa227b65e419701a4f48985379ca106a89e7
+- name: github.com/uber/jaeger-lib
+  version: c48167d9cae5887393dd5e61efd06a4a48b7fbb3
+- name: golang.org/x/net
+  version: 7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6
+  subpackages:
+  - context
 - name: google.golang.org/appengine
   version: 5bee14b453b4c71be47ec1781b0fa61c2ea182db
   subpackages:
   - cloudsql
 - name: gopkg.in/yaml.v2
-  version: a83829b6f1293c91addabc89d0571c246397bbf4
+  version: cd8b52f8269e0feb286dfeef29f8fe4d5b397e0b
 testImports:
 - name: github.com/stretchr/testify
   version: f6abca593680b2315d2075e0f5e2a9751e3f431a
