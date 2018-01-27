@@ -5,6 +5,6 @@ import (
 )
 
 type Config struct {
-	Verbose         bool
+	Verbose         bool                         `yaml:"verbose"`
 	DatabaseManager config.DatabaseManagerConfig `yaml:"db-manager"` // TODO: use pointer allow use to detect if it is in the yaml
 }

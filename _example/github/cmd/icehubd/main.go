@@ -15,6 +15,8 @@ import (
 	"github.com/at15/go.ice/ice/db"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
 
+	"github.com/at15/go.ice/_example/github/pkg/common"
+
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
@@ -29,9 +31,6 @@ const (
 var log = logutil.Registry
 
 // TODO: flags for enable debug logging etc. it should also be passed to sub commands like db
-
-// specified in makefile
-var version string
 
 // specified using flags
 var cfgFile string
@@ -51,35 +50,6 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		cmd.Help()
 		os.Exit(1)
-		//IceHub is an example GitHub integration service using go.ice
-		//
-		//Usage:
-		//	icehubd [flags]
-		//	icehubd [command]
-		//
-		//	Available Commands:
-		//	help        Help about any command
-		//	version     print version
-		//
-		//Flags:
-		//	-h, --help   help for icehubd
-		//
-		//Use "icehubd [command] --help" for more information about a command.
-
-		// usage does not have the long description like help
-		//cmd.Usage()
-		//Usage:
-		//	icehubd [flags]
-		//	icehubd [command]
-		//
-		//	Available Commands:
-		//	help        Help about any command
-		//	version     print version
-		//
-		//Flags:
-		//	-h, --help   help for icehubd
-		//
-		//	Use "icehubd [command] --help" for more information about a command.
 	},
 	PersistentPreRun: func(cmd *cobra.Command, args []string) {
 		if cmd.Use == "version" || cmd.Use == myname {
@@ -87,7 +57,7 @@ var rootCmd = &cobra.Command{
 		}
 		if verbose {
 			dlog.SetLevelRecursive(log, dlog.DebugLevel)
-			log.Debug("using debug level due to verbose flag")
+			log.Debug("using debug level logging due to verbose flag")
 		}
 	},
 }
@@ -95,9 +65,16 @@ var rootCmd = &cobra.Command{
 var versionCmd = &cobra.Command{
 	Use:   "version",
 	Short: "print version",
-	Long:  "Print current version " + version,
+	Long:  "Print current version " + common.Version(),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println(version)
+		if !verbose {
+			fmt.Println(common.Version())
+		} else {
+			fmt.Printf("version: %s\n", common.Version())
+			fmt.Printf("commit: %s\n", common.GitCommit())
+			fmt.Printf("build time: %s\n", common.BuildTime())
+			fmt.Printf("build user: %s\n", common.BuildUser())
+		}
 	},
 }
 
@@ -109,6 +86,22 @@ var logCmd = &cobra.Command{
 	Long:  "Test log tree printer etc.",
 	Run: func(cmd *cobra.Command, args []string) {
 		log.PrintTree()
+	},
+}
+
+var startCmd = &cobra.Command{
+	Use:   "start",
+	Short: "start IceHub daemon",
+	Long:  "Start IceHub daemon with HTTP and gRPC server",
+	Run: func(cmd *cobra.Command, args []string) {
+		mustLoadConfig()
+		log.Info("TODO: I need to start it ....")
+		// TODO: p3 check if there is already icehubd running, by port, process name etc.
+		// TODO: p1 config tracer
+		// TODO: p2 config database
+		// TODO: p1 initial services (components?)
+		// TODO: p1 user service, cache service etc.
+		// TODO：p1 listen on port
 	},
 }
 
@@ -125,6 +118,12 @@ func loadConfig() error {
 	return nil
 }
 
+func mustLoadConfig() {
+	if err := loadConfig(); err != nil {
+		log.Fatal(err)
+	}
+}
+
 func main() {
 	// TODO: common root command should be put into a struct, but need another struct to store the flags
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "icehub.yml", "config file location")
@@ -138,6 +137,7 @@ func main() {
 	})
 	rootCmd.AddCommand(dbc.Root())
 	rootCmd.AddCommand(logCmd)
+	rootCmd.AddCommand(startCmd)
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
