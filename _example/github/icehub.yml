@@ -1,7 +1,7 @@
 # example icehub config
 db-manager:
 #  default: local_sqlite
-  default: pgsql
+  default: postgres_local
   databases:
     - name: sqlite_local
       adapter: sqlite
@@ -21,3 +21,4 @@ db-manager:
       user: root
       password: mysqlpassword
       dbname: icehub
+tracing:

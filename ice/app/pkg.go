@@ -2,8 +2,10 @@
 package app
 
 type App interface {
-	IsClient() bool
-	IsServer() bool
-	Verbose() bool
-	Version() string
 }
+
+// might be app config
+//IsClient() bool
+//IsServer() bool
+//Verbose() bool
+//Version() string
