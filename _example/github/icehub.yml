@@ -1,4 +1,7 @@
 # example icehub config
+# FIXME: config logging use yaml is not supported by gommon/log yet
+logging:
+  level: info
 db-manager:
 #  default: local_sqlite
   default: postgres_local
@@ -21,4 +24,23 @@ db-manager:
       user: root
       password: mysqlpassword
       dbname: icehub
+  # default http and grpc server config
+http:
+  addr: :7080
+  secure: false
+  cert: icehub.crt
+  key: icehub.key
+grpc:
+  addr: localhost
+  port: 7080
+# NOTE: almost same as jaeger's config
+# TODO: not working, wait and until client and server ...
 tracing:
+  sample:
+    type: const
+    param: 1
+  logSpan: false
+  flushInterval: 1
+  agent:
+    host: localhost
+    port: 6831

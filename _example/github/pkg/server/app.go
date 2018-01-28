@@ -5,12 +5,17 @@ import (
 )
 
 type App struct {
+	config       Config
 	configFile   string
 	configLoaded bool
 	verbose      bool
 }
 
-func Version() string {
+func (app *App) Config() Config {
+	return app.config
+}
+
+func (app *App) Version() string {
 	return common.Version()
 }
 

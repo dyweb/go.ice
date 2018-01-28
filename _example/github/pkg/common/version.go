@@ -2,7 +2,7 @@ package common
 
 var (
 	version   string
-	gitCommit    string
+	gitCommit string
 	buildTime string
 	buildUser string
 )
