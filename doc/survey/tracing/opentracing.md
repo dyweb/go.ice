@@ -11,6 +11,7 @@ Caveats
 Integrations
 
 - https://github.com/opentracing-contrib/java-jdbc
+- https://github.com/opentracing-contrib/go-stdlib
 
 ## Introduction
 
