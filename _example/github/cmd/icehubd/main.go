@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/dyweb/gommon/config"
-	dlog "github.com/dyweb/gommon/log"
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -23,64 +22,29 @@ import (
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
+	"github.com/at15/go.ice/ice"
 )
 
 const (
 	myname = "icehubd" // 你的名字
 )
 
+var app *ice.App
 var log = logutil.Registry
 
 // TODO: flags for enable debug logging etc. it should also be passed to sub commands like db
 // TODO: handle signal (ctrl+c etc.)
 
 // specified using flags
-var cfgFile string
-var verbose = false
 
 // global configuration instance
-var cfgLoaded = false
 var cfg server.Config
+var cfgLoaded bool // FIXME: we should move into app struct
 
 // TODO: might need a registry of application instead of scatter variables around in main
 var dbMgr *db.Manager
 var tracer opentracing.Tracer
 var closer io.Closer
-
-var rootCmd = &cobra.Command{
-	Use:   myname,
-	Short: "icehub daemon",
-	Long:  "IceHub is an example GitHub integration service using go.ice",
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
-		os.Exit(1)
-	},
-	PersistentPreRun: func(cmd *cobra.Command, args []string) {
-		if cmd.Use == "version" || cmd.Use == myname {
-			return
-		}
-		if verbose {
-			dlog.SetLevelRecursive(log, dlog.DebugLevel)
-			log.Debug("using debug level logging due to verbose flag")
-		}
-	},
-}
-
-var versionCmd = &cobra.Command{
-	Use:   "version",
-	Short: "print version",
-	Long:  "Print current version " + common.Version(),
-	Run: func(cmd *cobra.Command, args []string) {
-		if !verbose {
-			fmt.Println(common.Version())
-		} else {
-			fmt.Printf("version: %s\n", common.Version())
-			fmt.Printf("commit: %s\n", common.GitCommit())
-			fmt.Printf("build time: %s\n", common.BuildTime())
-			fmt.Printf("build user: %s\n", common.BuildUser())
-		}
-	},
-}
 
 // TODO: just here for testing out the log command, though it might possible to make it like db command to be part
 // of go.ice's built in command for managing common config
@@ -119,7 +83,7 @@ func loadConfig() error {
 	if !cfgLoaded {
 		// TODO: have a config reader struct instead of using static package level method
 		// TODO: config file also specify logging (which package to log etc.)
-		if err := config.LoadYAMLAsStruct(cfgFile, &cfg); err != nil {
+		if err := config.LoadYAMLAsStruct(app.ConfigFile(), &cfg); err != nil {
 			return errors.WithMessage(err, "can't load config file")
 		}
 		cfgLoaded = true
@@ -163,19 +127,22 @@ func configTracer() error {
 
 func main() {
 	// TODO: common root command should be put into a struct, but need another struct to store the flags
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "icehub.yml", "config file location")
-	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "verbose output and set log level to debug")
-	rootCmd.AddCommand(versionCmd)
+	app = ice.New(
+		ice.Name(myname),
+		ice.Description("IceHub is an example GitHub integration service using go.ice"),
+		ice.Version(common.Version()),
+		ice.LogRegistry(log))
+	root := ice.NewCmd(app)
 	dbc := idbcmd.NewCommand(func() (icfg.DatabaseManagerConfig, error) {
 		if err := loadConfig(); err != nil {
 			return cfg.DatabaseManager, err
 		}
 		return cfg.DatabaseManager, nil
 	})
-	rootCmd.AddCommand(dbc.Root())
-	rootCmd.AddCommand(logCmd)
-	rootCmd.AddCommand(startCmd)
-	if err := rootCmd.Execute(); err != nil {
+	root.AddCommand(dbc.Root())
+	root.AddCommand(logCmd)
+	root.AddCommand(startCmd)
+	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
