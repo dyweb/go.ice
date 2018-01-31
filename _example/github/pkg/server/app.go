@@ -8,11 +8,19 @@ import (
 
 // TODO: might move this to ice package ... or make a interface etc. ....
 type App struct {
+	name         string
 	config       Config
 	configFile   string
 	configLoaded bool
 	verbose      bool
 	log          *dlog.Logger
+}
+
+func Name(name string) func(*App) error {
+	return func(app *App) error {
+		app.name = name
+		return nil
+	}
 }
 
 func NewApp() *App {
