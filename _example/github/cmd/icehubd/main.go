@@ -18,10 +18,10 @@ import (
 	icfg "github.com/at15/go.ice/ice/config"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
 
+	"github.com/at15/go.ice/ice"
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
-	"github.com/at15/go.ice/ice"
 	"github.com/at15/go.ice/ice/transport/http"
 )
 

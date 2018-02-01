@@ -1,5 +1,5 @@
-hash: e5812c19a3401577d3837d1e99c999e462086955effc3fcc2abc334a739920f9
-updated: 2018-01-26T21:48:06.424559543-08:00
+hash: 46b4ce8be47ca3d8f8aae85db33f0304142693b3b47ca9a6358245ac8f294757
+updated: 2018-01-31T18:53:08.085289494-08:00
 imports:
 - name: github.com/apache/thrift
   version: 53dd39833a08ce33582e5ff31fa18bb4735d6731
@@ -19,6 +19,18 @@ imports:
 - name: github.com/go-sql-driver/mysql
   version: 4a0c3d73d8579f9fc535cf5e654a651cbd57dd6e
   vcs: git
+- name: github.com/google/go-github
+  version: 897969cdc831052c4694e205e24a033fe7248c2f
+  subpackages:
+  - github
+- name: github.com/google/go-querystring
+  version: 53e6ce116135b80d037921a7fdd5138cf32d7a8a
+- name: github.com/gorilla/context
+  version: 08b5f424b9271eedf6f9f0ce86cb9396ed337a42
+- name: github.com/gorilla/securecookie
+  version: e59506cc896acb7f7bf732d4fdf5e25f7ccd8983
+- name: github.com/gorilla/sessions
+  version: fe21b6a095cd8a9d41cc7f412e13d35c130383f3
 - name: github.com/inconshreveable/mousetrap
   version: 76626ae9c91c4f2a10f34cad8ce83ea42c93bb75
 - name: github.com/jackc/pgx
@@ -55,6 +67,8 @@ imports:
   version: 7dcfb8076726a3fdd9353b6b8a1f1b6be6811bd6
   subpackages:
   - context
+- name: golang.org/x/oauth2
+  version: a032972e28060ca4f5644acffae3dfc268cc09db
 - name: google.golang.org/appengine
   version: 5bee14b453b4c71be47ec1781b0fa61c2ea182db
   subpackages:

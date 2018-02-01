@@ -24,7 +24,7 @@ db-manager:
       user: root
       password: mysqlpassword
       dbname: icehub
-  # default http and grpc server config
+# default http and grpc server config
 http:
   addr: :7080
   secure: false

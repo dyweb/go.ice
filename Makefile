@@ -10,7 +10,7 @@ sync-local:
 
 .PHONY: fmt
 fmt:
-	gofmt -d -l -w ./ice ./playground
+	gofmt -d -l -w ./ice ./playground ./_example
 
 .PHONY: test-playground
 test-playground:
