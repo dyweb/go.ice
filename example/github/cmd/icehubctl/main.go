@@ -6,7 +6,7 @@ import (
 
 	"github.com/at15/go.ice/ice"
 
-	"github.com/at15/go.ice/_example/github/pkg/common"
+	"github.com/at15/go.ice/example/github/pkg/common"
 )
 
 func main() {

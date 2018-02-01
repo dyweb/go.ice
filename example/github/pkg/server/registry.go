@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/at15/go.ice/_example/github/pkg/server/auth"
+	"github.com/at15/go.ice/example/github/pkg/server/auth"
 	idb "github.com/at15/go.ice/ice/db"
 )
 
