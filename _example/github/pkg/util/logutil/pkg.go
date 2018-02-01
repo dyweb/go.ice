@@ -1,8 +1,8 @@
 package logutil
 
 import (
-	"github.com/dyweb/gommon/log"
 	icelog "github.com/at15/go.ice/ice/util/logutil"
+	"github.com/dyweb/gommon/log"
 )
 
 var Registry = log.NewApplicationLogger()

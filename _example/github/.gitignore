@@ -1,2 +1,5 @@
 # sqlite database
 *.db
+# generated cert
+*.crt
+*.key

@@ -9,6 +9,14 @@ TODO:
 - [ ] its UI 
   - https://github.com/openzipkin/zipkin/issues/1577
   - archived angular2 https://github.com/openzipkin-attic/zipkin-ui
+- [ ] a spark job is needed for aggregates spans for use in the UI
+   - https://github.com/openzipkin/zipkin-dependencies
+
+Integrations:
+
+- Go 13 stars https://github.com/openzipkin/zipkin-go
+  - 289 stars https://github.com/openzipkin/zipkin-go-opentracing
+- JDBC https://github.com/openzipkin/brave/tree/master/archive/brave-p6spy
 
 ## Quick start
 

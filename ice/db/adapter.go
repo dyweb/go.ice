@@ -8,6 +8,9 @@ import (
 	"github.com/pkg/errors"
 )
 
+// TODO: allow adapter to wrap common sql operation and trace it? or it should be done at wrapper level?
+// TODO: might change to call this dialect? because it need to deal with things like replace $ with ?
+
 var (
 	adaptersMu        sync.RWMutex
 	adaptersFactories = make(map[string]AdapterFactory)

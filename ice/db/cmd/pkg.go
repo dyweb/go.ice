@@ -19,13 +19,13 @@ var log = logutil.NewPackageLogger()
 type Command struct {
 	db           string // database selected by user
 	configLoader func() (config.DatabaseManagerConfig, error)
-	mgr          *db.Manager
+	manager      *db.Manager
 	root         *cobra.Command
 }
 
 func NewCommand(configLoader func() (config.DatabaseManagerConfig, error)) *Command {
 	dbc := &Command{
-		mgr:          nil,
+		manager:      nil,
 		configLoader: configLoader,
 	}
 	root := *rootCmd
@@ -52,14 +52,14 @@ func (dbc *Command) mustConfigManager() {
 }
 
 func (dbc *Command) configManager() error {
-	if dbc.mgr != nil {
+	if dbc.manager != nil {
 		log.Debug("manager is already configured")
 		return nil
 	}
 	if c, err := dbc.configLoader(); err != nil {
 		return errors.WithMessage(err, "can't load config to create manager")
 	} else {
-		dbc.mgr = db.NewManager(c)
+		dbc.manager = db.NewManager(c)
 		return nil
 	}
 }
@@ -72,10 +72,10 @@ func (dbc *Command) mustWrapper() *db.Wrapper {
 	)
 	if dbc.db != "" {
 		name = dbc.db
-	} else if name, err = dbc.mgr.DefaultName(); err != nil {
+	} else if name, err = dbc.manager.DefaultName(); err != nil {
 		log.Fatal(err)
 	}
-	if w, err = dbc.mgr.Wrapper(name); err != nil {
+	if w, err = dbc.manager.Wrapper(name); err != nil {
 		log.Fatal(err)
 	}
 	return w

@@ -2,6 +2,7 @@ package config
 
 import "fmt"
 
+// DatabaseManagerConfig specifies the default database to use, and config for all available databases including the one with default name
 type DatabaseManagerConfig struct {
 	Default   string           `yaml:"default"`
 	Databases []DatabaseConfig `yaml:"databases"`
@@ -9,6 +10,7 @@ type DatabaseManagerConfig struct {
 
 var EmptyDatabaseConfig = DatabaseConfig{}
 
+// DatabaseConfig specifies information required to connect to a database
 type DatabaseConfig struct {
 	Name     string `yaml:"name"`
 	Adapter  string `yaml:"adapter"`
