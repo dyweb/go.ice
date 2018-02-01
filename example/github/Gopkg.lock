@@ -9,6 +9,24 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/at15/go.ice"
+  packages = [
+    "ice",
+    "ice/config",
+    "ice/db",
+    "ice/db/adapters/mysql",
+    "ice/db/adapters/postgres",
+    "ice/db/adapters/sqlite",
+    "ice/db/cmd",
+    "ice/db/migration",
+    "ice/tracing",
+    "ice/transport/http",
+    "ice/util/logutil"
+  ]
+  revision = "7894de3f6dca96df9b3397c51c9ad0bccb60acc9"
+
+[[projects]]
+  branch = "master"
   name = "github.com/codahale/hdrhistogram"
   packages = ["."]
   revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
@@ -32,7 +50,8 @@
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
-  revision = "bc14601d1bd56421dd60f561e6052c9ed77f9daf"
+  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
+  version = "v1.3"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -171,7 +190,6 @@
 [[projects]]
   name = "google.golang.org/appengine"
   packages = [
-    "cloudsql",
     "internal",
     "internal/base",
     "internal/datastore",
@@ -192,6 +210,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "7ddb5f0b15112a3137cbf8f40a312acc02f3691d07cec7f35bd3ad31b4fd61e7"
+  inputs-digest = "220ed24d376382eb4c99bb683da171715354ec2c5a50953a2f3a5157bf41492a"
   solver-name = "gps-cdcl"
   solver-version = 1

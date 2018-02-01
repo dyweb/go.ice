@@ -12,9 +12,9 @@ import (
 	"github.com/spf13/cobra"
 	jgconfig "github.com/uber/jaeger-client-go/config"
 
-	"github.com/at15/go.ice/_example/github/pkg/common"
-	"github.com/at15/go.ice/_example/github/pkg/server"
-	"github.com/at15/go.ice/_example/github/pkg/util/logutil"
+	"github.com/at15/go.ice/example/github/pkg/common"
+	"github.com/at15/go.ice/example/github/pkg/server"
+	"github.com/at15/go.ice/example/github/pkg/util/logutil"
 	icfg "github.com/at15/go.ice/ice/config"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
 

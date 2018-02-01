@@ -17,11 +17,11 @@ test-playground:
 	go test -v ./playground/...
 
 #--- example ----
-ICEHUB_PKG = github.com/at15/go.ice/_example/github/pkg
+ICEHUB_PKG = github.com/at15/go.ice/example/github/pkg
 ICEHUB_VERSION = 0.0.1
 ICEHUB_FLAGS = -X $(ICEHUB_PKG)/common.version=$(ICEHUB_VERSION) -X $(ICEHUB_PKG)/common.gitCommit=$(BUILD_COMMIT) -X $(ICEHUB_PKG)/common.buildTime=$(BUILD_TIME) -X $(ICEHUB_PKG)/common.buildUser=$(CURRENT_USER)
 .PHONY: install-icehub
 install-icehub:
-	go install -ldflags "$(ICEHUB_FLAGS)" ./_example/github/cmd/icehubctl
-	go install -ldflags "$(ICEHUB_FLAGS)" ./_example/github/cmd/icehubd
+	go install -ldflags "$(ICEHUB_FLAGS)" ./example/github/cmd/icehubctl
+	go install -ldflags "$(ICEHUB_FLAGS)" ./example/github/cmd/icehubd
 #--- end of example ----
