@@ -39,7 +39,8 @@ func NewCmd(app *App) *cobra.Command {
 		Long:  app.Description(),
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()
-			// TODO: should we exit 1 or 0
+			// we exit 1 because user may pass nothing and hope it run, which is never the case for go.ice based app
+			// the real logic is always in sub commands
 			os.Exit(1)
 		},
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
@@ -109,10 +110,15 @@ func (b *App) Version() string {
 	return b.version
 }
 
+// TODO: go.ice should handle loading the yaml, marshal etc. as well
 func (b *App) ConfigFile() string {
 	return b.configFile
 }
 
-//func (b *App) IsConfigLoaded() bool {
-//	return b.configLoaded
-//}
+func (b *App) IsConfigLoaded() bool {
+	return b.configLoaded
+}
+
+func (b *App) SetConfigLoaded() {
+	b.configLoaded = true
+}

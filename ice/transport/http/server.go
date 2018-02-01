@@ -16,11 +16,10 @@ type Server struct {
 	log    *dlog.Logger
 }
 
-// TODO: handler?
-func NewServer(cfg config.HttpServerConfig) *Server {
+func NewServer(cfg config.HttpServerConfig, h nhttp.Handler) *Server {
 	s := &Server{
 		config: cfg,
-		server: &nhttp.Server{Addr: cfg.Addr},
+		server: &nhttp.Server{Addr: cfg.Addr, Handler: h},
 	}
 	s.log = dlog.NewStructLogger(log, s)
 	return s
@@ -31,6 +30,7 @@ func (srv *Server) Port() int {
 	return 0
 }
 
+// TODO: check if handler is nil?
 func (srv *Server) Run() error {
 	cfg := srv.config
 	srv.log.Infof("listen on %s", cfg.Addr)

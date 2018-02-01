@@ -16,13 +16,13 @@ import (
 	"github.com/at15/go.ice/_example/github/pkg/server"
 	"github.com/at15/go.ice/_example/github/pkg/util/logutil"
 	icfg "github.com/at15/go.ice/ice/config"
-	"github.com/at15/go.ice/ice/db"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
 
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
 	"github.com/at15/go.ice/ice"
+	"github.com/at15/go.ice/ice/transport/http"
 )
 
 const (
@@ -32,17 +32,10 @@ const (
 var app *ice.App
 var log = logutil.Registry
 
-// TODO: flags for enable debug logging etc. it should also be passed to sub commands like db
-// TODO: handle signal (ctrl+c etc.)
-
-// specified using flags
-
 // global configuration instance
 var cfg server.Config
-var cfgLoaded bool // FIXME: we should move into app struct
 
 // TODO: might need a registry of application instead of scatter variables around in main
-var dbMgr *db.Manager
 var tracer opentracing.Tracer
 var closer io.Closer
 
@@ -67,26 +60,35 @@ var startCmd = &cobra.Command{
 		// TODO: p3 check if there is already icehubd running, by port, process name etc.
 		// TODO: p1 config tracer
 		// TODO: postpone tracing until we have server and client ready ...
-		if err := configTracer(); err != nil {
-			log.Fatal(err)
-		}
-		log.Info("tracer created")
+		//if err := configTracer(); err != nil {
+		//	log.Fatal(err)
+		//}
+		//log.Info("tracer created")
 		// TODO: p2 config database
 		// TODO: p1 initial services (components?)
 		// TODO: p1 user service, cache service etc.
 		// TODO：p1 listen on port
+		registry, err := server.NewRegistry(cfg)
+		if err != nil {
+			log.Fatalf("failed to create server registry %v", err)
+		}
+		registry.ConfigHttpHandler()
+		srv := http.NewServer(cfg.Http, registry.HTTPHandler())
+		if err := srv.Run(); err != nil {
+			log.Fatalf("failed to start http server %v", err)
+		}
 	},
 }
 
 // TODO: check config file using gommon config
 func loadConfig() error {
-	if !cfgLoaded {
+	if !app.IsConfigLoaded() {
 		// TODO: have a config reader struct instead of using static package level method
 		// TODO: config file also specify logging (which package to log etc.)
 		if err := config.LoadYAMLAsStruct(app.ConfigFile(), &cfg); err != nil {
 			return errors.WithMessage(err, "can't load config file")
 		}
-		cfgLoaded = true
+		app.SetConfigLoaded()
 	}
 	return nil
 }
@@ -126,7 +128,6 @@ func configTracer() error {
 }
 
 func main() {
-	// TODO: common root command should be put into a struct, but need another struct to store the flags
 	app = ice.New(
 		ice.Name(myname),
 		ice.Description("IceHub is an example GitHub integration service using go.ice"),
@@ -142,6 +143,7 @@ func main() {
 	root.AddCommand(dbc.Root())
 	root.AddCommand(logCmd)
 	root.AddCommand(startCmd)
+	// TODO: handle signal (ctrl+c etc.)
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
