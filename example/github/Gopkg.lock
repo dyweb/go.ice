@@ -23,7 +23,7 @@
     "ice/transport/http",
     "ice/util/logutil"
   ]
-  revision = "7894de3f6dca96df9b3397c51c9ad0bccb60acc9"
+  revision = "358009506d71fe7d77bcad068a6f45b7b65fb3bb"
 
 [[projects]]
   branch = "master"
@@ -50,8 +50,7 @@
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
-  revision = "a0583e0143b1624142adab07e0e97fe106d99561"
-  version = "v1.3"
+  revision = "bc14601d1bd56421dd60f561e6052c9ed77f9daf"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -190,6 +189,7 @@
 [[projects]]
   name = "google.golang.org/appengine"
   packages = [
+    "cloudsql",
     "internal",
     "internal/base",
     "internal/datastore",
