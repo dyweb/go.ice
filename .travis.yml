@@ -1,0 +1,15 @@
+language: go
+sudo: false
+
+go:
+  - 1.9.x
+  - tip
+
+install:
+  - go get -u github.com/golang/dep/cmd/dep
+  - dep version
+  - dep ensure
+  - cd example/github; dep ensure
+
+script:
+  - make install-icehub
