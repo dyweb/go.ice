@@ -10,47 +10,14 @@
 [[projects]]
   branch = "master"
   name = "github.com/at15/go.ice"
-  packages = [
-    "ice",
-    "ice/config",
-    "ice/db",
-    "ice/db/adapters/mysql",
-    "ice/db/adapters/postgres",
-    "ice/db/adapters/sqlite",
-    "ice/db/cmd",
-    "ice/db/migration",
-    "ice/tracing",
-    "ice/transport/http",
-    "ice/util/logutil"
-  ]
-  revision = "358009506d71fe7d77bcad068a6f45b7b65fb3bb"
+  packages = ["ice"]
+  revision = "09191a898be2db22e4858fcdbe1c78e65dfcc125"
 
 [[projects]]
   branch = "master"
   name = "github.com/codahale/hdrhistogram"
   packages = ["."]
   revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/dyweb/gommon"
-  packages = [
-    "cast",
-    "config",
-    "legacy/log",
-    "log",
-    "structure",
-    "util",
-    "util/hashutil",
-    "util/logutil",
-    "util/runtimeutil"
-  ]
-  revision = "e7062eaacb3cafa9ff54fb731978f698068bb027"
-
-[[projects]]
-  name = "github.com/go-sql-driver/mysql"
-  packages = ["."]
-  revision = "bc14601d1bd56421dd60f561e6052c9ed77f9daf"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -89,32 +56,6 @@
   version = "v1.1"
 
 [[projects]]
-  name = "github.com/inconshreveable/mousetrap"
-  packages = ["."]
-  revision = "76626ae9c91c4f2a10f34cad8ce83ea42c93bb75"
-  version = "v1.0"
-
-[[projects]]
-  name = "github.com/jackc/pgx"
-  packages = [
-    ".",
-    "chunkreader",
-    "internal/sanitize",
-    "pgio",
-    "pgproto3",
-    "pgtype",
-    "stdlib"
-  ]
-  revision = "da3231b0b66e2e74cdb779f1d46c5e958ba8be27"
-  version = "v3.1.0"
-
-[[projects]]
-  name = "github.com/mattn/go-sqlite3"
-  packages = ["."]
-  revision = "6c771bb9887719704b210e87e934f08be014bdb1"
-  version = "v1.6.0"
-
-[[projects]]
   name = "github.com/opentracing/opentracing-go"
   packages = [
     ".",
@@ -129,18 +70,6 @@
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
   version = "v0.8.0"
-
-[[projects]]
-  name = "github.com/spf13/cobra"
-  packages = ["."]
-  revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
-  version = "v0.0.1"
-
-[[projects]]
-  name = "github.com/spf13/pflag"
-  packages = ["."]
-  revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
-  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/uber/jaeger-client-go"
@@ -175,7 +104,7 @@
     "context",
     "context/ctxhttp"
   ]
-  revision = "309822c5b9b9f80db67f016069a12628d94fad34"
+  revision = "2fb46b16b8dda405028c50f7c7f0f9dd1fa6bfb1"
 
 [[projects]]
   branch = "master"
@@ -189,7 +118,6 @@
 [[projects]]
   name = "google.golang.org/appengine"
   packages = [
-    "cloudsql",
     "internal",
     "internal/base",
     "internal/datastore",
@@ -201,15 +129,9 @@
   revision = "150dc57a1b433e64154302bdc40b6bb8aefa313a"
   version = "v1.0.0"
 
-[[projects]]
-  branch = "v2"
-  name = "gopkg.in/yaml.v2"
-  packages = ["."]
-  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
-
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "220ed24d376382eb4c99bb683da171715354ec2c5a50953a2f3a5157bf41492a"
+  inputs-digest = "435d0918f23fbb9e3f5363523871c4c0e9790fea74f1dc34ca39d2c9c6259295"
   solver-name = "gps-cdcl"
   solver-version = 1

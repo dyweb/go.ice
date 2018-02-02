@@ -24,9 +24,13 @@
 #   go-tests = true
 #   unused-packages = true
 
-[[constraint]]
-  branch = "master"
-  name = "github.com/dyweb/gommon"
+# HACK: ignore all the library that is used by go.ice to avoid vendor problem
+ignored = [
+  "github.com/at15/go.ice/ice/*",
+  "github.com/dyweb/gommon/*",
+  "github.com/spf13/cobra",
+  "github.com/pkg/errors/*"
+]
 
 [[constraint]]
   name = "github.com/google/go-github"
@@ -39,14 +43,6 @@
 [[constraint]]
   name = "github.com/opentracing/opentracing-go"
   version = "1.0.2"
-
-[[constraint]]
-  name = "github.com/pkg/errors"
-  version = "0.8.0"
-
-[[constraint]]
-  name = "github.com/spf13/cobra"
-  version = "0.0.1"
 
 [[constraint]]
   name = "github.com/uber/jaeger-client-go"

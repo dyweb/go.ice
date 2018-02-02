@@ -1,3 +1,12 @@
+PKG = github.com/at15/go.ice/example/github/pkg
+VERSION = 0.0.1
+FLAGS = -X $(PKG)/common.version=$(VERSION) -X $(PKG)/common.gitCommit=$(BUILD_COMMIT) -X $(PKG)/common.buildTime=$(BUILD_TIME) -X $(PKG)/common.buildUser=$(CURRENT_USER)
+
+.PHONY: install
+install:
+	go install -ldflags "$(FLAGS)" ./cmd/icehubctl
+	go install -ldflags "$(FLAGS)" ./cmd/icehubd
+
 .PHONY: fmt
 fmt:
 	gofmt -d -l -w .
