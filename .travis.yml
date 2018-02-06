@@ -1,5 +1,7 @@
 language: go
 sudo: false
+git:
+  depth: 3
 
 go:
   - 1.9.x
@@ -9,11 +11,11 @@ install:
   - go get -u github.com/golang/dep/cmd/dep
   - dep version
   - dep ensure
-  - cd example/github && dep ensure
+  - (cd example/github && dep ensure)
   - pwd
 
 script:
   - pwd
-  - cd example/github && make install
+  - (cd example/github && make install)
   - pwd
-  - cd example/github && icehubd db ping --db sqlite_local --verbose --logsrc
+  - (cd example/github && icehubd db ping --db sqlite_local --verbose --logsrc)
