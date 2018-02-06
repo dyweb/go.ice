@@ -12,4 +12,5 @@ install:
   - cd example/github; dep ensure
 
 script:
-  - make install-icehub
+  - cd example/github; make install
+  - cd example/github; icehubd db ping --db sqlite_local --verbose --logsrc

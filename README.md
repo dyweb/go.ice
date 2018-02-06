@@ -1,5 +1,7 @@
 # go.ice
 
+[![Build Status](https://travis-ci.org/at15/go.ice.svg?branch=master)](https://travis-ci.org/at15/go.ice)
+
 A microservice toolkit focusing on profiling
 
 Goals
