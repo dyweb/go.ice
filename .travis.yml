@@ -12,5 +12,5 @@ install:
   - cd example/github; dep ensure
 
 script:
-  - cd example/github; make install
-  - cd example/github; icehubd db ping --db sqlite_local --verbose --logsrc
+  - cd example/github && make install
+  - cd example/github && icehubd db ping --db sqlite_local --verbose --logsrc
