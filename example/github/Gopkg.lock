@@ -9,12 +9,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/at15/go.ice"
-  packages = ["ice"]
-  revision = "09191a898be2db22e4858fcdbe1c78e65dfcc125"
-
-[[projects]]
-  branch = "master"
   name = "github.com/codahale/hdrhistogram"
   packages = ["."]
   revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
@@ -132,6 +126,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "435d0918f23fbb9e3f5363523871c4c0e9790fea74f1dc34ca39d2c9c6259295"
+  inputs-digest = "9735f2e83f2ae9c1dda3f79e1da20b66b99c71a4a65f5f86dc2cc86971abb7de"
   solver-name = "gps-cdcl"
   solver-version = 1

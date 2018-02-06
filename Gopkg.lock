@@ -2,16 +2,17 @@
 
 
 [[projects]]
-  branch = "master"
   name = "github.com/dyweb/gommon"
   packages = [
     "log",
+    "log/handlers/cli",
     "structure",
+    "util/color",
     "util/hashutil",
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "e7062eaacb3cafa9ff54fb731978f698068bb027"
+  revision = "c1358027b512e4c82923a88f654b4b42b889ac7e"
 
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
@@ -71,6 +72,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ea53cef4737cf71debe210390f1219d24ea90a6fe012e07eece6a6946aa912d8"
+  inputs-digest = "7469ddb1b7d62df040e67da106c4182a1d380fa4bdca98bd31cf4b0f78dd97ce"
   solver-name = "gps-cdcl"
   solver-version = 1

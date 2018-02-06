@@ -5,6 +5,7 @@ import (
 	"os"
 
 	dlog "github.com/dyweb/gommon/log"
+	"github.com/dyweb/gommon/log/handlers/cli"
 	"github.com/spf13/cobra"
 )
 
@@ -17,6 +18,7 @@ type App struct {
 	configFile   string
 	configLoaded bool
 	verbose      bool
+	logSource    bool
 	logRegistry  *dlog.Logger
 }
 
@@ -47,6 +49,10 @@ func NewCmd(app *App) *cobra.Command {
 			if cmd.Use == "version" || cmd.Use == app.Name() {
 				return
 			}
+			dlog.SetHandlerRecursive(app.logRegistry, cli.New(os.Stderr, true))
+			if app.logSource {
+				dlog.EnableSourceRecusrive(app.logRegistry)
+			}
 			if app.verbose {
 				dlog.SetLevelRecursive(app.logRegistry, dlog.DebugLevel)
 				app.logRegistry.Debug("using debug level logging due to verbose config")
@@ -55,6 +61,7 @@ func NewCmd(app *App) *cobra.Command {
 	}
 	root.PersistentFlags().StringVar(&app.configFile, "config", app.Name()+".yml", "config file location")
 	root.PersistentFlags().BoolVar(&app.verbose, "verbose", false, "verbose output and set log level to debug")
+	root.PersistentFlags().BoolVar(&app.logSource, "logsrc", false, "log source line when logging (expensive)")
 	ver := &cobra.Command{
 		Use:   "version",
 		Short: "print version",

@@ -143,6 +143,7 @@ func main() {
 	root.AddCommand(dbc.Root())
 	root.AddCommand(logCmd)
 	root.AddCommand(startCmd)
+
 	// TODO: handle signal (ctrl+c etc.)
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
