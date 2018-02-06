@@ -6,7 +6,6 @@ import (
 	"os"
 	"time"
 
-	"github.com/dyweb/gommon/config"
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
@@ -80,21 +79,8 @@ var startCmd = &cobra.Command{
 	},
 }
 
-// TODO: check config file using gommon config
-func loadConfig() error {
-	if !app.IsConfigLoaded() {
-		// TODO: have a config reader struct instead of using static package level method
-		// TODO: config file also specify logging (which package to log etc.)
-		if err := config.LoadYAMLAsStruct(app.ConfigFile(), &cfg); err != nil {
-			return errors.WithMessage(err, "can't load config file")
-		}
-		app.SetConfigLoaded()
-	}
-	return nil
-}
-
 func mustLoadConfig() {
-	if err := loadConfig(); err != nil {
+	if err := app.LoadConfigTo(&cfg); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -135,7 +121,7 @@ func main() {
 		ice.LogRegistry(log))
 	root := ice.NewCmd(app)
 	dbc := idbcmd.NewCommand(func() (icfg.DatabaseManagerConfig, error) {
-		if err := loadConfig(); err != nil {
+		if err := app.LoadConfigTo(&cfg); err != nil {
 			return cfg.DatabaseManager, err
 		}
 		return cfg.DatabaseManager, nil
@@ -143,7 +129,6 @@ func main() {
 	root.AddCommand(dbc.Root())
 	root.AddCommand(logCmd)
 	root.AddCommand(startCmd)
-
 	// TODO: handle signal (ctrl+c etc.)
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)

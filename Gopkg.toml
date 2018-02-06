@@ -31,7 +31,7 @@ ignored = [
 # TODO: we lock gommon version because dep will use lastest release but gommon is adding new features when go.ice need it ...
 [[constraint]]
   name = "github.com/dyweb/gommon"
-  revision = "c1358027b512e4c82923a88f654b4b42b889ac7e"
+  revision = "0fae72685dc7fc177dba16ab782195ded5dcabc2"
 
 [[constraint]]
   name = "github.com/go-sql-driver/mysql"

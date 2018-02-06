@@ -4,8 +4,11 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/apex/log"
+	"github.com/dyweb/gommon/config"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/dyweb/gommon/log/handlers/cli"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 )
 
@@ -15,6 +18,7 @@ type App struct {
 	name         string
 	description  string
 	version      string
+	config       interface{}
 	configFile   string
 	configLoaded bool
 	verbose      bool
@@ -27,7 +31,9 @@ type App struct {
 type AppOptions func(a *App)
 
 func New(options ...AppOptions) *App {
-	a := &App{}
+	a := &App{
+		config: nil,
+	}
 	for _, opt := range options {
 		opt(a)
 	}
@@ -117,9 +123,28 @@ func (b *App) Version() string {
 	return b.version
 }
 
+func (b *App) Config() interface{} {
+	if b.config == nil {
+		log.Warn("application config is nil")
+	}
+	return b.config
+}
+
 // TODO: go.ice should handle loading the yaml, marshal etc. as well
 func (b *App) ConfigFile() string {
 	return b.configFile
+}
+
+// TODO: check config file using gommon config
+// TODO: have a config reader struct instead of using static package level method
+// TODO: config file also specify logging (which package to log etc.)
+func (b *App) LoadConfigTo(cfg interface{}) error {
+	if err := config.LoadYAMLAsStruct(b.configFile, cfg); err != nil {
+		return errors.WithMessage(err, "can't load config file")
+	}
+	b.config = cfg
+	b.configLoaded = true
+	return nil
 }
 
 func (b *App) IsConfigLoaded() bool {

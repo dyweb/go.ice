@@ -9,7 +9,7 @@ install:
 
 .PHONY: fmt
 fmt:
-	gofmt -d -l -w .
+	gofmt -d -l -w ./pkg ./cmd
 
 .PHONY: keygen
 keygen:
