@@ -19,6 +19,7 @@ type Server struct {
 }
 
 func NewServer(cfg config.HttpServerConfig, h nhttp.Handler) *Server {
+	// TODO： http server also accept stdlib logger
 	srv := &nhttp.Server{
 		Addr: cfg.Addr,
 	}

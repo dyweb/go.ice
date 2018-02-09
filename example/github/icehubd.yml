@@ -27,7 +27,7 @@ db-manager:
 # default http and grpc server config
 http:
   addr: :7080
-  secure: false
+  secure: true
   cert: icehub.crt
   key: icehub.key
 grpc:
