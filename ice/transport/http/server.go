@@ -8,6 +8,8 @@ import (
 
 	"context"
 	"github.com/at15/go.ice/ice/config"
+	"net"
+	"strconv"
 )
 
 type Server struct {
@@ -17,17 +19,42 @@ type Server struct {
 }
 
 func NewServer(cfg config.HttpServerConfig, h nhttp.Handler) *Server {
+	srv := &nhttp.Server{
+		Addr: cfg.Addr,
+	}
+	// TODO: this logic should be moved into access_log.go
+	srv.Handler = nhttp.HandlerFunc(func(w nhttp.ResponseWriter, r *nhttp.Request) {
+		tw := &TrackedWriter{w: w, status: 200}
+		h.ServeHTTP(tw, r)
+		log.InfoF("http", dlog.Fields{
+			dlog.Str("remote", r.RemoteAddr),
+			dlog.Str("url", r.URL.String()),
+			dlog.Int("size", tw.Size()),
+			dlog.Int("status", tw.Status()),
+		})
+	})
 	s := &Server{
 		config: cfg,
-		server: &nhttp.Server{Addr: cfg.Addr, Handler: h},
+		server: srv,
 	}
 	s.log = dlog.NewStructLogger(log, s)
 	return s
 }
 
 func (srv *Server) Port() int {
-	// TODO: split port from addr
-	return 0
+	var (
+		port  int
+		portS string
+		err   error
+	)
+	if _, portS, err = net.SplitHostPort(srv.config.Addr); err != nil {
+		return 0
+	}
+	if port, err = strconv.Atoi(portS); err != nil {
+		return 0
+	} else {
+		return port
+	}
 }
 
 // TODO: check if handler is nil?
