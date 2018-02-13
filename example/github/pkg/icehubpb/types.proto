@@ -1,0 +1,25 @@
+// protoc --proto_path=/home/at15/workspace/src/:. --gogo_out=. types.proto
+syntax = "proto3";
+package icehub;
+
+option go_package = "icehubpb";
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+option (gogoproto.sizer_all) = true;
+option (gogoproto.marshaler_all) = true;
+option (gogoproto.unmarshaler_all) = true;
+option (gogoproto.goproto_getters_all) = false;
+
+message Ping {
+    string name = 1;
+}
+
+message Pong {
+    string name = 1;
+}
+
+message User {
+    string name = 1;
+    string password = 2;
+}

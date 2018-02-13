@@ -55,7 +55,12 @@ var startCmd = &cobra.Command{
 	Long:  "Start IceHub daemon with HTTP and gRPC server",
 	Run: func(cmd *cobra.Command, args []string) {
 		mustLoadConfig()
-		log.Info("TODO: I need to start it ....")
+		if len(args) > 0 {
+			// TODO: allow start http or grpc server or both
+			if args[0] == "http" {
+
+			}
+		}
 		// TODO: p3 check if there is already icehubd running, by port, process name etc.
 		// TODO: p1 config tracer
 		// TODO: postpone tracing until we have server and client ready ...

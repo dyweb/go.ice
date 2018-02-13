@@ -13,7 +13,7 @@ It has these top-level messages:
 */
 package grpc
 
-import proto "github.com/gogo/protobuf/proto"
+import  proto "github.com/gogo/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/gogo/protobuf/gogoproto"

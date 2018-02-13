@@ -1,5 +1,6 @@
 package common
 
+// TODO: this should be handled by go.ice ...
 var (
 	version   string
 	gitCommit string
