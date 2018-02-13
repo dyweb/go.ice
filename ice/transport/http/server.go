@@ -27,6 +27,7 @@ func NewServer(cfg config.HttpServerConfig, h nhttp.Handler) *Server {
 	srv.Handler = nhttp.HandlerFunc(func(w nhttp.ResponseWriter, r *nhttp.Request) {
 		tw := &TrackedWriter{w: w, status: 200}
 		h.ServeHTTP(tw, r)
+		// TODO: duration, but gommon/log can't handle float?
 		log.InfoF("http", dlog.Fields{
 			dlog.Str("remote", r.RemoteAddr),
 			dlog.Str("url", r.URL.String()),
