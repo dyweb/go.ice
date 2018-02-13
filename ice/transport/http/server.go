@@ -18,29 +18,32 @@ type Server struct {
 	log    *dlog.Logger
 }
 
+// TODO: it should also has error, due to config etc.
 func NewServer(cfg config.HttpServerConfig, h nhttp.Handler) *Server {
 	// TODO： http server also accept stdlib logger
-	srv := &nhttp.Server{
+	httpServer := &nhttp.Server{
 		Addr: cfg.Addr,
 	}
 	// TODO: this logic should be moved into access_log.go
-	srv.Handler = nhttp.HandlerFunc(func(w nhttp.ResponseWriter, r *nhttp.Request) {
+	httpServer.Handler = nhttp.HandlerFunc(func(w nhttp.ResponseWriter, r *nhttp.Request) {
 		tw := &TrackedWriter{w: w, status: 200}
 		h.ServeHTTP(tw, r)
 		// TODO: duration, but gommon/log can't handle float?
+		// TODO: we should not be using package level logger, should use struct logger, or some special logger
 		log.InfoF("http", dlog.Fields{
 			dlog.Str("remote", r.RemoteAddr),
+			dlog.Str("proto", r.Proto),
 			dlog.Str("url", r.URL.String()),
 			dlog.Int("size", tw.Size()),
 			dlog.Int("status", tw.Status()),
 		})
 	})
-	s := &Server{
+	srv := &Server{
 		config: cfg,
-		server: srv,
+		server: httpServer,
 	}
-	s.log = dlog.NewStructLogger(log, s)
-	return s
+	srv.log = dlog.NewStructLogger(log, srv)
+	return srv
 }
 
 func (srv *Server) Port() int {

@@ -31,8 +31,10 @@ http:
   cert: icehub.crt
   key: icehub.key
 grpc:
-  addr: localhost
-  port: 7080
+  addr: :7080
+  secure: false
+  cert: icehub.crt
+  key: icehub.key
 # NOTE: almost same as jaeger's config
 # TODO: not working, wait and until client and server ...
 tracing:

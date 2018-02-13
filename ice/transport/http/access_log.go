@@ -3,6 +3,7 @@ package http
 import "net/http"
 
 // HTTP Access Log
+// TODO: might rename this to writer, and create a handler.go for logging handler
 
 var _ http.ResponseWriter = (*TrackedWriter)(nil)
 var _ http.Flusher = (*TrackedWriter)(nil)
