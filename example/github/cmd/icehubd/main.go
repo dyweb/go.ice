@@ -12,7 +12,6 @@ import (
 	jgconfig "github.com/uber/jaeger-client-go/config"
 
 	"github.com/at15/go.ice/example/github/pkg/common"
-	"github.com/at15/go.ice/example/github/pkg/server"
 	"github.com/at15/go.ice/example/github/pkg/util/logutil"
 	icfg "github.com/at15/go.ice/ice/config"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
@@ -21,7 +20,6 @@ import (
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
-	"github.com/at15/go.ice/ice/transport/http"
 )
 
 const (
@@ -32,7 +30,7 @@ var app *ice.App
 var log = logutil.Registry
 
 // global configuration instance
-var cfg server.Config
+var cfg common.ServerConfig
 
 // TODO: might need a registry of application instead of scatter variables around in main
 var tracer opentracing.Tracer
@@ -49,7 +47,8 @@ var logCmd = &cobra.Command{
 	},
 }
 
-var startCmd = &cobra.Command{
+// Deprecated
+var startCmdOld = &cobra.Command{
 	Use:   "start",
 	Short: "start IceHub daemon",
 	Long:  "Start IceHub daemon with HTTP and gRPC server",
@@ -72,15 +71,15 @@ var startCmd = &cobra.Command{
 		// TODO: p1 initial services (components?)
 		// TODO: p1 user service, cache service etc.
 		// TODO：p1 listen on port
-		registry, err := server.NewRegistry(cfg)
-		if err != nil {
-			log.Fatalf("failed to create server registry %v", err)
-		}
-		registry.ConfigHttpHandler()
-		srv := http.NewServer(cfg.Http, registry.HTTPHandler())
-		if err := srv.Run(); err != nil {
-			log.Fatalf("failed to start http server %v", err)
-		}
+		//registry, err := server.NewRegistry(cfg)
+		//if err != nil {
+		//	log.Fatalf("failed to create server registry %v", err)
+		//}
+		//registry.ConfigHttpHandler()
+		//srv := http.NewServer(cfg.Http, registry.HTTPHandler())
+		//if err := srv.Run(); err != nil {
+		//	log.Fatalf("failed to start http server %v", err)
+		//}
 	},
 }
 
@@ -133,7 +132,6 @@ func main() {
 	})
 	root.AddCommand(dbc.Root())
 	root.AddCommand(logCmd)
-	root.AddCommand(startCmd)
 	// TODO: handle signal (ctrl+c etc.)
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
