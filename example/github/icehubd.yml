@@ -31,7 +31,7 @@ http:
   cert: icehub.crt
   key: icehub.key
 grpc:
-  addr: :7080
+  addr: :7081
   secure: false
   cert: icehub.crt
   key: icehub.key

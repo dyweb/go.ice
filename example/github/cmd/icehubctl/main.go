@@ -9,6 +9,8 @@ import (
 	"github.com/at15/go.ice/example/github/pkg/common"
 )
 
+// TODO: create grpc client and try ping ....
+
 func main() {
 	app := ice.New(
 		ice.Name("icehubctl"),

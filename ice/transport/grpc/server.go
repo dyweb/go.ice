@@ -5,7 +5,7 @@ import (
 
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/pkg/errors"
-	ngrpc "google.golang.org/grpc"
+	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 
@@ -14,25 +14,25 @@ import (
 
 type Server struct {
 	config config.GrpcServerConfig
-	server *ngrpc.Server
+	server *grpc.Server
 	log    *dlog.Logger
 }
 
-func NewServer(cfg config.GrpcServerConfig, register func(server *ngrpc.Server)) (*Server, error) {
+func NewServer(cfg config.GrpcServerConfig, register func(s *grpc.Server)) (*Server, error) {
 	srv := &Server{
 		config: cfg,
 	}
 	srv.log = dlog.NewStructLogger(log, srv)
-	var opts []ngrpc.ServerOption
+	var opts []grpc.ServerOption
 	if cfg.Secure {
 		srv.log.Infof("use tls with cert %s and key %s", cfg.Cert, cfg.Key)
 		if creds, err := credentials.NewServerTLSFromFile(cfg.Cert, cfg.Key); err != nil {
 			return nil, errors.Wrap(err, "can't generate grpc server credential from file")
 		} else {
-			opts = append(opts, ngrpc.Creds(creds))
+			opts = append(opts, grpc.Creds(creds))
 		}
 	}
-	grpcServer := ngrpc.NewServer(opts...)
+	grpcServer := grpc.NewServer(opts...)
 	register(grpcServer)
 	srv.server = grpcServer
 	return srv, nil
