@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/apex/log"
 	"github.com/dyweb/gommon/config"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/dyweb/gommon/log/handlers/cli"
@@ -125,7 +124,7 @@ func (b *App) Version() string {
 
 func (b *App) Config() interface{} {
 	if b.config == nil {
-		log.Warn("application config is nil")
+		b.logRegistry.Warn("application config is nil")
 	}
 	return b.config
 }
