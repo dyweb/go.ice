@@ -1,46 +1,38 @@
 package http
 
 import (
-	nhttp "net/http"
+	"context"
+	"net"
+	"net/http"
+	"strconv"
 
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/pkg/errors"
 
-	"context"
 	"github.com/at15/go.ice/ice/config"
-	"net"
-	"strconv"
 )
 
 type Server struct {
 	config config.HttpServerConfig
-	server *nhttp.Server
+	server *http.Server
 	log    *dlog.Logger
 }
 
-func NewServer(cfg config.HttpServerConfig, h nhttp.Handler) *Server {
-	// TODO： http server also accept stdlib logger
-	srv := &nhttp.Server{
+// TODO: check if there is any error in config and return error
+func NewServer(cfg config.HttpServerConfig, h http.Handler) (*Server, error) {
+	srv := &Server{
+		config: cfg,
+	}
+	srv.log = dlog.NewStructLogger(log, srv)
+	// TODO： http server also accept stdlib logger, we might hijack it ...
+	httpServer := &http.Server{
 		Addr: cfg.Addr,
 	}
-	// TODO: this logic should be moved into access_log.go
-	srv.Handler = nhttp.HandlerFunc(func(w nhttp.ResponseWriter, r *nhttp.Request) {
-		tw := &TrackedWriter{w: w, status: 200}
-		h.ServeHTTP(tw, r)
-		// TODO: duration, but gommon/log can't handle float?
-		log.InfoF("http", dlog.Fields{
-			dlog.Str("remote", r.RemoteAddr),
-			dlog.Str("url", r.URL.String()),
-			dlog.Int("size", tw.Size()),
-			dlog.Int("status", tw.Status()),
-		})
-	})
-	s := &Server{
-		config: cfg,
-		server: srv,
-	}
-	s.log = dlog.NewStructLogger(log, s)
-	return s
+	// TODO: there could be more than just logging handler, panic, cors etc.
+	// TODO: http log might need special logger, we are using struct's logger for now...
+	httpServer.Handler = NewLoggingHandler(h, srv.log)
+	srv.server = httpServer
+	return srv, nil
 }
 
 func (srv *Server) Port() int {
@@ -59,8 +51,10 @@ func (srv *Server) Port() int {
 	}
 }
 
-// TODO: check if handler is nil?
 func (srv *Server) Run() error {
+	if srv.server.Handler == nil {
+		return errors.New("nil handler")
+	}
 	cfg := srv.config
 	srv.log.Infof("listen on %s", cfg.Addr)
 	if cfg.Secure {

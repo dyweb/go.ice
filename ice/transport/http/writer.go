@@ -2,7 +2,7 @@ package http
 
 import "net/http"
 
-// HTTP Access Log
+// HTTP ResponseWriter used for logging
 
 var _ http.ResponseWriter = (*TrackedWriter)(nil)
 var _ http.Flusher = (*TrackedWriter)(nil)

@@ -4,24 +4,27 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/opentracing/opentracing-go"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	jgconfig "github.com/uber/jaeger-client-go/config"
-
-	"github.com/at15/go.ice/example/github/pkg/common"
-	"github.com/at15/go.ice/example/github/pkg/server"
-	"github.com/at15/go.ice/example/github/pkg/util/logutil"
-	icfg "github.com/at15/go.ice/ice/config"
-	idbcmd "github.com/at15/go.ice/ice/db/cmd"
+	"google.golang.org/grpc"
 
 	"github.com/at15/go.ice/ice"
+	icfg "github.com/at15/go.ice/ice/config"
+	idbcmd "github.com/at15/go.ice/ice/db/cmd"
+	igrpc "github.com/at15/go.ice/ice/transport/grpc"
+
+	"github.com/at15/go.ice/example/github/pkg/common"
+	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
+	"github.com/at15/go.ice/example/github/pkg/util/logutil"
+
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
-	"github.com/at15/go.ice/ice/transport/http"
 )
 
 const (
@@ -32,7 +35,7 @@ var app *ice.App
 var log = logutil.Registry
 
 // global configuration instance
-var cfg server.Config
+var cfg common.ServerConfig
 
 // TODO: might need a registry of application instead of scatter variables around in main
 var tracer opentracing.Tracer
@@ -55,7 +58,35 @@ var startCmd = &cobra.Command{
 	Long:  "Start IceHub daemon with HTTP and gRPC server",
 	Run: func(cmd *cobra.Command, args []string) {
 		mustLoadConfig()
-		log.Info("TODO: I need to start it ....")
+		useHttp := true
+		useGrpc := false
+		// start hg
+		// start g
+		// start h
+		if len(args) > 0 {
+			if strings.Contains(args[0], "h") {
+				useHttp = true
+			}
+			if strings.Contains(args[0], "g") {
+				useGrpc = true
+			}
+		}
+		// TODO: need two go routine if we want to start two server
+		if useHttp {
+			log.Info("TODO: start http server")
+		}
+		if useGrpc {
+			log.Info("start grpc server")
+			srv, err := igrpc.NewServer(cfg.Grpc, func(s *grpc.Server) {
+				mygrpc.RegisterIceHubServer(s, mygrpc.NewServer())
+			})
+			if err != nil {
+				log.Fatalf("can't create grpc server %v", err)
+			}
+			if err := srv.Run(); err != nil {
+				log.Fatalf("can't run grpc server %v", err)
+			}
+		}
 		// TODO: p3 check if there is already icehubd running, by port, process name etc.
 		// TODO: p1 config tracer
 		// TODO: postpone tracing until we have server and client ready ...
@@ -67,15 +98,15 @@ var startCmd = &cobra.Command{
 		// TODO: p1 initial services (components?)
 		// TODO: p1 user service, cache service etc.
 		// TODO：p1 listen on port
-		registry, err := server.NewRegistry(cfg)
-		if err != nil {
-			log.Fatalf("failed to create server registry %v", err)
-		}
-		registry.ConfigHttpHandler()
-		srv := http.NewServer(cfg.Http, registry.HTTPHandler())
-		if err := srv.Run(); err != nil {
-			log.Fatalf("failed to start http server %v", err)
-		}
+		//registry, err := server.NewRegistry(cfg)
+		//if err != nil {
+		//	log.Fatalf("failed to create server registry %v", err)
+		//}
+		//registry.ConfigHttpHandler()
+		//srv := http.NewServer(cfg.Http, registry.HTTPHandler())
+		//if err := srv.Run(); err != nil {
+		//	log.Fatalf("failed to start http server %v", err)
+		//}
 	},
 }
 

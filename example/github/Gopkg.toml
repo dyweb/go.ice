@@ -30,7 +30,13 @@ ignored = [
   "github.com/at15/go.ice/ice/*",
   "github.com/dyweb/gommon/*",
   "github.com/spf13/cobra",
-  "github.com/pkg/errors/*"
+  "github.com/pkg/errors",
+  "github.com/gogo/protobuf",
+  "golang.org/x/net",
+  "golang.org/x/net/*",
+  "golang.org/x/text",
+  "golang.org/x/text/*",
+  "google.golang.org/*"
 ]
 
 [[constraint]]

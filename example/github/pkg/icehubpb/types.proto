@@ -1,7 +1,8 @@
-// protoc --proto_path=/home/at15/workspace/src/:. --gogo_out=plugins=grpc:. service.proto
+// protoc --proto_path=/home/at15/workspace/src/:. --gogo_out=. types.proto
 syntax = "proto3";
+package icehub;
 
-package grpc;
+option go_package = "icehubpb";
 
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
@@ -10,8 +11,7 @@ option (gogoproto.marshaler_all) = true;
 option (gogoproto.unmarshaler_all) = true;
 option (gogoproto.goproto_getters_all) = false;
 
-// TODO: can't use Ping as both message and method name ?
-message PingMessage {
+message Ping {
     string name = 1;
 }
 
@@ -19,6 +19,7 @@ message Pong {
     string name = 1;
 }
 
-service IceHub {
-    rpc Ping (PingMessage) returns (Pong) {}
+message User {
+    string name = 1;
+    string password = 2;
 }
