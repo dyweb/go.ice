@@ -1,23 +1,33 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
+	"runtime"
 
-	"github.com/at15/go.ice/ice"
 	"google.golang.org/grpc"
-	dlog "github.com/dyweb/gommon/log"
 
-	"github.com/at15/go.ice/example/github/pkg/common"
-	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
-	"github.com/spf13/cobra"
-	"context"
 	"github.com/at15/go.ice/example/github/pkg/icehubpb"
+	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
+	icli "github.com/at15/go.ice/ice/cli"
+	dlog "github.com/dyweb/gommon/log"
+	"github.com/spf13/cobra"
 )
 
 const (
 	myname = "icehubctl"
 )
+
+var (
+	version   string
+	commit    string
+	buildTime string
+	buildUser string
+	goVersion = runtime.Version()
+)
+
+var buildInfo = icli.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
 
 var log = dlog.NewApplicationLogger()
 var addr = "localhost:7081"
@@ -39,12 +49,12 @@ var pingCmd = &cobra.Command{
 }
 
 func main() {
-	app := ice.New(
-		ice.Name(myname),
-		ice.Description("Client of IceHub, which is an example GitHub integration service using go.ice"),
-		ice.Version(common.Version()),
-		ice.LogRegistry(log))
-	root := ice.NewCmd(app)
+	cli := icli.New(
+		icli.Name(myname),
+		icli.Description("Client of IceHub, which is an example GitHub integration service using go.ice"),
+		icli.Version(buildInfo),
+		icli.LogRegistry(log))
+	root := cli.Command()
 	root.AddCommand(pingCmd)
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)

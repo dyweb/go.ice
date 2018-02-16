@@ -2,18 +2,14 @@ package main
 
 import (
 	"fmt"
-	"io"
 	"os"
+	"runtime"
 	"strings"
-	"time"
 
-	"github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	jgconfig "github.com/uber/jaeger-client-go/config"
 	"google.golang.org/grpc"
 
-	"github.com/at15/go.ice/ice"
+	icli "github.com/at15/go.ice/ice/cli"
 	icfg "github.com/at15/go.ice/ice/config"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
 	igrpc "github.com/at15/go.ice/ice/transport/grpc"
@@ -31,15 +27,21 @@ const (
 	myname = "icehubd" // 你的名字
 )
 
-var app *ice.App
+var (
+	version   string
+	commit    string
+	buildTime string
+	buildUser string
+	goVersion = runtime.Version()
+)
+
+var buildInfo = icli.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
+
+var cli *icli.Root
 var log = logutil.Registry
 
 // global configuration instance
 var cfg common.ServerConfig
-
-// TODO: might need a registry of application instead of scatter variables around in main
-var tracer opentracing.Tracer
-var closer io.Closer
 
 // TODO: just here for testing out the log command, though it might possible to make it like db command to be part
 // of go.ice's built in command for managing common config
@@ -111,48 +113,22 @@ var startCmd = &cobra.Command{
 }
 
 func mustLoadConfig() {
-	if err := app.LoadConfigTo(&cfg); err != nil {
+	if err := cli.LoadConfigTo(&cfg); err != nil {
 		log.Fatal(err)
 	}
 }
 
-// FIXME: hacky function to play with tracing libraries
-// https://github.com/jaegertracing/jaeger/blob/master/examples/hotrod/pkg/tracing/init.go#L31
-func configTracer() error {
-	tcfg := jgconfig.Configuration{
-		Sampler: &jgconfig.SamplerConfig{
-			Type:  "const",
-			Param: 1,
-		},
-		Reporter: &jgconfig.ReporterConfig{
-			LogSpans: false, // TODO: when true, enables LoggingReporter that runs in parallel with the main reporter
-			// and logs all submitted spans. Main Configuration.Logger must be initialized in the code
-			// for this option to have any effect.
-			BufferFlushInterval: 1 * time.Second,
-			LocalAgentHostPort:  "localhost:6831",
-		},
-	}
-	// TODO: a better way to use gommon/log, current tree level hierarchy may not be enough ...
-	// TODO: the jaeger.Logger interface is so strange, Error(string) instead of Error(string, args ...interface{})
-	// jgconfig.Logger(log)
-	// TODO: Observer can be registered with the Tracer to receive notifications about new Spans.
-	var err error
-	tracer, closer, err = tcfg.New("service-a")
-	if err != nil {
-		return errors.Wrap(err, "can't create jaeger tracer")
-	}
-	return nil
-}
+
 
 func main() {
-	app = ice.New(
-		ice.Name(myname),
-		ice.Description("IceHub is an example GitHub integration service using go.ice"),
-		ice.Version(common.Version()),
-		ice.LogRegistry(log))
-	root := ice.NewCmd(app)
-	dbc := idbcmd.NewCommand(func() (icfg.DatabaseManagerConfig, error) {
-		if err := app.LoadConfigTo(&cfg); err != nil {
+	cli = icli.New(
+		icli.Name(myname),
+		icli.Description("IceHub is an example GitHub integration service using go.ice"),
+		icli.Version(buildInfo),
+		icli.LogRegistry(log))
+	root := cli.Command()
+	dbc := idbcmd.New(func() (icfg.DatabaseManagerConfig, error) {
+		if err := cli.LoadConfigTo(&cfg); err != nil {
 			return cfg.DatabaseManager, err
 		}
 		return cfg.DatabaseManager, nil
