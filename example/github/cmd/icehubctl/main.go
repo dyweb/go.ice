@@ -3,21 +3,31 @@ package main
 import (
 	"fmt"
 	"os"
+	"runtime"
 
 	"github.com/at15/go.ice/ice"
-	"google.golang.org/grpc"
 	dlog "github.com/dyweb/gommon/log"
+	"google.golang.org/grpc"
 
-	"github.com/at15/go.ice/example/github/pkg/common"
-	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
-	"github.com/spf13/cobra"
 	"context"
 	"github.com/at15/go.ice/example/github/pkg/icehubpb"
+	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
+	"github.com/spf13/cobra"
 )
 
 const (
 	myname = "icehubctl"
 )
+
+var (
+	version   string
+	commit    string
+	buildTime string
+	buildUser string
+	goVersion = runtime.Version()
+)
+
+var buildInfo = ice.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
 
 var log = dlog.NewApplicationLogger()
 var addr = "localhost:7081"
@@ -42,7 +52,7 @@ func main() {
 	app := ice.New(
 		ice.Name(myname),
 		ice.Description("Client of IceHub, which is an example GitHub integration service using go.ice"),
-		ice.Version(common.Version()),
+		ice.Version(buildInfo),
 		ice.LogRegistry(log))
 	root := ice.NewCmd(app)
 	root.AddCommand(pingCmd)

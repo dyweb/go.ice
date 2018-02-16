@@ -9,6 +9,7 @@ import (
 	"github.com/dyweb/gommon/log/handlers/cli"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
+	"io"
 )
 
 // TODO: build info, as a struct?
@@ -16,13 +17,21 @@ type App struct {
 	root         *cobra.Command
 	name         string
 	description  string
-	version      string
+	buildInfo    BuildInfo
 	config       interface{}
 	configFile   string
 	configLoaded bool
 	verbose      bool
 	logSource    bool
 	logRegistry  *dlog.Logger
+}
+
+type BuildInfo struct {
+	Version   string
+	Commit    string
+	BuildTime string
+	BuildUser string
+	GoVersion string
 }
 
 // use functional options https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
@@ -72,13 +81,10 @@ func NewCmd(app *App) *cobra.Command {
 		Short: "print version",
 		Long:  "Print current version " + app.Version(),
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Println(app.Version())
 			if app.verbose {
-				// TODO: print build info in verbose mode
-				//			fmt.Printf("version: %s\n", common.Version())
-				//			fmt.Printf("commit: %s\n", common.GitCommit())
-				//			fmt.Printf("build time: %s\n", common.BuildTime())
-				//			fmt.Printf("build user: %s\n", common.BuildUser())
+				app.buildInfo.PrintTo(os.Stdout)
+			} else {
+				fmt.Println(app.Version())
 			}
 		},
 	}
@@ -98,9 +104,9 @@ func Description(desc string) func(app *App) {
 	}
 }
 
-func Version(ver string) func(app *App) {
+func Version(info BuildInfo) func(app *App) {
 	return func(app *App) {
-		app.version = ver
+		app.buildInfo = info
 	}
 }
 
@@ -119,7 +125,7 @@ func (b *App) Description() string {
 }
 
 func (b *App) Version() string {
-	return b.version
+	return b.buildInfo.Version
 }
 
 func (b *App) Config() interface{} {
@@ -152,4 +158,13 @@ func (b *App) IsConfigLoaded() bool {
 
 func (b *App) SetConfigLoaded() {
 	b.configLoaded = true
+}
+
+func (info *BuildInfo) PrintTo(w io.Writer) {
+	fmt.Fprintf(w, "version: %s\n", info.Version)
+	fmt.Fprintf(w, "commit: %s\n", info.Commit)
+	fmt.Fprintf(w, "build time: %s\n", info.BuildTime)
+	fmt.Fprintf(w, "build user: %s\n", info.BuildUser)
+	fmt.Fprintf(w, "go version: %s\n", info.GoVersion)
+
 }

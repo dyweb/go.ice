@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"runtime"
 	"strings"
 	"time"
 
@@ -30,6 +31,16 @@ import (
 const (
 	myname = "icehubd" // 你的名字
 )
+
+var (
+	version   string
+	commit    string
+	buildTime string
+	buildUser string
+	goVersion = runtime.Version()
+)
+
+var buildInfo = ice.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
 
 var app *ice.App
 var log = logutil.Registry
@@ -148,7 +159,7 @@ func main() {
 	app = ice.New(
 		ice.Name(myname),
 		ice.Description("IceHub is an example GitHub integration service using go.ice"),
-		ice.Version(common.Version()),
+		ice.Version(buildInfo),
 		ice.LogRegistry(log))
 	root := ice.NewCmd(app)
 	dbc := idbcmd.NewCommand(func() (icfg.DatabaseManagerConfig, error) {
