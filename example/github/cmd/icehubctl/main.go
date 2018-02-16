@@ -49,12 +49,12 @@ var pingCmd = &cobra.Command{
 }
 
 func main() {
-	app := icli.New(
+	cli := icli.New(
 		icli.Name(myname),
 		icli.Description("Client of IceHub, which is an example GitHub integration service using go.ice"),
 		icli.Version(buildInfo),
 		icli.LogRegistry(log))
-	root := icli.NewCmd(app)
+	root := cli.Command()
 	root.AddCommand(pingCmd)
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)

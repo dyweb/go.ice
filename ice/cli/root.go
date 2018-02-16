@@ -1,8 +1,6 @@
 package cli
 
 import (
-	"fmt"
-	"io"
 	"os"
 
 	"github.com/pkg/errors"
@@ -14,7 +12,7 @@ import (
 )
 
 type Root struct {
-	root         *cobra.Command
+	cmd          *cobra.Command
 	name         string
 	description  string
 	buildInfo    BuildInfo
@@ -24,14 +22,6 @@ type Root struct {
 	verbose      bool
 	logSource    bool
 	logRegistry  *dlog.Logger
-}
-
-type BuildInfo struct {
-	Version   string
-	Commit    string
-	BuildTime string
-	BuildUser string
-	GoVersion string
 }
 
 // use functional options https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
@@ -49,52 +39,44 @@ func New(options ...Options) *Root {
 }
 
 func (root *Root) Command() *cobra.Command {
-	return root.root
+	if root.cmd != nil {
+		return root.cmd
+	}
+	root.cmd = makeRootCmd(root)
+	root.cmd.AddCommand(makeVersionCmd(root))
+	return root.cmd
 }
 
-func NewCmd(app *Root) *cobra.Command {
-	root := &cobra.Command{
-		Use:   app.Name(),
-		Short: app.Description(),
-		Long:  app.Description(),
+func makeRootCmd(root *Root) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   root.Name(),
+		Short: root.Description(),
+		Long:  root.Description(),
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()
-			// we exit 1 because user may pass nothing and hope it run, which is never the case for go.ice based app
-			// the real logic is always in sub commands
+			// we exit 1 because user may pass nothing and hope it run, which is never the case for go.ice based app,
+			// where the real logic is always in sub commands
 			os.Exit(1)
 		},
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			if cmd.Use == "version" || cmd.Use == app.Name() {
+			if cmd.Use == "version" || cmd.Use == root.Name() {
 				return
 			}
-			dlog.SetHandlerRecursive(app.logRegistry, cli.New(os.Stderr, true))
-			if app.logSource {
-				dlog.EnableSourceRecusrive(app.logRegistry)
+			// TODO: user may forgot to set logRegistry in option, and this will cause panic on nil pointer
+			dlog.SetHandlerRecursive(root.logRegistry, cli.New(os.Stderr, true))
+			if root.logSource {
+				dlog.EnableSourceRecusrive(root.logRegistry)
 			}
-			if app.verbose {
-				dlog.SetLevelRecursive(app.logRegistry, dlog.DebugLevel)
-				app.logRegistry.Debug("using debug level logging due to verbose config")
-			}
-		},
-	}
-	root.PersistentFlags().StringVar(&app.configFile, "config", app.Name()+".yml", "config file location")
-	root.PersistentFlags().BoolVar(&app.verbose, "verbose", false, "verbose output and set log level to debug")
-	root.PersistentFlags().BoolVar(&app.logSource, "logsrc", false, "log source line when logging (expensive)")
-	ver := &cobra.Command{
-		Use:   "version",
-		Short: "print version",
-		Long:  "Print current version " + app.Version(),
-		Run: func(cmd *cobra.Command, args []string) {
-			if app.verbose {
-				app.buildInfo.PrintTo(os.Stdout)
-			} else {
-				fmt.Println(app.Version())
+			if root.verbose {
+				dlog.SetLevelRecursive(root.logRegistry, dlog.DebugLevel)
+				root.logRegistry.Debug("using debug level logging due to verbose config")
 			}
 		},
 	}
-	root.AddCommand(ver)
-	app.root = root
-	return root
+	cmd.PersistentFlags().StringVar(&root.configFile, "config", root.Name()+".yml", "config file location")
+	cmd.PersistentFlags().BoolVar(&root.verbose, "verbose", false, "verbose output and set log level to debug")
+	cmd.PersistentFlags().BoolVar(&root.logSource, "logsrc", false, "log source line when logging (expensive)")
+	return cmd
 }
 
 func Name(name string) func(app *Root) {
@@ -161,12 +143,4 @@ func (root *Root) IsConfigLoaded() bool {
 
 func (root *Root) SetConfigLoaded() {
 	root.configLoaded = true
-}
-
-func (info *BuildInfo) PrintTo(w io.Writer) {
-	fmt.Fprintf(w, "version: %s\n", info.Version)
-	fmt.Fprintf(w, "commit: %s\n", info.Commit)
-	fmt.Fprintf(w, "build time: %s\n", info.BuildTime)
-	fmt.Fprintf(w, "build user: %s\n", info.BuildUser)
-	fmt.Fprintf(w, "go version: %s\n", info.GoVersion)
 }

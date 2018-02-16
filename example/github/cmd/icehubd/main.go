@@ -161,7 +161,7 @@ func main() {
 		icli.Description("IceHub is an example GitHub integration service using go.ice"),
 		icli.Version(buildInfo),
 		icli.LogRegistry(log))
-	root := icli.NewCmd(cli)
+	root := cli.Command()
 	dbc := idbcmd.NewCommand(func() (icfg.DatabaseManagerConfig, error) {
 		if err := cli.LoadConfigTo(&cfg); err != nil {
 			return cfg.DatabaseManager, err
