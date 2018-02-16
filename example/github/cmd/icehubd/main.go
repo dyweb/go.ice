@@ -42,7 +42,7 @@ var (
 
 var buildInfo = ice.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
 
-var app *ice.App
+var app *ice.Cli
 var log = logutil.Registry
 
 // global configuration instance
