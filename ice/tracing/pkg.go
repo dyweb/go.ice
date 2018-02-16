@@ -1,4 +1,2 @@
+// Package tracing TODO: should do something ...
 package tracing
-
-type Tracer interface {
-}

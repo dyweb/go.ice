@@ -1,18 +1,19 @@
-package ice
+package cli
 
 import (
 	"fmt"
+	"io"
 	"os"
+
+	"github.com/pkg/errors"
+	"github.com/spf13/cobra"
 
 	"github.com/dyweb/gommon/config"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/dyweb/gommon/log/handlers/cli"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-	"io"
 )
 
-type Cli struct {
+type Root struct {
 	root         *cobra.Command
 	name         string
 	description  string
@@ -35,19 +36,23 @@ type BuildInfo struct {
 
 // use functional options https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
 
-type CliOptions func(a *Cli)
+type Options func(a *Root)
 
-func New(options ...CliOptions) *Cli {
-	a := &Cli{
+func New(options ...Options) *Root {
+	root := &Root{
 		config: nil,
 	}
 	for _, opt := range options {
-		opt(a)
+		opt(root)
 	}
-	return a
+	return root
 }
 
-func NewCmd(app *Cli) *cobra.Command {
+func (root *Root) Command() *cobra.Command {
+	return root.root
+}
+
+func NewCmd(app *Root) *cobra.Command {
 	root := &cobra.Command{
 		Use:   app.Name(),
 		Short: app.Description(),
@@ -92,71 +97,70 @@ func NewCmd(app *Cli) *cobra.Command {
 	return root
 }
 
-func Name(name string) func(app *Cli) {
-	return func(app *Cli) {
+func Name(name string) func(app *Root) {
+	return func(app *Root) {
 		app.name = name
 	}
 }
-func Description(desc string) func(app *Cli) {
-	return func(app *Cli) {
+func Description(desc string) func(app *Root) {
+	return func(app *Root) {
 		app.description = desc
 	}
 }
 
-func Version(info BuildInfo) func(app *Cli) {
-	return func(app *Cli) {
+func Version(info BuildInfo) func(app *Root) {
+	return func(app *Root) {
 		app.buildInfo = info
 	}
 }
 
-func LogRegistry(logger *dlog.Logger) func(app *Cli) {
-	return func(app *Cli) {
+func LogRegistry(logger *dlog.Logger) func(app *Root) {
+	return func(app *Root) {
 		app.logRegistry = logger
 	}
 }
 
-func (b *Cli) Name() string {
-	return b.name
+func (root *Root) Name() string {
+	return root.name
 }
 
-func (b *Cli) Description() string {
-	return b.description
+func (root *Root) Description() string {
+	return root.description
 }
 
-func (b *Cli) Version() string {
-	return b.buildInfo.Version
+func (root *Root) Version() string {
+	return root.buildInfo.Version
 }
 
-func (b *Cli) Config() interface{} {
-	if b.config == nil {
-		b.logRegistry.Warn("application config is nil")
+func (root *Root) Config() interface{} {
+	if root.config == nil {
+		root.logRegistry.Warn("application config is nil")
 	}
-	return b.config
+	return root.config
 }
 
-// TODO: go.ice should handle loading the yaml, marshal etc. as well
-func (b *Cli) ConfigFile() string {
-	return b.configFile
+func (root *Root) ConfigFile() string {
+	return root.configFile
 }
 
 // TODO: check config file using gommon config
 // TODO: have a config reader struct instead of using static package level method
 // TODO: config file also specify logging (which package to log etc.)
-func (b *Cli) LoadConfigTo(cfg interface{}) error {
-	if err := config.LoadYAMLAsStruct(b.configFile, cfg); err != nil {
+func (root *Root) LoadConfigTo(cfg interface{}) error {
+	if err := config.LoadYAMLAsStruct(root.configFile, cfg); err != nil {
 		return errors.WithMessage(err, "can't load config file")
 	}
-	b.config = cfg
-	b.configLoaded = true
+	root.config = cfg
+	root.configLoaded = true
 	return nil
 }
 
-func (b *Cli) IsConfigLoaded() bool {
-	return b.configLoaded
+func (root *Root) IsConfigLoaded() bool {
+	return root.configLoaded
 }
 
-func (b *Cli) SetConfigLoaded() {
-	b.configLoaded = true
+func (root *Root) SetConfigLoaded() {
+	root.configLoaded = true
 }
 
 func (info *BuildInfo) PrintTo(w io.Writer) {
@@ -165,5 +169,4 @@ func (info *BuildInfo) PrintTo(w io.Writer) {
 	fmt.Fprintf(w, "build time: %s\n", info.BuildTime)
 	fmt.Fprintf(w, "build user: %s\n", info.BuildUser)
 	fmt.Fprintf(w, "go version: %s\n", info.GoVersion)
-
 }

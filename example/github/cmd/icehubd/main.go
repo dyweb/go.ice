@@ -14,7 +14,7 @@ import (
 	jgconfig "github.com/uber/jaeger-client-go/config"
 	"google.golang.org/grpc"
 
-	"github.com/at15/go.ice/ice"
+	icli "github.com/at15/go.ice/ice/cli"
 	icfg "github.com/at15/go.ice/ice/config"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
 	igrpc "github.com/at15/go.ice/ice/transport/grpc"
@@ -40,9 +40,9 @@ var (
 	goVersion = runtime.Version()
 )
 
-var buildInfo = ice.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
+var buildInfo = icli.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
 
-var app *ice.Cli
+var cli *icli.Root
 var log = logutil.Registry
 
 // global configuration instance
@@ -122,7 +122,7 @@ var startCmd = &cobra.Command{
 }
 
 func mustLoadConfig() {
-	if err := app.LoadConfigTo(&cfg); err != nil {
+	if err := cli.LoadConfigTo(&cfg); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -156,14 +156,14 @@ func configTracer() error {
 }
 
 func main() {
-	app = ice.New(
-		ice.Name(myname),
-		ice.Description("IceHub is an example GitHub integration service using go.ice"),
-		ice.Version(buildInfo),
-		ice.LogRegistry(log))
-	root := ice.NewCmd(app)
+	cli = icli.New(
+		icli.Name(myname),
+		icli.Description("IceHub is an example GitHub integration service using go.ice"),
+		icli.Version(buildInfo),
+		icli.LogRegistry(log))
+	root := icli.NewCmd(cli)
 	dbc := idbcmd.NewCommand(func() (icfg.DatabaseManagerConfig, error) {
-		if err := app.LoadConfigTo(&cfg); err != nil {
+		if err := cli.LoadConfigTo(&cfg); err != nil {
 			return cfg.DatabaseManager, err
 		}
 		return cfg.DatabaseManager, nil

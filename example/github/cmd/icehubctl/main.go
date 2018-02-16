@@ -1,17 +1,17 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"runtime"
 
-	"github.com/at15/go.ice/ice"
-	dlog "github.com/dyweb/gommon/log"
 	"google.golang.org/grpc"
 
-	"context"
 	"github.com/at15/go.ice/example/github/pkg/icehubpb"
 	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
+	icli "github.com/at15/go.ice/ice/cli"
+	dlog "github.com/dyweb/gommon/log"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +27,7 @@ var (
 	goVersion = runtime.Version()
 )
 
-var buildInfo = ice.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
+var buildInfo = icli.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
 
 var log = dlog.NewApplicationLogger()
 var addr = "localhost:7081"
@@ -49,12 +49,12 @@ var pingCmd = &cobra.Command{
 }
 
 func main() {
-	app := ice.New(
-		ice.Name(myname),
-		ice.Description("Client of IceHub, which is an example GitHub integration service using go.ice"),
-		ice.Version(buildInfo),
-		ice.LogRegistry(log))
-	root := ice.NewCmd(app)
+	app := icli.New(
+		icli.Name(myname),
+		icli.Description("Client of IceHub, which is an example GitHub integration service using go.ice"),
+		icli.Version(buildInfo),
+		icli.LogRegistry(log))
+	root := icli.NewCmd(app)
 	root.AddCommand(pingCmd)
 	if err := root.Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
