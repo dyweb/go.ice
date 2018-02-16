@@ -23,7 +23,7 @@ type Command struct {
 	root         *cobra.Command
 }
 
-func NewCommand(configLoader func() (config.DatabaseManagerConfig, error)) *Command {
+func New(configLoader func() (config.DatabaseManagerConfig, error)) *Command {
 	dbc := &Command{
 		manager:      nil,
 		configLoader: configLoader,
