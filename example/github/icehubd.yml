@@ -35,14 +35,10 @@ grpc:
   secure: false
   cert: icehub.crt
   key: icehub.key
-# NOTE: almost same as jaeger's config
-# TODO: not working, wait and until client and server ...
 tracing:
   sample:
     type: const
     param: 1
-  logSpan: false
-  flushInterval: 1
-  agent:
-    host: localhost
-    port: 6831
+  reporter:
+    logSpan: false
+    localAgentHostPort: "localhost:6831"

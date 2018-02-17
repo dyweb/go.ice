@@ -25,6 +25,10 @@ migration table schema, create_time (unix timestamp) is used to identify the ord
 
 current version should be the last id
 
+## tracing
+
+just use open-tracing API for now
+
 ## directory layout
 
 ### ice
