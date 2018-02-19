@@ -1,6 +1,9 @@
 package http
 
-import "net/http"
+import (
+	"github.com/at15/go.ice/example/github/pkg/server/auth"
+	"net/http"
+)
 
 type Server struct {
 	mux *http.ServeMux
@@ -18,6 +21,9 @@ func (srv *Server) Handler() http.Handler {
 	mux.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("pong\n"))
 	})
+	gh := auth.New()
+	mux.HandleFunc("/github/login", http.HandlerFunc(gh.GitHubLogin))
+	mux.HandleFunc("/github/callback", http.HandlerFunc(gh.GitHubLoginCallback))
 	srv.mux = mux
 	return srv.mux
 }
