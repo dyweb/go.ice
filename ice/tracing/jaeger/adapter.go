@@ -78,8 +78,8 @@ func (a *Adapter) NewTracer(service string, cfg config.TracingConfig) (opentraci
 		},
 	}
 	// TODO: Observer can be registered with the Tracer to receive notifications about new Spans.
-	//tracer, closer, err := c.New(service, jgconfig.Logger(newLogger(service)))
-	tracer, closer, err := c.New(service, jgconfig.Logger(jg.StdLogger))
+	tracer, closer, err := c.New(service, jgconfig.Logger(newLogger(service)))
+	//tracer, closer, err := c.New(service, jgconfig.Logger(jg.StdLogger))
 	//log.Info("new tracer!", tracer)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't create jaeger tracer")

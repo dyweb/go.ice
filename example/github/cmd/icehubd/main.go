@@ -26,6 +26,8 @@ import (
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
 	_ "github.com/at15/go.ice/ice/tracing/jaeger"
+	"gopkg.in/yaml.v2"
+	"io/ioutil"
 )
 
 const (
@@ -130,9 +132,14 @@ var startCmd = &cobra.Command{
 }
 
 func mustLoadConfig() {
-	if err := cli.LoadConfigTo(&cfg); err != nil {
+	//if err := cli.LoadConfigTo(&cfg); err != nil {
+	//	log.Fatal(err)
+	//}
+	b, _ := ioutil.ReadFile(cli.ConfigFile())
+	if err := yaml.Unmarshal(b, &cfg); err != nil {
 		log.Fatal(err)
 	}
+	log.Info(cfg.Tracing)
 }
 
 func main() {

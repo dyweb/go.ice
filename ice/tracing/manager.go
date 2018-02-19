@@ -17,6 +17,7 @@ func NewManager(config config.TracingConfig) (*Manager, error) {
 		return nil, errors.WithMessage(err, "unknown adapter "+config.Adapter)
 	}
 	return &Manager{
+		config:  config, // NOTE: took me a long time to find out where things went wrong ...
 		adapter: adapter,
 	}, nil
 }
