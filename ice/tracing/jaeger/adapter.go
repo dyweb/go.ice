@@ -3,8 +3,6 @@ package jaeger
 import (
 	"fmt"
 	"io"
-	"time"
-
 	"github.com/opentracing/opentracing-go"
 	jg "github.com/uber/jaeger-client-go"
 	jgconfig "github.com/uber/jaeger-client-go/config"
@@ -64,23 +62,22 @@ func (a *Adapter) NewTracer(service string, cfg config.TracingConfig) (opentraci
 		log.Warnf("reuse existing tracers for service %s", service)
 		return tracer, nil
 	}
-	log.Info("sampler ", cfg.Sampler.Type, cfg.Sampler.Param)
-	log.Info("reporter ", cfg.Reporter.LocalAgentHostPort, cfg.Reporter.LogSpans)
+	log.Debugf("jaeger tracer sampler type %s param %f", cfg.Sampler.Type, cfg.Sampler.Param)
+	log.Debugf("jaeger tracer reporter agent %s logspan %v", cfg.Reporter.LocalAgentHostPort, cfg.Reporter.LogSpans)
 	c := jgconfig.Configuration{
 		Sampler: &jgconfig.SamplerConfig{
 			Type:  cfg.Sampler.Type,
 			Param: cfg.Sampler.Param,
 		},
 		Reporter: &jgconfig.ReporterConfig{
-			LogSpans:            cfg.Reporter.LogSpans,
-			BufferFlushInterval: 10 * time.Millisecond,
-			LocalAgentHostPort:  cfg.Reporter.LocalAgentHostPort,
+			LogSpans: cfg.Reporter.LogSpans,
+			// TODO: allow config interval in config
+			//BufferFlushInterval: 10 * time.Millisecond,
+			LocalAgentHostPort: cfg.Reporter.LocalAgentHostPort,
 		},
 	}
 	// TODO: Observer can be registered with the Tracer to receive notifications about new Spans.
 	tracer, closer, err := c.New(service, jgconfig.Logger(newLogger(service)))
-	//tracer, closer, err := c.New(service, jgconfig.Logger(jg.StdLogger))
-	//log.Info("new tracer!", tracer)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't create jaeger tracer")
 	}

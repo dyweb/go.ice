@@ -50,15 +50,9 @@ func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		span := srv.tracer.StartSpan("serve", ext.RPCServerOption(spanCtx))
 		ext.HTTPMethod.Set(span, r.Method)
 		ext.HTTPUrl.Set(span, r.URL.String())
-
-		// FIXME: span is not logged ...
-		log.Info("tracing is enabled!", span)
-
 		r = r.WithContext(opentracing.ContextWithSpan(r.Context(), span))
-
 		defer span.Finish()
 	}
-
 	tw := &TrackedWriter{w: w, status: 200}
 	srv.h.ServeHTTP(tw, r)
 	logAccess(srv.log, tw, r)
