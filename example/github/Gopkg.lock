@@ -43,6 +43,12 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/net"
+  packages = ["context/ctxhttp"]
+  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/oauth2"
   packages = [
     ".",
@@ -53,6 +59,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "ddaafd45cd21036a4678989486ccec694d0e5abb3b19b58ee1f824a7302074b5"
+  inputs-digest = "cde8ac56ced603ae4570c40fb2fd9b228623d45a9c5ec2cafcd4c2ab82299b5e"
   solver-name = "gps-cdcl"
   solver-version = 1
