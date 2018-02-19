@@ -24,6 +24,7 @@
 #   go-tests = true
 #   unused-packages = true
 
+
 # HACK: ignore all the library that is used by go.ice to avoid vendor problem
 ignored = [
   "github.com/at15/go.ice/ice",
@@ -32,8 +33,15 @@ ignored = [
   "github.com/spf13/cobra",
   "github.com/pkg/errors",
   "github.com/gogo/protobuf",
-  "golang.org/x/net",
-  "golang.org/x/net/*",
+  "github.com/opentracing/opentracing-go",
+  "github.com/opentracing/opentracing-go/*",
+  "golang.org/x/net/context",
+  "golang.org/x/net/http",
+  "golang.org/x/net/http2/hpack",
+  "golang.org/x/net/idna",
+  "golang.org/x/net/internal/*",
+  "golang.org/x/net/lex/*",
+  "golang.org/x/net/trace",
   "golang.org/x/text",
   "golang.org/x/text/*",
   "google.golang.org/*"

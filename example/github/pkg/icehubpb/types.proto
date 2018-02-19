@@ -23,3 +23,8 @@ message User {
     string name = 1;
     string password = 2;
 }
+
+message Project {
+    string name = 1;
+    string url = 2;
+}

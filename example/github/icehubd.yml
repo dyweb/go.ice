@@ -27,22 +27,21 @@ db-manager:
 # default http and grpc server config
 http:
   addr: :7080
-  secure: true
+  secure: false
   cert: icehub.crt
   key: icehub.key
+  enableTracing: true
 grpc:
   addr: :7081
   secure: false
   cert: icehub.crt
   key: icehub.key
-# NOTE: almost same as jaeger's config
-# TODO: not working, wait and until client and server ...
+  enableTracing: true
 tracing:
-  sample:
+  adapter: jaeger
+  sampler:
     type: const
     param: 1
-  logSpan: false
-  flushInterval: 1
-  agent:
-    host: localhost
-    port: 6831
+  reporter:
+    logSpans: true
+    localAgentHostPort: "localhost:6831"

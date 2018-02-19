@@ -5,6 +5,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -12,15 +13,19 @@ import (
 	icli "github.com/at15/go.ice/ice/cli"
 	icfg "github.com/at15/go.ice/ice/config"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
+	itrace "github.com/at15/go.ice/ice/tracing"
 	igrpc "github.com/at15/go.ice/ice/transport/grpc"
+	ihttp "github.com/at15/go.ice/ice/transport/http"
 
 	"github.com/at15/go.ice/example/github/pkg/common"
 	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
+	myhttp "github.com/at15/go.ice/example/github/pkg/transport/http"
 	"github.com/at15/go.ice/example/github/pkg/util/logutil"
 
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
+	_ "github.com/at15/go.ice/ice/tracing/jaeger"
 )
 
 const (
@@ -60,6 +65,17 @@ var startCmd = &cobra.Command{
 	Long:  "Start IceHub daemon with HTTP and gRPC server",
 	Run: func(cmd *cobra.Command, args []string) {
 		mustLoadConfig()
+		tmgr, err := itrace.NewManager(cfg.Tracing)
+		if err != nil {
+			// FIXME: https://github.com/dyweb/gommon/issues/48 Fatalf source is incorrect
+			log.Fatalf("can't create trace manager %v", err)
+			return
+		}
+		tracer, err := tmgr.Tracer("icehub")
+		if err != nil {
+			log.Fatalf("can't create tracer %v", err)
+			return
+		}
 		useHttp := true
 		useGrpc := false
 		// start hg
@@ -73,42 +89,43 @@ var startCmd = &cobra.Command{
 				useGrpc = true
 			}
 		}
-		// TODO: need two go routine if we want to start two server
+		var wg sync.WaitGroup
+		wg.Add(2)
 		if useHttp {
-			log.Info("TODO: start http server")
+			log.Info("start http server")
+			httpSrv, err := ihttp.NewServer(cfg.Http, myhttp.NewServer().Handler(), tracer)
+			if err != nil {
+				log.Fatalf("can't create http server %v", err)
+			}
+			go func() {
+				if err := httpSrv.Run(); err != nil {
+					wg.Done()
+					log.Fatalf("can't run http server %v", err)
+				}
+			}()
 		}
 		if useGrpc {
 			log.Info("start grpc server")
-			srv, err := igrpc.NewServer(cfg.Grpc, func(s *grpc.Server) {
+			grpcSrv, err := igrpc.NewServer(cfg.Grpc, func(s *grpc.Server) {
 				mygrpc.RegisterIceHubServer(s, mygrpc.NewServer())
 			})
 			if err != nil {
 				log.Fatalf("can't create grpc server %v", err)
 			}
-			if err := srv.Run(); err != nil {
-				log.Fatalf("can't run grpc server %v", err)
-			}
+			go func() {
+				if err := grpcSrv.Run(); err != nil {
+					wg.Done()
+					log.Fatalf("can't run grpc server %v", err)
+				}
+			}()
 		}
+		wg.Wait()
 		// TODO: p3 check if there is already icehubd running, by port, process name etc.
-		// TODO: p1 config tracer
-		// TODO: postpone tracing until we have server and client ready ...
-		//if err := configTracer(); err != nil {
-		//	log.Fatal(err)
-		//}
-		//log.Info("tracer created")
+
 		// TODO: p2 config database
 		// TODO: p1 initial services (components?)
 		// TODO: p1 user service, cache service etc.
 		// TODO：p1 listen on port
-		//registry, err := server.NewRegistry(cfg)
-		//if err != nil {
-		//	log.Fatalf("failed to create server registry %v", err)
-		//}
-		//registry.ConfigHttpHandler()
-		//srv := http.NewServer(cfg.Http, registry.HTTPHandler())
-		//if err := srv.Run(); err != nil {
-		//	log.Fatalf("failed to start http server %v", err)
-		//}
 	},
 }
 
@@ -117,8 +134,6 @@ func mustLoadConfig() {
 		log.Fatal(err)
 	}
 }
-
-
 
 func main() {
 	cli = icli.New(
