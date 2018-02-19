@@ -43,5 +43,5 @@ tracing:
     type: const
     param: 1
   reporter:
-    logSpan: false
+    logSpan: true
     localAgentHostPort: "localhost:6831"

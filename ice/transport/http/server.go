@@ -11,6 +11,7 @@ import (
 
 	"github.com/at15/go.ice/ice/config"
 	"github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 )
 
 type Server struct {
@@ -18,6 +19,7 @@ type Server struct {
 	server *http.Server
 	log    *dlog.Logger
 	tracer opentracing.Tracer
+	h      http.Handler
 }
 
 // TODO: check if there is any error in config and return error
@@ -28,17 +30,37 @@ func NewServer(cfg config.HttpServerConfig, h http.Handler, tracer opentracing.T
 	srv := &Server{
 		config: cfg,
 		tracer: tracer,
+		h:      h,
 	}
 	srv.log = dlog.NewStructLogger(log, srv)
 	// TODO： http server also accept stdlib logger, we might hijack it ...
 	httpServer := &http.Server{
 		Addr: cfg.Addr,
 	}
-	// TODO: there could be more than just logging handler, panic, cors etc.
-	// TODO: http log might need special logger, we are using struct's logger for now...
-	httpServer.Handler = NewLoggingHandler(h, srv.log)
+	httpServer.Handler = srv
 	srv.server = httpServer
 	return srv, nil
+}
+
+// TODO: there could be more than just logging handler, panic, cors etc.
+// TODO: http log might need special logger, we are using struct's logger for now...
+func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	if srv.config.EnableTracing {
+		// FIXME: span is not logged ...
+		log.Info("tracing is enabled!")
+
+		spanCtx, _ := srv.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
+		span := srv.tracer.StartSpan("serve", ext.RPCServerOption(spanCtx))
+		ext.HTTPMethod.Set(span, r.Method)
+		ext.HTTPUrl.Set(span, r.URL.String())
+		r = r.WithContext(opentracing.ContextWithSpan(r.Context(), span))
+
+		defer span.Finish()
+	}
+
+	tw := &TrackedWriter{w: w, status: 200}
+	srv.h.ServeHTTP(tw, r)
+	logAccess(srv.log, tw, r)
 }
 
 func (srv *Server) Port() int {
