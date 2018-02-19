@@ -46,13 +46,14 @@ func NewServer(cfg config.HttpServerConfig, h http.Handler, tracer opentracing.T
 // TODO: http log might need special logger, we are using struct's logger for now...
 func (srv *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if srv.config.EnableTracing {
-		// FIXME: span is not logged ...
-		log.Info("tracing is enabled!")
-
 		spanCtx, _ := srv.tracer.Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(r.Header))
 		span := srv.tracer.StartSpan("serve", ext.RPCServerOption(spanCtx))
 		ext.HTTPMethod.Set(span, r.Method)
 		ext.HTTPUrl.Set(span, r.URL.String())
+
+		// FIXME: span is not logged ...
+		log.Info("tracing is enabled!", span)
+
 		r = r.WithContext(opentracing.ContextWithSpan(r.Context(), span))
 
 		defer span.Finish()

@@ -44,7 +44,7 @@ func (l *logger) Error(msg string) {
 }
 
 func (l *logger) Infof(msg string, args ...interface{}) {
-	log.ErrorF(fmt.Sprintf(msg, args...), dlog.Fields{
+	log.InfoF(fmt.Sprintf(msg, args...), dlog.Fields{
 		dlog.Str("svc", l.service),
 		dlog.Str("trc", "jaeger"),
 	})
@@ -64,6 +64,8 @@ func (a *Adapter) NewTracer(service string, cfg config.TracingConfig) (opentraci
 		log.Warnf("reuse existing tracers for service %s", service)
 		return tracer, nil
 	}
+	log.Info("sampler ", cfg.Sampler.Type, cfg.Sampler.Param)
+	log.Info("reporter ", cfg.Reporter.LocalAgentHostPort, cfg.Reporter.LogSpans)
 	c := jgconfig.Configuration{
 		Sampler: &jgconfig.SamplerConfig{
 			Type:  cfg.Sampler.Type,
@@ -71,12 +73,14 @@ func (a *Adapter) NewTracer(service string, cfg config.TracingConfig) (opentraci
 		},
 		Reporter: &jgconfig.ReporterConfig{
 			LogSpans:            cfg.Reporter.LogSpans,
-			BufferFlushInterval: 1 * time.Second,
-			LocalAgentHostPort:  "localhost:6831",
+			BufferFlushInterval: 10 * time.Millisecond,
+			LocalAgentHostPort:  cfg.Reporter.LocalAgentHostPort,
 		},
 	}
 	// TODO: Observer can be registered with the Tracer to receive notifications about new Spans.
-	tracer, closer, err := c.New(service, jgconfig.Logger(newLogger(service)))
+	//tracer, closer, err := c.New(service, jgconfig.Logger(newLogger(service)))
+	tracer, closer, err := c.New(service, jgconfig.Logger(jg.StdLogger))
+	//log.Info("new tracer!", tracer)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't create jaeger tracer")
 	}
