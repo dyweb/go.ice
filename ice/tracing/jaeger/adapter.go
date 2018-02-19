@@ -19,8 +19,8 @@ import (
 var _ tracing.Adapter = (*Adapter)(nil)
 
 type Adapter struct {
-	tracer opentracing.Tracer
-	closer io.Closer
+	tracers map[string]opentracing.Tracer
+	closers map[string]io.Closer
 }
 
 var _ jg.Logger = (*logger)(nil)
@@ -50,7 +50,20 @@ func (l *logger) Infof(msg string, args ...interface{}) {
 	})
 }
 
+func New() *Adapter {
+	a := &Adapter{
+		tracers: make(map[string]opentracing.Tracer, 5),
+		closers: make(map[string]io.Closer, 5),
+	}
+	// TODO: gommon struct logger
+	return a
+}
+
 func (a *Adapter) NewTracer(service string, cfg config.TracingConfig) (opentracing.Tracer, error) {
+	if tracer, exists := a.tracers[service]; exists {
+		log.Warnf("reuse existing tracers for service %s", service)
+		return tracer, nil
+	}
 	c := jgconfig.Configuration{
 		Sampler: &jgconfig.SamplerConfig{
 			Type:  cfg.Sampler.Type,
@@ -67,15 +80,19 @@ func (a *Adapter) NewTracer(service string, cfg config.TracingConfig) (opentraci
 	if err != nil {
 		return nil, errors.Wrap(err, "can't create jaeger tracer")
 	}
-	a.tracer = tracer
-	a.closer = closer
+	a.tracers[service] = tracer
+	a.closers[service] = closer
 	return tracer, nil
 }
 
 func (a *Adapter) Close() error {
-	if err := a.closer.Close(); err != nil {
-		// TODO: I think jaeger is using pkg/errors as well
-		return errors.Wrap(err, "can't close jaeger tracer")
+	// TODO: might need a error group instead of just return the last one
+	var lastError error
+	for service, closer := range a.closers {
+		if err := closer.Close(); err != nil {
+			lastError = errors.Wrap(err, "can't close jaeger tracer for service "+service)
+			log.Warn(lastError)
+		}
 	}
-	return nil
+	return lastError
 }

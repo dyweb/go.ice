@@ -10,18 +10,24 @@ import (
 	"github.com/pkg/errors"
 
 	"github.com/at15/go.ice/ice/config"
+	"github.com/opentracing/opentracing-go"
 )
 
 type Server struct {
 	config config.HttpServerConfig
 	server *http.Server
 	log    *dlog.Logger
+	tracer opentracing.Tracer
 }
 
 // TODO: check if there is any error in config and return error
-func NewServer(cfg config.HttpServerConfig, h http.Handler) (*Server, error) {
+func NewServer(cfg config.HttpServerConfig, h http.Handler, tracer opentracing.Tracer) (*Server, error) {
+	if cfg.EnableTracing && tracer == nil {
+		return nil, errors.New("tracer is nil but tracing is enabled")
+	}
 	srv := &Server{
 		config: cfg,
+		tracer: tracer,
 	}
 	srv.log = dlog.NewStructLogger(log, srv)
 	// TODO： http server also accept stdlib logger, we might hijack it ...

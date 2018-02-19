@@ -5,6 +5,7 @@ import (
 	"os"
 	"runtime"
 	"strings"
+	"sync"
 
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
@@ -12,6 +13,7 @@ import (
 	icli "github.com/at15/go.ice/ice/cli"
 	icfg "github.com/at15/go.ice/ice/config"
 	idbcmd "github.com/at15/go.ice/ice/db/cmd"
+	itrace "github.com/at15/go.ice/ice/tracing"
 	igrpc "github.com/at15/go.ice/ice/transport/grpc"
 	ihttp "github.com/at15/go.ice/ice/transport/http"
 
@@ -23,7 +25,7 @@ import (
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
 	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
 	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
-	"sync"
+	_ "github.com/at15/go.ice/ice/tracing/jaeger"
 )
 
 const (
@@ -63,6 +65,17 @@ var startCmd = &cobra.Command{
 	Long:  "Start IceHub daemon with HTTP and gRPC server",
 	Run: func(cmd *cobra.Command, args []string) {
 		mustLoadConfig()
+		tmgr, err := itrace.NewManager(cfg.Tracing)
+		if err != nil {
+			// FIXME: https://github.com/dyweb/gommon/issues/48 Fatalf source is incorrect
+			log.Fatalf("can't create trace manager %v", err)
+			return
+		}
+		tracer, err := tmgr.Tracer("icehub")
+		if err != nil {
+			log.Fatalf("can't create tracer %v", err)
+			return
+		}
 		useHttp := true
 		useGrpc := false
 		// start hg
@@ -78,10 +91,9 @@ var startCmd = &cobra.Command{
 		}
 		var wg sync.WaitGroup
 		wg.Add(2)
-		// TODO: need two go routine if we want to start two server
 		if useHttp {
 			log.Info("start http server")
-			httpSrv, err := ihttp.NewServer(cfg.Http, myhttp.NewServer().Handler())
+			httpSrv, err := ihttp.NewServer(cfg.Http, myhttp.NewServer().Handler(), tracer)
 			if err != nil {
 				log.Fatalf("can't create http server %v", err)
 			}
@@ -109,8 +121,6 @@ var startCmd = &cobra.Command{
 		}
 		wg.Wait()
 		// TODO: p3 check if there is already icehubd running, by port, process name etc.
-		// TODO: p1 config tracer
-		// TODO: postpone tracing until we have server and client ready ...
 
 		// TODO: p2 config database
 		// TODO: p1 initial services (components?)

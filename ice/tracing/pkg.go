@@ -1,12 +1,8 @@
-// Package tracing TODO: should do something ...
+// Package tracing wraps opentracing api
 package tracing
 
 import (
-	"github.com/at15/go.ice/ice/config"
-	"github.com/opentracing/opentracing-go"
+	"github.com/at15/go.ice/ice/util/logutil"
 )
 
-type Adapter interface {
-	NewTracer(service string, cfg config.TracingConfig) (opentracing.Tracer, error)
-	Close() error
-}
+var log = logutil.NewPackageLogger()
