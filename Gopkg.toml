@@ -28,14 +28,14 @@ ignored = [
   "github.com/at15/go.ice/example/*"
 ]
 
-# TODO: we lock gommon version because dep will use lastest release but gommon is adding new features when go.ice need it ...
+# NOTE: we lock gommon version because dep will use lastest release but gommon is adding new features when go.ice need it ...
 [[constraint]]
   name = "github.com/dyweb/gommon"
   branch = "master"
 
 [[constraint]]
   name = "github.com/go-sql-driver/mysql"
-  revision = "bc14601d1bd56421dd60f561e6052c9ed77f9daf"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/pkg/errors"

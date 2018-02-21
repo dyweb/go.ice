@@ -28,9 +28,10 @@
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "391e17305c8fd0af4d0d83aad7aba55f768089b7"
+  revision = "73605818e0751af6bdcdada4de2d63157a0bf814"
 
 [[projects]]
+  branch = "master"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
   revision = "bc14601d1bd56421dd60f561e6052c9ed77f9daf"
@@ -140,10 +141,9 @@
     "lex/httplex",
     "trace"
   ]
-  revision = "dc948dff8834a7fe1ca525f8d04e261c2b56e70d"
+  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
 
 [[projects]]
-  branch = "master"
   name = "golang.org/x/text"
   packages = [
     "collate",
@@ -161,7 +161,8 @@
     "unicode/norm",
     "unicode/rangetable"
   ]
-  revision = "4e4a3210bb54bb31f6ab2cdca2edcc0b50c420c1"
+  revision = "f21a4dfb5e38f5895301dc265a8def02365cc3d0"
+  version = "v0.3.0"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -216,6 +217,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d233b180ad0f6c2e13849cef17b4842d6be82750b1d04aa810e9aad29e9e069e"
+  inputs-digest = "9bcea7570454511f5472e81264a1b33a3017ecaa368fbd522de671120c754326"
   solver-name = "gps-cdcl"
   solver-version = 1
