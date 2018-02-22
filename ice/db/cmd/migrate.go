@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"database/sql"
-
 	"github.com/at15/go.ice/ice/db/migration"
 	"github.com/spf13/cobra"
 )
@@ -14,21 +12,11 @@ func makeMigrationCmd(dbc *Command) *cobra.Command {
 		Long:  "Run registered migration tasks to update schema and feed fixture",
 		Run: func(cmd *cobra.Command, args []string) {
 			dbc.mustConfigManager()
-			var (
-				tx  *sql.Tx
-				err error
-			)
 			w := dbc.mustWrapper()
-			if tx, err = w.Transaction(); err != nil {
+			runner := migration.NewRunner(w)
+			// TODO: check if migration table exists
+			if err := runner.Run(migration.InitTask(), migration.Up); err != nil {
 				log.Fatal(err)
-			}
-			init := migration.InitTask()
-			if err = init.Up(tx); err != nil {
-				log.Fatal(err)
-			} else {
-				if err = tx.Commit(); err != nil {
-					log.Fatalf("failed to commit %v", err)
-				}
 			}
 			log.Info("migration finished")
 			// TODO: dbc should have cleanup, close connection etc.
