@@ -75,7 +75,7 @@ func (t *BasicTask) Down(tx *sql.Tx) error {
 
 func createMigrationTable(tx *sql.Tx) error {
 	// we need to use ` to quote the table name `_ice_migration`, which is why we concat string instead of using literal
-	c := "CREATE TABLE " + migrationTableNameQuoted + " (" +
+	c := "CREATE TABLE " + migrationTableName + " (" +
 		` name VARCHAR(255), description TEXT,
 		  create_time INT, apply_time INT, update_time INT,
           status INT);`
@@ -91,21 +91,19 @@ func insertTaskInfo(tx *sql.Tx, task Task) error {
 	now := time.Now().Unix()
 	// TODO: prepare statement syntax varies based on database
 	stmt, err := tx.Prepare(fmt.Sprintf(
-		"INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES (?, ?, ?, ?, ?, ?)", migrationTableNameQuoted))
+		"INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES (?, ?, ?, ?, ?, ?)", migrationTableName))
 	if err != nil {
 		return errors.Wrap(err, "can't prepare statement")
 	}
 	defer stmt.Close()
-	if res, err := stmt.Exec(task.Name(), task.Description(), task.CreateTime().Unix(), now, now, Success); err != nil {
+	if _, err := stmt.Exec(task.Name(), task.Description(), task.CreateTime().Unix(), now, now, Success); err != nil {
 		return errors.Wrap(err, "can't insert migration record")
-	} else {
-		log.Debugf("%d rows affected after insert task info of %s", res.RowsAffected(), task.Name())
 	}
 	return nil
 }
 
 func dropMigrationTable(tx *sql.Tx) error {
-	d := "DROP TABLE " + migrationTableNameQuoted
+	d := "DROP TABLE " + migrationTableName
 	if _, err := tx.Exec(d); err != nil {
 		return errors.Wrap(err, "can't drop migration table")
 	}

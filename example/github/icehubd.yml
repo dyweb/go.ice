@@ -4,8 +4,8 @@ logging:
   level: info
 db-manager:
 #  default: sqlite_local
-#  default: postgres_local
-  default: mysql_local
+  default: postgres_local
+#  default: mysql_local
   databases:
     - name: sqlite_local
       adapter: sqlite

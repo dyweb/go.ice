@@ -25,6 +25,6 @@ func NewTracker(db *db.Wrapper) *Tracker {
 
 func (t *Tracker) GetExecuted() error {
 	db := t.db.GetDB()
-	db.Query(fmt.Sprintf("SELECT * FROM %s ORDER BY apply_time, create_time DESC WHERE status = %d", migrationTableNameQuoted, Success))
+	db.Query(fmt.Sprintf("SELECT * FROM %s ORDER BY apply_time, create_time DESC WHERE status = %d", migrationTableName, Success))
 	return nil
 }
