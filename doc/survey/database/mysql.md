@@ -8,3 +8,7 @@ Table
 Query
 
 - place holder `?`
+
+Shell
+
+- `use icehub` to use a database

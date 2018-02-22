@@ -7,4 +7,9 @@ Table
   
 Query
 
-- place holder 
+- place holder `$1`, `$2` ...
+
+Shell
+
+- `\c icehub` to use a database
+- `\dt` show tables

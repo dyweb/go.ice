@@ -87,16 +87,13 @@ func createMigrationTable(tx *sql.Tx) error {
 }
 
 func insertTaskInfo(tx *sql.Tx, task Task) error {
-	log.Info("insert task info!")
+	log.Debugf("insert task info %s", task.Name())
 	now := time.Now().Unix()
 	// TODO: prepare statement syntax varies based on database
-	stmt, err := tx.Prepare(fmt.Sprintf(
-		"INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES (?, ?, ?, ?, ?, ?)", migrationTableName))
-	if err != nil {
-		return errors.Wrap(err, "can't prepare statement")
-	}
-	defer stmt.Close()
-	if _, err := stmt.Exec(task.Name(), task.Description(), task.CreateTime().Unix(), now, now, Success); err != nil {
+	if _, err := tx.Exec(fmt.Sprintf(
+		//"INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES (?, ?, ?, ?, ?, ?)", migrationTableName),
+		"INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES ($1, $2, $3, $4, $5, $6)", migrationTableName),
+		task.Name(), task.Description(), task.CreateTime().Unix(), now, now, Success); err != nil {
 		return errors.Wrap(err, "can't insert migration record")
 	}
 	return nil
