@@ -1,6 +1,12 @@
 # docker-compose up
 version: '3'
 services:
+  mysql:
+    image: "mysql:5.7"
+    environment:
+      - MYSQL_ROOT_PASSWORD=mysqlpassword
+    ports:
+      - "3306:3306" # guest host
 #  postgres:
 #    image: "postgres:10.1"
 #    environment:
@@ -13,11 +19,11 @@ services:
 #    image: "sosedoff/pgweb"
 #    ports:
 #      - "8081:8081"
-  jager:
-    image: "jaegertracing/all-in-one:latest"
-    ports:
-      - "6831:6831/udp"
-      - "16686:16686"
+#  jager:
+#    image: "jaegertracing/all-in-one:latest"
+#    ports:
+#      - "6831:6831/udp"
+#      - "16686:16686"
 #  zipkin:
 #    image: "openzipkin/zipkin:latest"
 #    ports:

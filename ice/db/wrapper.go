@@ -68,3 +68,14 @@ func (w *Wrapper) Ping(timeout time.Duration) (time.Duration, error) {
 	}
 	return duration, nil
 }
+
+func (w *Wrapper) Close() error {
+	if w.db == nil {
+		w.log.Warn("closing nil db")
+		return nil
+	}
+	if err := w.db.Close(); err != nil {
+		return errors.Wrap(err, "error when closing db")
+	}
+	return nil
+}
