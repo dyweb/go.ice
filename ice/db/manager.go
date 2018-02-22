@@ -108,6 +108,15 @@ func (mgr *Manager) Config(name string) (config.DatabaseConfig, error) {
 	return config.EmptyDatabaseConfig, errors.Errorf("%s is not in known configs %s", name, known)
 }
 
+func (mgr *Manager) DefaultConfig() (config.DatabaseConfig, error) {
+	var cfg config.DatabaseConfig
+	name, err := mgr.DefaultName()
+	if err != nil {
+		return cfg, err
+	}
+	return mgr.Config(name)
+}
+
 func (mgr *Manager) PrintConfig() {
 	if mgr == nil {
 		log.Warn("Manager is nil pointer")

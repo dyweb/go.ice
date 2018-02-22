@@ -27,6 +27,7 @@ type Adapter interface {
 	DriverName() string
 	Defaults() AdapterDefaults
 	FormatDSN(c config.DatabaseConfig) (string, error)
+	CanCreateDatabase() bool
 }
 
 type AdapterFactory func() Adapter

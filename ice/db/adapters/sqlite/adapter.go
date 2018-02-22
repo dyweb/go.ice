@@ -34,3 +34,7 @@ func (a *Adapter) FormatDSN(c config.DatabaseConfig) (string, error) {
 	}
 	return c.DSN, nil
 }
+
+func (a *Adapter) CanCreateDatabase() bool {
+	return false
+}

@@ -1,14 +1,14 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"sync"
+	"time"
 
-	"context"
 	"github.com/at15/go.ice/ice/config"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/pkg/errors"
-	"time"
 )
 
 type Wrapper struct {
@@ -67,6 +67,21 @@ func (w *Wrapper) Ping(timeout time.Duration) (time.Duration, error) {
 		return duration, errors.WithStack(err)
 	}
 	return duration, nil
+}
+
+func (w *Wrapper) CreateDatabase(name string) error {
+	if !w.a.CanCreateDatabase() {
+		log.Warnf("%s does not support create database", w.a.DriverName())
+		return nil
+	}
+	db := w.db
+	// NOTE: you can't use transaction for create database ...
+	// pg: ERROR:  CREATE DATABASE cannot run inside a transaction block
+	if _, err := db.Exec("CREATE DATABASE " + name + ";"); err != nil {
+		return errors.Wrapf(err, "can't create database %s", name)
+	}
+	log.Debugf("database %s created", name)
+	return nil
 }
 
 func (w *Wrapper) Close() error {

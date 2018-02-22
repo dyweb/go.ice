@@ -33,6 +33,8 @@ func (r *TaskRunner) Run(task Task, direction Direction) error {
 		err = task.Down(tx)
 	}
 	if err != nil {
+		// it seems you may rollback ddl in some database
+		// https://stackoverflow.com/questions/4692690/is-it-possible-to-roll-back-create-table-and-alter-table-statements-in-major-sql
 		if rerr := tx.Rollback(); err != nil {
 			return errors.Wrapf(rerr, "failed to rollback a failed migration %s %s %v", task.Name(), direction, err)
 		}

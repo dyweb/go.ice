@@ -56,3 +56,7 @@ func (a *Adapter) FormatDSN(c config.DatabaseConfig) (string, error) {
 	a.log.Debugf("format DSN based on config %s", dsn)
 	return dsn, nil
 }
+
+func (a *Adapter) CanCreateDatabase() bool {
+	return true
+}
