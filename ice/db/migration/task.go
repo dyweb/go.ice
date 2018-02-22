@@ -89,14 +89,17 @@ func createMigrationTable(tx *sql.Tx) error {
 func insertTaskInfo(tx *sql.Tx, task Task) error {
 	log.Info("insert task info!")
 	now := time.Now().Unix()
-	// FIXME: the description is not escaped, we might just used prepared statement ...
-	c := fmt.Sprintf(
-		"INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES (%s, %s, %d, %d, %d, %d)",
-		migrationTableNameQuoted, task.Name(), task.Description(), task.CreateTime().Unix(), now, now, Success)
-	if res, err := tx.Exec(c); err != nil {
+	// TODO: prepare statement syntax varies based on database
+	stmt, err := tx.Prepare(fmt.Sprintf(
+		"INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES (?, ?, ?, ?, ?, ?)", migrationTableNameQuoted))
+	if err != nil {
+		return errors.Wrap(err, "can't prepare statement")
+	}
+	defer stmt.Close()
+	if res, err := stmt.Exec(task.Name(), task.Description(), task.CreateTime().Unix(), now, now, Success); err != nil {
 		return errors.Wrap(err, "can't insert migration record")
 	} else {
-		log.Info(res.RowsAffected())
+		log.Debugf("%d rows affected after insert task info of %s", res.RowsAffected(), task.Name())
 	}
 	return nil
 }
