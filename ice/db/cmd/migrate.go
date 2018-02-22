@@ -14,8 +14,10 @@ func makeMigrationCmd(dbc *Command) *cobra.Command {
 			dbc.mustConfigManager()
 			w := dbc.mustWrapper(true)
 			runner := migration.NewRunner(w)
+			log.Info("runner created!")
 			// TODO: check if migration table exists
 			if err := runner.Run(migration.InitTask(), migration.Up); err != nil {
+				dbc.close()
 				log.Fatal(err)
 			}
 			log.Info("migration finished")

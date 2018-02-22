@@ -40,7 +40,73 @@ sql-migrate
 
 - https://laravel.com/docs/5.5/migrations
 - use timestamp to order migration (if I remember it correctly)
+- migration implementation in [DatabaseMigrationRepository](https://github.com/laravel/framework/blob/5.6/src/Illuminate/Database/Migrations/DatabaseMigrationRepository.php)
+  - `compileTableExists` for different database in [Schema/Grammars](https://github.com/laravel/framework/tree/5.6/src/Illuminate/Database/Schema/Grammars)
+  - `createRepository` creates the migration table
+  
+````php
+class DatabaseMigrationRepository implements MigrationRepositoryInterface
+{
+    /**
+     * Create the migration repository data store.
+     *
+     * @return void
+     */
+    public function createRepository()
+    {
+        $schema = $this->getConnection()->getSchemaBuilder();
 
+        $schema->create($this->table, function ($table) {
+            // The migrations table is responsible for keeping track of which of the
+            // migrations have actually run for the application. We'll create the
+            // table to hold the migration file's path as well as the batch ID.
+            $table->increments('id');
+            $table->string('migration');
+            $table->integer('batch');
+        });
+    }
+    
+    /**
+     * Get the completed migrations with their batch numbers.
+     *
+     * @return array
+     */
+    public function getMigrationBatches()
+    {
+        return $this->table()
+                ->orderBy('batch', 'asc')
+                ->orderBy('migration', 'asc')
+                ->pluck('batch', 'migration')->all();
+    }
+        
+    /**
+     * Log that a migration was run.
+     *
+     * @param  string  $file
+     * @param  int  $batch
+     * @return void
+     */
+    public function log($file, $batch)
+    {
+        $record = ['migration' => $file, 'batch' => $batch];
+
+        $this->table()->insert($record);
+    }
+    
+    /**
+     * Remove a migration from the log.
+     *
+     * @param  object  $migration
+     * @return void
+     */
+    public function delete($migration)
+    {
+        $this->table()->where('migration', $migration->migration)->delete();
+    }
+
+}
+````
+  
 ````php
 <?php
 class CreateFlightsTable extends Migration
