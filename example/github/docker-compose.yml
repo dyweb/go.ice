@@ -1,19 +1,19 @@
 # docker-compose up
 version: '3'
 services:
-#  mysql:
-#    image: "mysql:5.7"
-#    environment:
-#      - MYSQL_ROOT_PASSWORD=mysqlpassword
-#    ports:
-#      - "3306:3306" # guest host
-  postgres:
-    image: "postgres:10.1"
+  mysql:
+    image: "mysql:5.7"
     environment:
-      - POSTGRES_PASSWORD=pgpassword
-      - POSTGRES_USER=pguser
+      - MYSQL_ROOT_PASSWORD=mysqlpassword
     ports:
-      - "5432:5432"
+      - "3306:3306" # guest host
+#  postgres:
+#    image: "postgres:10.1"
+#    environment:
+#      - POSTGRES_PASSWORD=pgpassword
+#      - POSTGRES_USER=pguser
+#    ports:
+#      - "5432:5432"
   # NOTE: need to use postgres instead of localhost when log in
 #  pgweb:
 #    image: "sosedoff/pgweb"

@@ -11,4 +11,6 @@ Query
 
 Shell
 
+- `mysql -u root -p`
 - `use icehub` to use a database
+- `show tables`

@@ -25,6 +25,10 @@ func NewWrapper(a Adapter) *Wrapper {
 	return w
 }
 
+func (w *Wrapper) Adapter() Adapter {
+	return w.a
+}
+
 func (w *Wrapper) SetDB(db *sql.DB) {
 	w.mu.Lock()
 	defer w.mu.Unlock()

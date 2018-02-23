@@ -28,9 +28,9 @@ func (r *TaskRunner) Run(task Task, direction Direction) error {
 		return errors.WithMessage(err, "can't start transaction for migration")
 	}
 	if direction == Up {
-		err = task.Up(tx)
+		err = task.Up(tx, r.db.Adapter())
 	} else {
-		err = task.Down(tx)
+		err = task.Down(tx, r.db.Adapter())
 	}
 	if err != nil {
 		// it seems you may rollback ddl in some database

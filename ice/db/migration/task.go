@@ -2,9 +2,10 @@ package migration
 
 import (
 	"database/sql"
+	"fmt"
 	"time"
 
-	"fmt"
+	"github.com/at15/go.ice/ice/db"
 	"github.com/pkg/errors"
 )
 
@@ -19,16 +20,16 @@ var blankInitialTask = NewTask(
 	initTaskName, "create migration table to track future migration tasks",
 	nil, nil)
 
-type TaskFunc func(tx *sql.Tx) error
+type TaskFunc func(tx *sql.Tx, a db.Adapter) error
 
 type Task interface {
 	CreateTime() time.Time
 	Name() string
 	Description() string
 	// Up does not need to commit or rollback, runner with handle it based on error
-	Up(tx *sql.Tx) error
+	Up(tx *sql.Tx, a db.Adapter) error
 	// Down does not need to commit or rollback, runner with handle it based on error
-	Down(tx *sql.Tx) error
+	Down(tx *sql.Tx, a db.Adapter) error
 }
 
 type BasicTask struct {
@@ -65,15 +66,15 @@ func (t *BasicTask) Description() string {
 	return t.description
 }
 
-func (t *BasicTask) Up(tx *sql.Tx) error {
-	return t.up(tx)
+func (t *BasicTask) Up(tx *sql.Tx, a db.Adapter) error {
+	return t.up(tx, a)
 }
 
-func (t *BasicTask) Down(tx *sql.Tx) error {
-	return t.down(tx)
+func (t *BasicTask) Down(tx *sql.Tx, a db.Adapter) error {
+	return t.down(tx, a)
 }
 
-func createMigrationTable(tx *sql.Tx) error {
+func createMigrationTable(tx *sql.Tx, a db.Adapter) error {
 	// we need to use ` to quote the table name `_ice_migration`, which is why we concat string instead of using literal
 	c := "CREATE TABLE " + migrationTableName + " (" +
 		` name VARCHAR(255), description TEXT,
@@ -83,23 +84,22 @@ func createMigrationTable(tx *sql.Tx) error {
 		return errors.Wrap(err, "can't create migration table")
 	}
 	// FIXME: the task info is not inserted? the table is created though ...
-	return insertTaskInfo(tx, blankInitialTask)
+	return insertTaskInfo(tx, a, blankInitialTask)
 }
 
-func insertTaskInfo(tx *sql.Tx, task Task) error {
+func insertTaskInfo(tx *sql.Tx, a db.Adapter, task Task) error {
 	log.Debugf("insert task info %s", task.Name())
 	now := time.Now().Unix()
 	// TODO: prepare statement syntax varies based on database
-	if _, err := tx.Exec(fmt.Sprintf(
-		//"INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES (?, ?, ?, ?, ?, ?)", migrationTableName),
-		"INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES ($1, $2, $3, $4, $5, $6)", migrationTableName),
-		task.Name(), task.Description(), task.CreateTime().Unix(), now, now, Success); err != nil {
+	record := fmt.Sprintf("INSERT INTO %s (name, description, create_time, apply_time, update_time, status) VALUES (%s)",
+		migrationTableName, a.Placeholders(6))
+	if _, err := tx.Exec(record, task.Name(), task.Description(), task.CreateTime().Unix(), now, now, Success); err != nil {
 		return errors.Wrap(err, "can't insert migration record")
 	}
 	return nil
 }
 
-func dropMigrationTable(tx *sql.Tx) error {
+func dropMigrationTable(tx *sql.Tx, _ db.Adapter) error {
 	d := "DROP TABLE " + migrationTableName
 	if _, err := tx.Exec(d); err != nil {
 		return errors.Wrap(err, "can't drop migration table")

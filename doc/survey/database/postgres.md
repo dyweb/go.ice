@@ -11,6 +11,7 @@ Query
 
 Shell
 
+- `psql -U pguser`
 - `\c icehub` to use a database
 - `\dt` show tables
 
