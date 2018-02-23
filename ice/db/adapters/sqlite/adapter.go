@@ -2,6 +2,7 @@ package sqlite
 
 import (
 	"github.com/pkg/errors"
+	"strings"
 
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
@@ -37,4 +38,12 @@ func (a *Adapter) FormatDSN(c config.DatabaseConfig) (string, error) {
 
 func (a *Adapter) CanCreateDatabase() bool {
 	return false
+}
+
+// based on https://github.com/Masterminds/squirrel/blob/v1/placeholder.go
+func (a *Adapter) Placeholders(count int) string {
+	if count < 1 {
+		return ""
+	}
+	return strings.Repeat(",?", count)[1:]
 }

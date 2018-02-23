@@ -16,6 +16,8 @@ install:
 
 script:
   - pwd
+  - make test
   - (cd example/github && make install)
   - pwd
   - (cd example/github && icehubd db ping --db sqlite_local --verbose --logsrc)
+  # TODO: we can test with mysql and postgres on travis, they are builtin service

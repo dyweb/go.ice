@@ -13,3 +13,8 @@ Shell
 
 - `\c icehub` to use a database
 - `\dt` show tables
+
+Drivers
+
+- https://github.com/jackc/pgx offers a native interface similar to database/sql that offers better performance and more features
+  - supports JSON and JSONB

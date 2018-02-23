@@ -28,6 +28,7 @@ type Adapter interface {
 	Defaults() AdapterDefaults
 	FormatDSN(c config.DatabaseConfig) (string, error)
 	CanCreateDatabase() bool
+	Placeholders(count int) string
 }
 
 type AdapterFactory func() Adapter
