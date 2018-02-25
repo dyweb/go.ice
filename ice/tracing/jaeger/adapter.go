@@ -8,8 +8,8 @@ import (
 	jg "github.com/uber/jaeger-client-go"
 	jgconfig "github.com/uber/jaeger-client-go/config"
 
+	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
-	"github.com/pkg/errors"
 
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/tracing"

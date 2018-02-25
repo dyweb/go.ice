@@ -1,8 +1,9 @@
 package migration
 
 import (
+	"github.com/dyweb/gommon/errors"
+
 	"github.com/at15/go.ice/ice/db"
-	"github.com/pkg/errors"
 )
 
 type Direction bool
@@ -25,7 +26,7 @@ func NewRunner(db *db.Wrapper) *TaskRunner {
 func (r *TaskRunner) Run(task Task, direction Direction) error {
 	tx, err := r.db.Transaction()
 	if err != nil {
-		return errors.WithMessage(err, "can't start transaction for migration")
+		return errors.Wrap(err, "can't start transaction for migration")
 	}
 	if direction == Up {
 		err = task.Up(tx, r.db.Adapter())

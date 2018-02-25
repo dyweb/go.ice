@@ -6,9 +6,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/at15/go.ice/ice/config"
+	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
-	"github.com/pkg/errors"
+
+	"github.com/at15/go.ice/ice/config"
 )
 
 type Wrapper struct {
@@ -68,7 +69,7 @@ func (w *Wrapper) Ping(timeout time.Duration) (time.Duration, error) {
 	err := w.db.PingContext(ctx)
 	duration := time.Now().Sub(start)
 	if err != nil {
-		return duration, errors.WithStack(err)
+		return duration, errors.Wrap(err, "fail to ping")
 	}
 	return duration, nil
 }

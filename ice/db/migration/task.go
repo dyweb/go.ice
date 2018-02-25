@@ -5,8 +5,9 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/dyweb/gommon/errors"
+
 	"github.com/at15/go.ice/ice/db"
-	"github.com/pkg/errors"
 )
 
 var initialTask = NewTask(

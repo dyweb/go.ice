@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"github.com/dyweb/gommon/errors"
+	"github.com/spf13/cobra"
+
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
 	"github.com/at15/go.ice/ice/util/logutil"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
 )
 
 // TODO: command for migrating database (create table, fill in dummy data)
@@ -54,7 +55,7 @@ func (dbc *Command) configManager() error {
 		return nil
 	}
 	if c, err := dbc.configLoader(); err != nil {
-		return errors.WithMessage(err, "can't load config to create manager")
+		return errors.Wrap(err, "can't load config to create manager")
 	} else {
 		dbc.manager = db.NewManager(c)
 		return nil

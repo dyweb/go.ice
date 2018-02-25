@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
-	"github.com/pkg/errors"
-
-	"github.com/at15/go.ice/ice/config"
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
+
+	"github.com/at15/go.ice/ice/config"
 )
 
 type Server struct {

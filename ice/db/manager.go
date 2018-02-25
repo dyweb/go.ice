@@ -3,11 +3,12 @@ package db
 import (
 	"database/sql"
 	"fmt"
+	"sync"
+
+	"github.com/dyweb/gommon/errors"
+	dlog "github.com/dyweb/gommon/log"
 
 	"github.com/at15/go.ice/ice/config"
-	dlog "github.com/dyweb/gommon/log"
-	"github.com/pkg/errors"
-	"sync"
 )
 
 // backlog
@@ -59,23 +60,23 @@ func (mgr *Manager) Wrapper(name string, useDatabase bool) (*Wrapper, error) {
 		err error
 	)
 	if c, err = mgr.Config(name); err != nil {
-		return nil, errors.WithMessage(err, "can't get config for "+name)
+		return nil, errors.Wrap(err, "can't get config for "+name)
 	}
 	adapterName := c.Adapter
 	if a, err = GetAdapter(adapterName); err != nil {
-		return nil, errors.WithMessage(err, fmt.Sprintf("can't get %s adapter for database %s", adapterName, name))
+		return nil, errors.Wrap(err, fmt.Sprintf("can't get %s adapter for database %s", adapterName, name))
 	}
 	if !useDatabase {
 		c.DBName = ""
 		log.Debug("set dbname to empty string, use this when you want to create database")
 	}
 	if dsn, err = a.FormatDSN(c); err != nil {
-		return nil, errors.WithMessage(err, fmt.Sprintf("can't use %s adapter to format dsn for database %s", adapterName, name))
+		return nil, errors.Wrapf(err, "can't use %s adapter to format dsn for database %s", adapterName, name)
 	}
 	mgr.log.Debugf("connect using dsn %s", dsn)
 	// NOTE: sql.Open does not make connection, so it won't throw error if remote db server is not ready
 	if db, err = sql.Open(a.DriverName(), dsn); err != nil {
-		return nil, errors.WithMessage(err, "can't open database handle")
+		return nil, errors.Wrap(err, "can't open database handle")
 	}
 	w := NewWrapper(a)
 	w.SetDB(db)

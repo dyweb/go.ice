@@ -25,6 +25,7 @@
   packages = [
     "cast",
     "config",
+    "errors",
     "log",
     "log/handlers/cli",
     "structure",
@@ -34,7 +35,7 @@
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "73605818e0751af6bdcdada4de2d63157a0bf814"
+  revision = "b950eeb909a37aa06f0820dcdc414a1c53a2f7cf"
 
 [[projects]]
   branch = "master"
@@ -227,14 +228,14 @@
   version = "v1.10.0"
 
 [[projects]]
-  branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
+  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
+  version = "v2.1.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cfccd5e253c4c87f8948459ba6cbede35948497236d9f79d1410416d59bc9b94"
+  inputs-digest = "31684abdc685227c60b2b7adc856540bf342cf0d92582be37db1fc9f5a7d0edd"
   solver-name = "gps-cdcl"
   solver-version = 1

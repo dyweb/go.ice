@@ -1,12 +1,13 @@
 package sqlite
 
 import (
-	"github.com/pkg/errors"
 	"strings"
+
+	"github.com/dyweb/gommon/errors"
+	dlog "github.com/dyweb/gommon/log"
 
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
-	dlog "github.com/dyweb/gommon/log"
 )
 
 var _ db.Adapter = (*Adapter)(nil)
