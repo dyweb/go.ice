@@ -2,13 +2,19 @@ package server
 
 import (
 	"context"
+	"net/http"
 
-	ihttp "github.com/at15/go.ice/ice/transport/http"
 	pb "github.com/at15/go.ice/example/github/pkg/icehubpb"
+	"github.com/at15/go.ice/example/github/pkg/server/auth"
+	ihttp "github.com/at15/go.ice/ice/transport/http"
 	"github.com/pkg/errors"
 )
 
 type HttpServer struct {
+}
+
+func NewHttpServer() (*HttpServer, error) {
+	return &HttpServer{}, nil
 }
 
 func (srv *HttpServer) Ping(ctx context.Context, ping *pb.Ping) (*pb.Pong, error) {
@@ -17,6 +23,17 @@ func (srv *HttpServer) Ping(ctx context.Context, ping *pb.Ping) (*pb.Pong, error
 
 func (srv *HttpServer) NoPayload(ctx context.Context, _ interface{}) (*pb.Pong, error) {
 	return &pb.Pong{Name: "no payload"}, nil
+}
+
+func (srv *HttpServer) Handler() http.Handler {
+	mux := http.NewServeMux()
+	jMux := ihttp.NewJsonHandlerMux()
+	srv.RegisterHandler(jMux)
+	jMux.MountToStd(mux)
+	gh := auth.New()
+	mux.HandleFunc("/github/login", http.HandlerFunc(gh.GitHubLogin))
+	mux.HandleFunc("/github/callback", http.HandlerFunc(gh.GitHubLoginCallback))
+	return mux
 }
 
 func (srv *HttpServer) RegisterHandler(mux *ihttp.JsonHandlerMux) {

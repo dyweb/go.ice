@@ -18,8 +18,8 @@ import (
 	ihttp "github.com/at15/go.ice/ice/transport/http"
 
 	"github.com/at15/go.ice/example/github/pkg/common"
+	"github.com/at15/go.ice/example/github/pkg/server"
 	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
-	myhttp "github.com/at15/go.ice/example/github/pkg/transport/http"
 	"github.com/at15/go.ice/example/github/pkg/util/logutil"
 
 	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
@@ -93,12 +93,16 @@ var startCmd = &cobra.Command{
 		wg.Add(2)
 		if useHttp {
 			log.Info("start http server")
-			httpSrv, err := ihttp.NewServer(cfg.Http, myhttp.NewServer().Handler(), tracer)
+			httpSrv, err := server.NewHttpServer()
 			if err != nil {
-				log.Fatalf("can't create http server %v", err)
+				log.Fatalf("can't create http server")
+			}
+			httpTrans, err := ihttp.NewServer(cfg.Http, httpSrv.Handler(), tracer)
+			if err != nil {
+				log.Fatalf("can't create http transport %v", err)
 			}
 			go func() {
-				if err := httpSrv.Run(); err != nil {
+				if err := httpTrans.Run(); err != nil {
 					wg.Done()
 					log.Fatalf("can't run http server %v", err)
 				}

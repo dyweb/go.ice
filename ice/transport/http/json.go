@@ -20,11 +20,17 @@ type JsonHandlerMux struct {
 	handlers map[string]JsonHandler
 }
 
+func NewJsonHandlerMux() *JsonHandlerMux {
+	return &JsonHandlerMux{
+		handlers: make(map[string]JsonHandler),
+	}
+}
+
 type JsonHandlerRegister func(mux *JsonHandlerMux)
 
 func (m *JsonHandlerMux) AddHandlerFunc(path string, payloadFactory func() interface{}, f JsonFunc) {
 	h := &jsonHandler{f: f}
-	if payloadFactory() == nil {
+	if payloadFactory == nil {
 		h.hasPayload = false
 	} else {
 		h.hasPayload = true
