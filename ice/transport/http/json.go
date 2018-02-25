@@ -32,9 +32,7 @@ func (m *JsonHandlerMux) AddHandlerFunc(path string, payloadFactory func() inter
 	h := &jsonHandler{f: f}
 	if payloadFactory == nil {
 		h.hasPayload = false
-		log.Infof("%s NO payload", path)
 	} else {
-		log.Infof("%s has payload", path)
 		h.hasPayload = true
 		h.payloadFactory = payloadFactory
 	}
@@ -42,13 +40,17 @@ func (m *JsonHandlerMux) AddHandlerFunc(path string, payloadFactory func() inter
 }
 
 func (m *JsonHandlerMux) MountToStd(mux *http.ServeMux) {
-	for path, h := range m.handlers {
+	for path := range m.handlers {
+		// FIXED: DO NOT use for path, h := range m.handlers ... same as https://github.com/dyweb/gommon/issues/50
+		h := m.handlers[path]
+		log.Debugf("mount path %s payload %t", path, h.HasPayload())
 		if !h.HasPayload() {
 			mux.HandleFunc(path, func(w http.ResponseWriter, r *http.Request) {
 				ctx := r.Context()
 				res, err := h.Func()(ctx, nil)
 				if err != nil {
 					jsonInternalError(w, err)
+					return
 				}
 				jsonRes(w, res)
 			})
@@ -58,10 +60,12 @@ func (m *JsonHandlerMux) MountToStd(mux *http.ServeMux) {
 				req := h.NewPayload()
 				if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 					jsonInvalidFormat(w, err)
+					return
 				}
 				res, err := h.Func()(ctx, req)
 				if err != nil {
 					jsonInternalError(w, err)
+					return
 				}
 				jsonRes(w, res)
 			})
@@ -82,6 +86,7 @@ func (h *jsonHandler) HasPayload() bool {
 }
 
 func (h *jsonHandler) NewPayload() interface{} {
+	//log.Infof("payload factory is %v", h.payloadFactory)
 	return h.payloadFactory()
 }
 
@@ -92,13 +97,13 @@ func (h *jsonHandler) Func() JsonFunc {
 func jsonInvalidFormat(w http.ResponseWriter, err error) {
 	w.WriteHeader(http.StatusBadRequest)
 	// TODO: escape
-	fmt.Fprintf(w, `{"msg":"invalid json", "err":"%v"`, err)
+	fmt.Fprintf(w, `{"msg":"invalid json", "err":"%v"}`, err)
 }
 
 func jsonInternalError(w http.ResponseWriter, err error) {
 	w.WriteHeader(http.StatusInternalServerError)
 	// TODO: escape
-	fmt.Fprintf(w, `{"msg":"internal error", "err":"%v"`, err)
+	fmt.Fprintf(w, `{"msg":"internal error", "err":"%v"}`, err)
 }
 
 func jsonRes(w http.ResponseWriter, res interface{}) {
