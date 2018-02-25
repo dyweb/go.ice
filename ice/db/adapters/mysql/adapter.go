@@ -2,6 +2,7 @@ package mysql
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
@@ -42,4 +43,16 @@ func (a *Adapter) FormatDSN(c config.DatabaseConfig) (string, error) {
 	dsn := mc.FormatDSN()
 	a.log.Debugf("format DSN based on config %s", dsn)
 	return dsn, nil
+}
+
+func (a *Adapter) CanCreateDatabase() bool {
+	return true
+}
+
+// based on https://github.com/Masterminds/squirrel/blob/v1/placeholder.go
+func (a *Adapter) Placeholders(count int) string {
+	if count < 1 {
+		return ""
+	}
+	return strings.Repeat(",?", count)[1:]
 }

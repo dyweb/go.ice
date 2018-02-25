@@ -1,11 +1,13 @@
 package sqlite
 
 import (
-	"github.com/pkg/errors"
+	"strings"
+
+	"github.com/dyweb/gommon/errors"
+	dlog "github.com/dyweb/gommon/log"
 
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
-	dlog "github.com/dyweb/gommon/log"
 )
 
 var _ db.Adapter = (*Adapter)(nil)
@@ -33,4 +35,16 @@ func (a *Adapter) FormatDSN(c config.DatabaseConfig) (string, error) {
 		return "", errors.New("sqlite3 must specify file path as dsn in config")
 	}
 	return c.DSN, nil
+}
+
+func (a *Adapter) CanCreateDatabase() bool {
+	return false
+}
+
+// based on https://github.com/Masterminds/squirrel/blob/v1/placeholder.go
+func (a *Adapter) Placeholders(count int) string {
+	if count < 1 {
+		return ""
+	}
+	return strings.Repeat(",?", count)[1:]
 }

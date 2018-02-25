@@ -14,11 +14,18 @@
   revision = "3a0bb77429bd3a61596f5e8a3172445844342120"
 
 [[projects]]
+  name = "github.com/davecgh/go-spew"
+  packages = ["spew"]
+  revision = "346938d642f2ec3594ed81d874461961cd0faa76"
+  version = "v1.1.0"
+
+[[projects]]
   branch = "master"
   name = "github.com/dyweb/gommon"
   packages = [
     "cast",
     "config",
+    "errors",
     "log",
     "log/handlers/cli",
     "structure",
@@ -28,7 +35,7 @@
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "73605818e0751af6bdcdada4de2d63157a0bf814"
+  revision = "b950eeb909a37aa06f0820dcdc414a1c53a2f7cf"
 
 [[projects]]
   branch = "master"
@@ -92,6 +99,12 @@
   version = "v0.8.0"
 
 [[projects]]
+  name = "github.com/pmezard/go-difflib"
+  packages = ["difflib"]
+  revision = "792786c7400a136282c1664665ae0a8db921c6c2"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/spf13/cobra"
   packages = ["."]
   revision = "7b2c5ac9fc04fc5efafb60700713d4fa609b777b"
@@ -102,6 +115,12 @@
   packages = ["."]
   revision = "e57e3eeb33f795204c1ca35f56c44f83227c6e66"
   version = "v1.0.0"
+
+[[projects]]
+  name = "github.com/stretchr/testify"
+  packages = ["assert"]
+  revision = "12b6f73e6084dad08a7c6e575284b177ecafbc71"
+  version = "v1.2.1"
 
 [[projects]]
   name = "github.com/uber/jaeger-client-go"
@@ -209,14 +228,14 @@
   version = "v1.10.0"
 
 [[projects]]
-  branch = "v2"
   name = "gopkg.in/yaml.v2"
   packages = ["."]
-  revision = "d670f9405373e636a5a2765eea47fac0c9bc91a4"
+  revision = "7f97868eec74b32b0982dd158a51a446d1da7eb5"
+  version = "v2.1.1"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "9bcea7570454511f5472e81264a1b33a3017ecaa368fbd522de671120c754326"
+  inputs-digest = "31684abdc685227c60b2b7adc856540bf342cf0d92582be37db1fc9f5a7d0edd"
   solver-name = "gps-cdcl"
   solver-version = 1

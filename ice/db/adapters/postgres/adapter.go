@@ -2,6 +2,7 @@ package postgres
 
 import (
 	"fmt"
+	"strconv"
 
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
@@ -55,4 +56,21 @@ func (a *Adapter) FormatDSN(c config.DatabaseConfig) (string, error) {
 	}
 	a.log.Debugf("format DSN based on config %s", dsn)
 	return dsn, nil
+}
+
+func (a *Adapter) CanCreateDatabase() bool {
+	return true
+}
+
+// based on https://github.com/Masterminds/squirrel/blob/v1/placeholder.go
+func (a *Adapter) Placeholders(count int) string {
+	if count < 1 {
+		return ""
+	}
+	buf := make([]byte, 0, count*3)
+	for i := 1; i <= count; i++ {
+		buf = append(buf, ',', '$')
+		buf = strconv.AppendInt(buf, int64(i), 10)
+	}
+	return string(buf[1:])
 }

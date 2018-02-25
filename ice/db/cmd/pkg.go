@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"github.com/dyweb/gommon/errors"
+	"github.com/spf13/cobra"
+
 	"github.com/at15/go.ice/ice/config"
 	"github.com/at15/go.ice/ice/db"
 	"github.com/at15/go.ice/ice/util/logutil"
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
 )
 
 // TODO: command for migrating database (create table, fill in dummy data)
@@ -32,11 +33,8 @@ func New(configLoader func() (config.DatabaseManagerConfig, error)) *Command {
 	// flags
 	root.PersistentFlags().StringVar(&dbc.db, "db", "", "database to run command on, ping/migrate etc.")
 	// sub commands
-	root.AddCommand(driverCmd)
-	root.AddCommand(adapterCmd)
-	root.AddCommand(makeConfigCmd(dbc))
-	root.AddCommand(makePingCmd(dbc))
-	root.AddCommand(makeMigrationCmd(dbc))
+	root.AddCommand(driverCmd, adapterCmd,
+		makeConfigCmd(dbc), makePingCmd(dbc), makeMigrationCmd(dbc), makeCreateCmd(dbc))
 	dbc.root = &root
 	return dbc
 }
@@ -57,14 +55,14 @@ func (dbc *Command) configManager() error {
 		return nil
 	}
 	if c, err := dbc.configLoader(); err != nil {
-		return errors.WithMessage(err, "can't load config to create manager")
+		return errors.Wrap(err, "can't load config to create manager")
 	} else {
 		dbc.manager = db.NewManager(c)
 		return nil
 	}
 }
 
-func (dbc *Command) mustWrapper() *db.Wrapper {
+func (dbc *Command) mustWrapper(useDatabase bool) *db.Wrapper {
 	var (
 		w    *db.Wrapper
 		name string
@@ -75,8 +73,19 @@ func (dbc *Command) mustWrapper() *db.Wrapper {
 	} else if name, err = dbc.manager.DefaultName(); err != nil {
 		log.Fatal(err)
 	}
-	if w, err = dbc.manager.Wrapper(name); err != nil {
+	if w, err = dbc.manager.Wrapper(name, useDatabase); err != nil {
 		log.Fatal(err)
 	}
 	return w
+}
+
+func (dbc *Command) close() {
+	if dbc.manager == nil {
+		return
+	}
+	if err := dbc.manager.Close(); err != nil {
+		log.Warnf("error when closing database %v", err)
+	} else {
+		log.Info("database closed")
+	}
 }

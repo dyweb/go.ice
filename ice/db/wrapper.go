@@ -1,14 +1,15 @@
 package db
 
 import (
+	"context"
 	"database/sql"
 	"sync"
-
-	"context"
-	"github.com/at15/go.ice/ice/config"
-	dlog "github.com/dyweb/gommon/log"
-	"github.com/pkg/errors"
 	"time"
+
+	"github.com/dyweb/gommon/errors"
+	dlog "github.com/dyweb/gommon/log"
+
+	"github.com/at15/go.ice/ice/config"
 )
 
 type Wrapper struct {
@@ -23,6 +24,10 @@ func NewWrapper(a Adapter) *Wrapper {
 	w := &Wrapper{a: a}
 	w.log = dlog.NewStructLogger(log, w)
 	return w
+}
+
+func (w *Wrapper) Adapter() Adapter {
+	return w.a
 }
 
 func (w *Wrapper) SetDB(db *sql.DB) {
@@ -64,7 +69,33 @@ func (w *Wrapper) Ping(timeout time.Duration) (time.Duration, error) {
 	err := w.db.PingContext(ctx)
 	duration := time.Now().Sub(start)
 	if err != nil {
-		return duration, errors.WithStack(err)
+		return duration, errors.Wrap(err, "fail to ping")
 	}
 	return duration, nil
+}
+
+func (w *Wrapper) CreateDatabase(name string) error {
+	if !w.a.CanCreateDatabase() {
+		log.Warnf("%s does not support create database", w.a.DriverName())
+		return nil
+	}
+	db := w.db
+	// NOTE: you can't use transaction for create database ...
+	// pg: ERROR:  CREATE DATABASE cannot run inside a transaction block
+	if _, err := db.Exec("CREATE DATABASE " + name + ";"); err != nil {
+		return errors.Wrapf(err, "can't create database %s", name)
+	}
+	log.Debugf("database %s created", name)
+	return nil
+}
+
+func (w *Wrapper) Close() error {
+	if w.db == nil {
+		w.log.Warn("closing nil db")
+		return nil
+	}
+	if err := w.db.Close(); err != nil {
+		return errors.Wrap(err, "error when closing db")
+	}
+	return nil
 }

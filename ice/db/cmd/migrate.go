@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"database/sql"
-
 	"github.com/at15/go.ice/ice/db/migration"
 	"github.com/spf13/cobra"
 )
@@ -14,25 +12,17 @@ func makeMigrationCmd(dbc *Command) *cobra.Command {
 		Long:  "Run registered migration tasks to update schema and feed fixture",
 		Run: func(cmd *cobra.Command, args []string) {
 			dbc.mustConfigManager()
-			var (
-				tx  *sql.Tx
-				err error
-			)
-			w := dbc.mustWrapper()
-			if tx, err = w.Transaction(); err != nil {
+			w := dbc.mustWrapper(true)
+			runner := migration.NewRunner(w)
+			log.Info("runner created!")
+			// TODO: check if migration table exists
+			if err := runner.Run(migration.InitTask(), migration.Up); err != nil {
+				dbc.close()
 				log.Fatal(err)
-			}
-			init := migration.InitTask()
-			if err = init.Up(tx); err != nil {
-				log.Fatal(err)
-			} else {
-				if err = tx.Commit(); err != nil {
-					log.Fatalf("failed to commit %v", err)
-				}
 			}
 			log.Info("migration finished")
-			// TODO: dbc should have cleanup, close connection etc.
 			// Aborted connection 6 to db: 'icehub' user: 'root' host: '172.19.0.1' (Got an error reading communication packets)
+			dbc.close()
 		},
 	}
 }

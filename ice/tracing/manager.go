@@ -1,9 +1,10 @@
 package tracing
 
 import (
-	"github.com/at15/go.ice/ice/config"
+	"github.com/dyweb/gommon/errors"
 	"github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
+
+	"github.com/at15/go.ice/ice/config"
 )
 
 type Manager struct {
@@ -14,7 +15,7 @@ type Manager struct {
 func NewManager(config config.TracingConfig) (*Manager, error) {
 	adapter, err := GetAdapter(config.Adapter)
 	if err != nil {
-		return nil, errors.WithMessage(err, "unknown adapter "+config.Adapter)
+		return nil, errors.Wrap(err, "unknown adapter "+config.Adapter)
 	}
 	return &Manager{
 		config:  config, // NOTE: took me a long time to find out where things went wrong ...

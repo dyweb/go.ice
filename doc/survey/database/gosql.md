@@ -1,5 +1,11 @@
 # Go database/sql package
 
+## Take away
+
+- db.Query("select * from tbl") would execute a statement without preparation
+- db.Query("select * from tbl where status = ?", 1) would prepare a statement, execute it and throw it away
+  - https://stackoverflow.com/questions/37683218/golang-sql-drivers-prepare-statement
+
 ## Basic usage
 
 - `dbHandle, err := sql.Open("drivername", "dsn")`
@@ -13,7 +19,7 @@
     - [ ] I remember there is one package handling it
 - `res, err := stmt.Exec("jack", "123")`
   - res only has `LastInsertId` and `RowsAffected` , need to use `Query` if rows are needed
-- `rows, err := db.Qyuery("SELECT * FROM user)`
+- `rows, err := db.Query("SELECT * FROM user)`
   - `for rows.Next()` `rows.Scan(&user, &pwd)` scan and update value, this is where ORM etc. jumps in
   - xo https://github.com/xo/xo/blob/master/examples/django/sqlite3/authgroup.xo.go
   - https://github.com/gocraft/dbr

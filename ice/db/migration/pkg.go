@@ -5,6 +5,6 @@ import (
 )
 
 const initTaskName = "create_migration_table"
-const migrationTableNameQuoted = "`_ice_migration`"
+const migrationTableName = "icemigration"
 
 var log = logutil.NewPackageLogger()

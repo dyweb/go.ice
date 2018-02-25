@@ -3,12 +3,11 @@ package cli
 import (
 	"os"
 
-	"github.com/pkg/errors"
-	"github.com/spf13/cobra"
-
 	"github.com/dyweb/gommon/config"
+	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/dyweb/gommon/log/handlers/cli"
+	"github.com/spf13/cobra"
 )
 
 type Root struct {
@@ -130,7 +129,7 @@ func (root *Root) ConfigFile() string {
 // TODO: config file also specify logging (which package to log etc.)
 func (root *Root) LoadConfigTo(cfg interface{}) error {
 	if err := config.LoadYAMLAsStruct(root.configFile, cfg); err != nil {
-		return errors.WithMessage(err, "can't load config file")
+		return errors.Wrap(err, "can't load config file")
 	}
 	root.config = cfg
 	root.configLoaded = true

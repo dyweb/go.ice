@@ -4,8 +4,9 @@ import (
 	"sort"
 	"sync"
 
+	"github.com/dyweb/gommon/errors"
+
 	"github.com/at15/go.ice/ice/config"
-	"github.com/pkg/errors"
 )
 
 // TODO: allow adapter to wrap common sql operation and trace it? or it should be done at wrapper level?
@@ -27,6 +28,8 @@ type Adapter interface {
 	DriverName() string
 	Defaults() AdapterDefaults
 	FormatDSN(c config.DatabaseConfig) (string, error)
+	CanCreateDatabase() bool
+	Placeholders(count int) string
 }
 
 type AdapterFactory func() Adapter

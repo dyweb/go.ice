@@ -3,8 +3,8 @@ package grpc
 import (
 	"net"
 
+	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
-	"github.com/pkg/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"

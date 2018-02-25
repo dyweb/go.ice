@@ -4,9 +4,10 @@ import (
 	"sort"
 	"sync"
 
-	"github.com/at15/go.ice/ice/config"
+	"github.com/dyweb/gommon/errors"
 	"github.com/opentracing/opentracing-go"
-	"github.com/pkg/errors"
+
+	"github.com/at15/go.ice/ice/config"
 )
 
 var (

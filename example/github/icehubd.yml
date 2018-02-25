@@ -3,8 +3,9 @@
 logging:
   level: info
 db-manager:
-#  default: local_sqlite
-  default: postgres_local
+  default: sqlite_local
+#  default: postgres_local
+#  default: mysql_local
   databases:
     - name: sqlite_local
       adapter: sqlite
@@ -15,7 +16,7 @@ db-manager:
       port: 5432
       user: pguser
       password: pgpassword
-#      dbname: icehub
+      dbname: icehub
       sslmode: disable
     - name: mysql_local
       adapter: mysql
