@@ -5,6 +5,7 @@ git:
 
 go:
   - 1.9.x
+  - "1.10"
   - tip
 
 install:
@@ -20,4 +21,6 @@ script:
   - (cd example/github && make install)
   - pwd
   - (cd example/github && icehubd db ping --db sqlite_local --verbose --logsrc)
+  - (cd example/github && icehubd db create --db sqlite_local --verbose --logsrc)
+  - (cd example/github && icehubd db migrate --db sqlite_local --verbose --logsrc)
   # TODO: we can test with mysql and postgres on travis, they are builtin service
