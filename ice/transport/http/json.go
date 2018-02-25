@@ -32,7 +32,9 @@ func (m *JsonHandlerMux) AddHandlerFunc(path string, payloadFactory func() inter
 	h := &jsonHandler{f: f}
 	if payloadFactory == nil {
 		h.hasPayload = false
+		log.Infof("%s NO payload", path)
 	} else {
+		log.Infof("%s has payload", path)
 		h.hasPayload = true
 		h.payloadFactory = payloadFactory
 	}
@@ -84,7 +86,7 @@ func (h *jsonHandler) NewPayload() interface{} {
 }
 
 func (h *jsonHandler) Func() JsonFunc {
-	return h.Func()
+	return h.f
 }
 
 func jsonInvalidFormat(w http.ResponseWriter, err error) {
