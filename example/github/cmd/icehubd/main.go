@@ -110,14 +110,18 @@ var startCmd = &cobra.Command{
 		}
 		if useGrpc {
 			log.Info("start grpc server")
-			grpcSrv, err := igrpc.NewServer(cfg.Grpc, func(s *grpc.Server) {
-				mygrpc.RegisterIceHubServer(s, mygrpc.NewServer())
+			grpcSrv, err := server.NewGrpcServer()
+			if err != nil {
+				log.Fatalf("can't create grpc server")
+			}
+			grpcTrans, err := igrpc.NewServer(cfg.Grpc, func(s *grpc.Server) {
+				mygrpc.RegisterIceHubServer(s, grpcSrv)
 			})
 			if err != nil {
 				log.Fatalf("can't create grpc server %v", err)
 			}
 			go func() {
-				if err := grpcSrv.Run(); err != nil {
+				if err := grpcTrans.Run(); err != nil {
 					wg.Done()
 					log.Fatalf("can't run grpc server %v", err)
 				}
@@ -129,7 +133,6 @@ var startCmd = &cobra.Command{
 		// TODO: p2 config database
 		// TODO: p1 initial services (components?)
 		// TODO: p1 user service, cache service etc.
-		// TODO：p1 listen on port
 	},
 }
 
@@ -144,7 +147,8 @@ func main() {
 		icli.Name(myname),
 		icli.Description("IceHub is an example GitHub integration service using go.ice"),
 		icli.Version(buildInfo),
-		icli.LogRegistry(log))
+		icli.LogRegistry(log),
+		icli.IsServer())
 	root := cli.Command()
 	dbc := idbcmd.New(func() (icfg.DatabaseManagerConfig, error) {
 		if err := cli.LoadConfigTo(&cfg); err != nil {

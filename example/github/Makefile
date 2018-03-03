@@ -15,6 +15,10 @@ clean:
 	rm $(shell which icehubctl)
 	rm $(shell which icehubd)
 
+.PHONY: generate
+generate:
+	gommon generate -v
+
 .PHONY: fmt
 fmt:
 	gofmt -d -l -w ./pkg ./cmd

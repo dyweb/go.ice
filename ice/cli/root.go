@@ -19,6 +19,8 @@ type Root struct {
 	configFile   string
 	configLoaded bool
 	verbose      bool
+	server       bool
+	interactive  bool
 	logSource    bool
 	logRegistry  *dlog.Logger
 }
@@ -62,7 +64,17 @@ func makeRootCmd(root *Root) *cobra.Command {
 				return
 			}
 			// TODO: user may forgot to set logRegistry in option, and this will cause panic on nil pointer
-			dlog.SetHandlerRecursive(root.logRegistry, cli.New(os.Stderr, true))
+			if root.interactive {
+				var h dlog.Handler
+				if root.server {
+					// server runs a long time, delta would overflow ...
+					h = cli.New(os.Stderr, false)
+				} else {
+					// client cli normally prefer delta to show time elapsed
+					h = cli.New(os.Stderr, true)
+				}
+				dlog.SetHandlerRecursive(root.logRegistry, h)
+			}
 			if root.logSource {
 				dlog.EnableSourceRecusrive(root.logRegistry)
 			}
@@ -75,6 +87,7 @@ func makeRootCmd(root *Root) *cobra.Command {
 	cmd.PersistentFlags().StringVar(&root.configFile, "config", root.Name()+".yml", "config file location")
 	cmd.PersistentFlags().BoolVar(&root.verbose, "verbose", false, "verbose output and set log level to debug")
 	cmd.PersistentFlags().BoolVar(&root.logSource, "logsrc", false, "log source line when logging (expensive)")
+	cmd.PersistentFlags().BoolVar(&root.interactive, "interactive", true, "disable log color if set to false")
 	return cmd
 }
 
@@ -98,6 +111,12 @@ func Version(info BuildInfo) func(app *Root) {
 func LogRegistry(logger *dlog.Logger) func(app *Root) {
 	return func(app *Root) {
 		app.logRegistry = logger
+	}
+}
+
+func IsServer() func(app *Root) {
+	return func(app *Root) {
+		app.server = true
 	}
 }
 
