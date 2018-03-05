@@ -2,6 +2,10 @@
 test:
 	go test -v -cover ./ice/...
 
+.PHONY: loc
+loc:
+	cloc --exclude-dir=vendor,.idea,playground,vagrant,node_modules,example .
+
 .PHONY: fmt
 fmt:
 	gofmt -d -l -w ./ice ./playground
