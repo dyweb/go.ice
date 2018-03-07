@@ -35,7 +35,7 @@
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "c8e954df8b57315f12078e6217655776ac9d3e24"
+  revision = "9205d0bbac41b6bc0d3430d077595e178bb4374c"
 
 [[projects]]
   branch = "master"
@@ -160,7 +160,7 @@
     "lex/httplex",
     "trace"
   ]
-  revision = "22ae77b79946ea320088417e4d50825671d82d57"
+  revision = "d25186b37f34ebdbbea8f488ef055638dfab272d"
 
 [[projects]]
   name = "golang.org/x/text"
