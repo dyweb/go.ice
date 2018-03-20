@@ -35,13 +35,13 @@
     "util/logutil",
     "util/runtimeutil"
   ]
-  revision = "9205d0bbac41b6bc0d3430d077595e178bb4374c"
+  revision = "ae7701f9d583472626a924dd9ce761157fc7ee05"
 
 [[projects]]
   branch = "master"
   name = "github.com/go-sql-driver/mysql"
   packages = ["."]
-  revision = "02eb68a684ce8ccb467a8280c5b51232d44643b9"
+  revision = "1a676ac6e4dce68e9303a1800773861350374a9e"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -130,6 +130,7 @@
     "internal/baggage",
     "internal/baggage/remote",
     "internal/spanlog",
+    "internal/throttler",
     "log",
     "rpcmetrics",
     "thrift-gen/agent",
@@ -139,8 +140,8 @@
     "thrift-gen/zipkincore",
     "utils"
   ]
-  revision = "3ac96c6e679cb60a74589b0d0aa7c70a906183f7"
-  version = "v2.11.2"
+  revision = "c107110d057826281414cb964f167bce5be17588"
+  version = "v2.12.0"
 
 [[projects]]
   name = "github.com/uber/jaeger-lib"
@@ -160,7 +161,7 @@
     "lex/httplex",
     "trace"
   ]
-  revision = "d25186b37f34ebdbbea8f488ef055638dfab272d"
+  revision = "6078986fec03a1dcc236c34816c71b0e05018fda"
 
 [[projects]]
   name = "golang.org/x/text"
@@ -193,7 +194,7 @@
   branch = "master"
   name = "google.golang.org/genproto"
   packages = ["googleapis/rpc/status"]
-  revision = "df60624c1e9b9d2973e889c7a1cff73155da81c4"
+  revision = "f8c8703595236ae70fdf8789ecb656ea0bcdcf46"
 
 [[projects]]
   name = "google.golang.org/grpc"

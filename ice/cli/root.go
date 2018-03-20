@@ -143,13 +143,23 @@ func (root *Root) ConfigFile() string {
 	return root.configFile
 }
 
-// TODO: check config file using gommon config
 // TODO: have a config reader struct instead of using static package level method
 // TODO: config file also specify logging (which package to log etc.)
 func (root *Root) LoadConfigTo(cfg interface{}) error {
 	if err := config.LoadYAMLAsStruct(root.configFile, cfg); err != nil {
 		return errors.Wrap(err, "can't load config file")
 	}
+	return root.loadConfig(cfg)
+}
+
+func (root *Root) LoadConfigToStrict(cfg interface{}) error {
+	if err := config.LoadYAMLDirectStrict(root.configFile, cfg); err != nil {
+		return errors.Wrap(err, "can't load config file in strict mode, check typos")
+	}
+	return root.loadConfig(cfg)
+}
+
+func (root *Root) loadConfig(cfg interface{}) error {
 	root.config = cfg
 	root.configLoaded = true
 	return nil
