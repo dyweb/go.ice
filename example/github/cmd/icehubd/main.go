@@ -63,6 +63,10 @@ var startCmd = &cobra.Command{
 	Use:   "start",
 	Short: "start IceHub daemon",
 	Long:  "Start IceHub daemon with HTTP and gRPC server",
+	Example: `
+Start both grpc and http server
+	icehubd start gh
+`,
 	Run: func(cmd *cobra.Command, args []string) {
 		mustLoadConfig()
 		tmgr, err := itrace.NewManager(cfg.Tracing)
@@ -129,7 +133,6 @@ var startCmd = &cobra.Command{
 		}
 		wg.Wait()
 		// TODO: p3 check if there is already icehubd running, by port, process name etc.
-
 		// TODO: p2 config database
 		// TODO: p1 initial services (components?)
 		// TODO: p1 user service, cache service etc.

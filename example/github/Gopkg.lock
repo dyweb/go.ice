@@ -45,7 +45,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context/ctxhttp"]
-  revision = "cbe0f9307d0156177f9dd5dc85da1a31abc5f2fb"
+  revision = "6078986fec03a1dcc236c34816c71b0e05018fda"
 
 [[projects]]
   branch = "master"
@@ -54,7 +54,7 @@
     ".",
     "internal"
   ]
-  revision = "543e37812f10c46c622c9575afd7ad22f22a12ba"
+  revision = "fdc9e635145ae97e6c2cb777c48305600cf515cb"
 
 [solve-meta]
   analyzer-name = "dep"
