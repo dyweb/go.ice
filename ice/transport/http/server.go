@@ -17,13 +17,17 @@ import (
 type Server struct {
 	config config.HttpServerConfig
 	server *http.Server
-	log    *dlog.Logger
 	tracer opentracing.Tracer
 	h      http.Handler
+
+	log *dlog.Logger
 }
 
 // TODO: check if there is any error in config and return error
 func NewServer(cfg config.HttpServerConfig, h http.Handler, tracer opentracing.Tracer) (*Server, error) {
+	if cfg.ShutdownDuration <= 0 {
+		cfg.ShutdownDuration = config.ShutdownDuration
+	}
 	if cfg.EnableTracing && tracer == nil {
 		return nil, errors.New("tracer is nil but tracing is enabled")
 	}
@@ -79,7 +83,7 @@ func (srv *Server) Run() error {
 		return errors.New("nil handler")
 	}
 	cfg := srv.config
-	srv.log.Infof("listen on %s", cfg.Addr)
+	srv.log.Infof("http listen on %s", cfg.Addr)
 	if cfg.Secure {
 		srv.log.Infof("use tls with cert %s and key %s", cfg.Cert, cfg.Key)
 		if err := srv.server.ListenAndServeTLS(cfg.Cert, cfg.Key); err != nil {
@@ -94,7 +98,26 @@ func (srv *Server) Run() error {
 	return nil
 }
 
+func (srv *Server) RunWithContext(ctx context.Context) error {
+	waitCh := make(chan error)
+	go func() {
+		err := srv.Run()
+		waitCh <- err
+	}()
+	select {
+	case err := <-waitCh:
+		return err
+	case <-ctx.Done():
+		merr := errors.NewMultiErr()
+		merr.Append(ctx.Err())
+		shutCtx, _ := context.WithTimeout(context.Background(), srv.config.ShutdownDuration)
+		merr.Append(srv.Shutdown(shutCtx))
+		return merr.ErrorOrNil()
+	}
+}
+
 func (srv *Server) Shutdown(ctx context.Context) error {
+	srv.log.Info("graceful shutdown http server")
 	if err := srv.server.Shutdown(ctx); err != nil {
 		return errors.Wrap(err, "can't shutdown http server gracefully")
 	}

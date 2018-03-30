@@ -1,6 +1,7 @@
 package grpc
 
 import (
+	"context"
 	"net"
 
 	"github.com/dyweb/gommon/errors"
@@ -15,10 +16,14 @@ import (
 type Server struct {
 	config config.GrpcServerConfig
 	server *grpc.Server
-	log    *dlog.Logger
+
+	log *dlog.Logger
 }
 
 func NewServer(cfg config.GrpcServerConfig, register func(s *grpc.Server)) (*Server, error) {
+	if cfg.ShutdownDuration <= 0 {
+		cfg.ShutdownDuration = config.ShutdownDuration
+	}
 	srv := &Server{
 		config: cfg,
 	}
@@ -40,7 +45,7 @@ func NewServer(cfg config.GrpcServerConfig, register func(s *grpc.Server)) (*Ser
 
 func (srv *Server) Run() error {
 	cfg := srv.config
-	srv.log.Infof("listen on %s", cfg.Addr)
+	srv.log.Infof("grpc listen on %s", cfg.Addr)
 	lis, err := net.Listen("tcp", cfg.Addr)
 	if err != nil {
 		return errors.Wrap(err, "net can't listen tcp")
@@ -51,5 +56,30 @@ func (srv *Server) Run() error {
 	if err := srv.server.Serve(lis); err != nil {
 		return errors.Wrap(err, "grpc server can't serve")
 	}
+	return nil
+}
+
+func (srv *Server) RunWithContext(ctx context.Context) error {
+	waitCh := make(chan error)
+	go func() {
+		err := srv.Run()
+		waitCh <- err
+	}()
+	select {
+	case err := <-waitCh:
+		return err
+	case <-ctx.Done():
+		merr := errors.NewMultiErr()
+		merr.Append(ctx.Err())
+		shutCtx, _ := context.WithTimeout(context.Background(), srv.config.ShutdownDuration)
+		merr.Append(srv.Shutdown(shutCtx))
+		return merr.ErrorOrNil()
+	}
+}
+
+func (srv *Server) Shutdown(ctx context.Context) error {
+	srv.log.Info("graceful shutdown grpc server")
+	// TODO: make use of context
+	srv.server.GracefulStop()
 	return nil
 }

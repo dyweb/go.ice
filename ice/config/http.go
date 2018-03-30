@@ -1,5 +1,7 @@
 package config
 
+import "time"
+
 type HttpServerConfig struct {
 	// Addr is host:port passed to net/http directly, i.e. :8080 means listen to all requests to port 8080
 	Addr string `yaml:"addr"`
@@ -11,4 +13,6 @@ type HttpServerConfig struct {
 	Key string `yaml:"key"`
 	// EnableTracing decides if tracing is enabled on http server
 	EnableTracing bool `yaml:"enableTracing"`
+	// ShutdownDuration for graceful shutdown http server
+	ShutdownDuration time.Duration `yaml:"shutdownDuration"`
 }
