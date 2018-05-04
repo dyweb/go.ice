@@ -76,7 +76,7 @@ func makeRootCmd(root *Root) *cobra.Command {
 				dlog.SetHandlerRecursive(root.logRegistry, h)
 			}
 			if root.logSource {
-				dlog.EnableSourceRecusrive(root.logRegistry)
+				dlog.EnableSourceRecursive(root.logRegistry)
 			}
 			if root.verbose {
 				dlog.SetLevelRecursive(root.logRegistry, dlog.DebugLevel)

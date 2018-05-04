@@ -13,3 +13,7 @@ fmt:
 .PHONY: test-playground
 test-playground:
 	go test -v ./playground/...
+
+.PHONY: update-dep
+update-dep:
+	dep ensure -update
