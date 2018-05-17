@@ -17,10 +17,10 @@ import (
 	igrpc "github.com/dyweb/go.ice/ice/transport/grpc"
 	ihttp "github.com/dyweb/go.ice/ice/transport/http"
 
-	"github.com/at15/go.ice/example/github/pkg/common"
-	"github.com/at15/go.ice/example/github/pkg/server"
-	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
-	"github.com/at15/go.ice/example/github/pkg/util/logutil"
+	"github.com/dyweb/go.ice/example/github/pkg/common"
+	"github.com/dyweb/go.ice/example/github/pkg/server"
+	mygrpc "github.com/dyweb/go.ice/example/github/pkg/transport/grpc"
+	"github.com/dyweb/go.ice/example/github/pkg/util/logutil"
 
 	_ "github.com/dyweb/go.ice/ice/db/adapters/mysql"
 	_ "github.com/dyweb/go.ice/ice/db/adapters/postgres"

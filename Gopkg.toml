@@ -25,7 +25,7 @@
 #   unused-packages = true
 
 ignored = [
-  "github.com/at15/go.ice/example/*"
+  "github.com/dyweb/go.ice/example/*"
 ]
 
 # NOTE: we lock gommon version because dep will use lastest release but gommon is adding new features when go.ice need it ...

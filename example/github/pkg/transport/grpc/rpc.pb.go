@@ -15,7 +15,7 @@ import proto "github.com/gogo/protobuf/proto"
 import fmt "fmt"
 import math "math"
 import _ "github.com/gogo/protobuf/gogoproto"
-import icehub "github.com/at15/go.ice/example/github/pkg/icehubpb"
+import icehub "github.com/dyweb/go.ice/example/github/pkg/icehubpb"
 
 import context "golang.org/x/net/context"
 import grpc1 "google.golang.org/grpc"

@@ -1,4 +1,4 @@
-PKG = github.com/at15/go.ice/example/github/pkg
+PKG = github.com/dyweb/go.ice/example/github/pkg
 VERSION = 0.0.1
 BUILD_COMMIT = $(shell git rev-parse HEAD)
 BUILD_TIME = $(shell date +%Y-%m-%dT%H:%M:%S%z)

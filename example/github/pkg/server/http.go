@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	pb "github.com/at15/go.ice/example/github/pkg/icehubpb"
-	"github.com/at15/go.ice/example/github/pkg/server/auth"
+	pb "github.com/dyweb/go.ice/example/github/pkg/icehubpb"
+	"github.com/dyweb/go.ice/example/github/pkg/server/auth"
 	ihttp "github.com/dyweb/go.ice/ice/transport/http"
 	"github.com/pkg/errors"
 )

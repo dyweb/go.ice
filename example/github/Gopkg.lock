@@ -2,6 +2,23 @@
 
 
 [[projects]]
+  branch = "master"
+  name = "github.com/dyweb/go.ice"
+  packages = [
+    "example/github/pkg/common",
+    "example/github/pkg/icehubpb",
+    "example/github/pkg/server",
+    "example/github/pkg/server/auth",
+    "example/github/pkg/transport/grpc",
+    "example/github/pkg/util/logutil",
+    "ice/config",
+    "ice/transport/grpc",
+    "ice/transport/http",
+    "ice/util/logutil"
+  ]
+  revision = "f2019c29f971cd4156d5116c18bbc348b2095bbb"
+
+[[projects]]
   name = "github.com/gogo/protobuf"
   packages = [
     "gogoproto",
@@ -59,6 +76,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cde8ac56ced603ae4570c40fb2fd9b228623d45a9c5ec2cafcd4c2ab82299b5e"
+  inputs-digest = "4a29764d3f3fa946166d0af92ad98a2bb60a69e123921fc0d9aca06d76611f4f"
   solver-name = "gps-cdcl"
   solver-version = 1

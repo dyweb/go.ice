@@ -6,8 +6,8 @@ import (
 	igrpc "github.com/dyweb/go.ice/ice/transport/grpc"
 	dlog "github.com/dyweb/gommon/log"
 
-	pb "github.com/at15/go.ice/example/github/pkg/icehubpb"
-	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
+	pb "github.com/dyweb/go.ice/example/github/pkg/icehubpb"
+	mygrpc "github.com/dyweb/go.ice/example/github/pkg/transport/grpc"
 )
 
 var _ mygrpc.IceHubServer = (*GrpcServer)(nil)
