@@ -2,23 +2,6 @@
 
 
 [[projects]]
-  branch = "master"
-  name = "github.com/dyweb/go.ice"
-  packages = [
-    "example/github/pkg/common",
-    "example/github/pkg/icehubpb",
-    "example/github/pkg/server",
-    "example/github/pkg/server/auth",
-    "example/github/pkg/transport/grpc",
-    "example/github/pkg/util/logutil",
-    "ice/config",
-    "ice/transport/grpc",
-    "ice/transport/http",
-    "ice/util/logutil"
-  ]
-  revision = "f2019c29f971cd4156d5116c18bbc348b2095bbb"
-
-[[projects]]
   name = "github.com/gogo/protobuf"
   packages = [
     "gogoproto",
@@ -43,8 +26,8 @@
 [[projects]]
   name = "github.com/gorilla/context"
   packages = ["."]
-  revision = "1ea25387ff6f684839d82767c1733ff4d4d15d0a"
-  version = "v1.1"
+  revision = "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
+  version = "v1.1.1"
 
 [[projects]]
   name = "github.com/gorilla/securecookie"
@@ -62,7 +45,7 @@
   branch = "master"
   name = "golang.org/x/net"
   packages = ["context/ctxhttp"]
-  revision = "6078986fec03a1dcc236c34816c71b0e05018fda"
+  revision = "2491c5de3490fced2f6cff376127c667efeed857"
 
 [[projects]]
   branch = "master"
@@ -71,11 +54,11 @@
     ".",
     "internal"
   ]
-  revision = "fdc9e635145ae97e6c2cb777c48305600cf515cb"
+  revision = "cdc340f7c179dbbfa4afd43b7614e8fcadde4269"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "4a29764d3f3fa946166d0af92ad98a2bb60a69e123921fc0d9aca06d76611f4f"
+  inputs-digest = "8a5830e1c023694e9ff6cf6704ba0375a1651432db87ffd344035dca8d5589ca"
   solver-name = "gps-cdcl"
   solver-version = 1
