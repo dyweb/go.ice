@@ -1,4 +1,5 @@
-package transport
+// Package transport wraps server creation for common protocols like http, grpc
+package transport // import "github.com/dyweb/go.ice/ice/transport"
 
 type Client interface {
 }

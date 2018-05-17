@@ -1,8 +1,8 @@
 package jaeger
 
 import (
-	"github.com/at15/go.ice/ice/tracing"
-	"github.com/at15/go.ice/ice/util/logutil"
+	"github.com/dyweb/go.ice/ice/tracing"
+	"github.com/dyweb/go.ice/ice/util/logutil"
 )
 
 const adapterName = "jaeger"

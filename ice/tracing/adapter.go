@@ -7,7 +7,7 @@ import (
 	"github.com/dyweb/gommon/errors"
 	"github.com/opentracing/opentracing-go"
 
-	"github.com/at15/go.ice/ice/config"
+	"github.com/dyweb/go.ice/ice/config"
 )
 
 var (

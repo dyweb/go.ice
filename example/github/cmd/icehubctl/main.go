@@ -10,7 +10,7 @@ import (
 
 	"github.com/at15/go.ice/example/github/pkg/icehubpb"
 	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
-	icli "github.com/at15/go.ice/ice/cli"
+	icli "github.com/dyweb/go.ice/ice/cli"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/spf13/cobra"
 )

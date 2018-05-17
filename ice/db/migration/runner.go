@@ -3,7 +3,7 @@ package migration
 import (
 	"github.com/dyweb/gommon/errors"
 
-	"github.com/at15/go.ice/ice/db"
+	"github.com/dyweb/go.ice/ice/db"
 )
 
 type Direction bool

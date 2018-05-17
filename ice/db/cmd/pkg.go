@@ -1,12 +1,12 @@
-package cmd
+package cmd // import "github.com/dyweb/go.ice/ice/db/cmd"
 
 import (
 	"github.com/dyweb/gommon/errors"
 	"github.com/spf13/cobra"
 
-	"github.com/at15/go.ice/ice/config"
-	"github.com/at15/go.ice/ice/db"
-	"github.com/at15/go.ice/ice/util/logutil"
+	"github.com/dyweb/go.ice/ice/config"
+	"github.com/dyweb/go.ice/ice/db"
+	"github.com/dyweb/go.ice/ice/util/logutil"
 )
 
 // TODO: command for migrating database (create table, fill in dummy data)

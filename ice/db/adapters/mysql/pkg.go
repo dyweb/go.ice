@@ -1,8 +1,9 @@
-package mysql
+// Package mysql wraps github.com/go-sql-driver/mysql
+package mysql // import "github.com/dyweb/go.ice/ice/db/adapters/mysql
 
 import (
-	"github.com/at15/go.ice/ice/db"
-	"github.com/at15/go.ice/ice/util/logutil"
+	"github.com/dyweb/go.ice/ice/db"
+	"github.com/dyweb/go.ice/ice/util/logutil"
 
 	_ "github.com/go-sql-driver/mysql"
 )

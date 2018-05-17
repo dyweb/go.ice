@@ -6,7 +6,7 @@ import (
 
 	"github.com/dyweb/gommon/errors"
 
-	"github.com/at15/go.ice/ice/config"
+	"github.com/dyweb/go.ice/ice/config"
 )
 
 // TODO: allow adapter to wrap common sql operation and trace it? or it should be done at wrapper level?

@@ -1,9 +1,9 @@
 // Package db defines interface for using RDBMS
-package db
+package db // import "github.com/dyweb/go.ice/ice/db"
 
 import (
 	"database/sql"
-	"github.com/at15/go.ice/ice/util/logutil"
+	"github.com/dyweb/go.ice/ice/util/logutil"
 )
 
 var log = logutil.NewPackageLogger()

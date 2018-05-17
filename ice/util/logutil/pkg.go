@@ -1,4 +1,4 @@
-package logutil
+package logutil // import "github.com/dyweb/go.ice/ice/util/logutil"
 
 import (
 	"github.com/dyweb/gommon/log"

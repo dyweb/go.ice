@@ -10,22 +10,22 @@ import (
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 
-	icli "github.com/at15/go.ice/ice/cli"
-	icfg "github.com/at15/go.ice/ice/config"
-	idbcmd "github.com/at15/go.ice/ice/db/cmd"
-	itrace "github.com/at15/go.ice/ice/tracing"
-	igrpc "github.com/at15/go.ice/ice/transport/grpc"
-	ihttp "github.com/at15/go.ice/ice/transport/http"
+	icli "github.com/dyweb/go.ice/ice/cli"
+	icfg "github.com/dyweb/go.ice/ice/config"
+	idbcmd "github.com/dyweb/go.ice/ice/db/cmd"
+	itrace "github.com/dyweb/go.ice/ice/tracing"
+	igrpc "github.com/dyweb/go.ice/ice/transport/grpc"
+	ihttp "github.com/dyweb/go.ice/ice/transport/http"
 
 	"github.com/at15/go.ice/example/github/pkg/common"
 	"github.com/at15/go.ice/example/github/pkg/server"
 	mygrpc "github.com/at15/go.ice/example/github/pkg/transport/grpc"
 	"github.com/at15/go.ice/example/github/pkg/util/logutil"
 
-	_ "github.com/at15/go.ice/ice/db/adapters/mysql"
-	_ "github.com/at15/go.ice/ice/db/adapters/postgres"
-	_ "github.com/at15/go.ice/ice/db/adapters/sqlite"
-	_ "github.com/at15/go.ice/ice/tracing/jaeger"
+	_ "github.com/dyweb/go.ice/ice/db/adapters/mysql"
+	_ "github.com/dyweb/go.ice/ice/db/adapters/postgres"
+	_ "github.com/dyweb/go.ice/ice/db/adapters/sqlite"
+	_ "github.com/dyweb/go.ice/ice/tracing/jaeger"
 )
 
 const (

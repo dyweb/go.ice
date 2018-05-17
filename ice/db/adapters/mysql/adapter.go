@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/at15/go.ice/ice/config"
-	"github.com/at15/go.ice/ice/db"
+	"github.com/dyweb/go.ice/ice/config"
+	"github.com/dyweb/go.ice/ice/db"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/go-sql-driver/mysql"
 )

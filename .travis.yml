@@ -4,7 +4,6 @@ git:
   depth: 3
 
 go:
-  - 1.9.x
   - "1.10"
   - tip
 
@@ -12,15 +11,14 @@ install:
   - go get -u github.com/golang/dep/cmd/dep
   - dep version
   - dep ensure
-  - (cd example/github && dep ensure)
-  - pwd
+#  - (cd example/github && dep ensure)
 
 script:
-  - pwd
+#  - pwd
   - make test
   - (cd example/github && make install)
-  - pwd
-  - (cd example/github && icehubd db ping --db sqlite_local --verbose --logsrc)
-  - (cd example/github && icehubd db create --db sqlite_local --verbose --logsrc)
-  - (cd example/github && icehubd db migrate --db sqlite_local --verbose --logsrc)
+#  - pwd
+#  - (cd example/github && icehubd db ping --db sqlite_local --verbose --logsrc)
+#  - (cd example/github && icehubd db create --db sqlite_local --verbose --logsrc)
+#  - (cd example/github && icehubd db migrate --db sqlite_local --verbose --logsrc)
   # TODO: we can test with mysql and postgres on travis, they are builtin service

@@ -1,8 +1,8 @@
 // Package tracing wraps opentracing api
-package tracing
+package tracing // import "github.com/dyweb/go.ice/ice/tracing"
 
 import (
-	"github.com/at15/go.ice/ice/util/logutil"
+	"github.com/dyweb/go.ice/ice/util/logutil"
 )
 
 var log = logutil.NewPackageLogger()

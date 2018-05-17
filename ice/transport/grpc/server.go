@@ -10,7 +10,7 @@ import (
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/reflection"
 
-	"github.com/at15/go.ice/ice/config"
+	"github.com/dyweb/go.ice/ice/config"
 )
 
 type Server struct {

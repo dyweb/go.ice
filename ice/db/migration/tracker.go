@@ -2,7 +2,7 @@ package migration
 
 import (
 	"fmt"
-	"github.com/at15/go.ice/ice/db"
+	"github.com/dyweb/go.ice/ice/db"
 )
 
 type Status int

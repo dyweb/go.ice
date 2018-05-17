@@ -1,4 +1,5 @@
-package cli
+// Package cli wraps cobra
+package cli // import "github.com/dyweb/go.ice/ice/cli"
 
 import (
 	"os"

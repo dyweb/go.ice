@@ -8,7 +8,7 @@ import (
 	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
 
-	"github.com/at15/go.ice/ice/config"
+	"github.com/dyweb/go.ice/ice/config"
 )
 
 // backlog

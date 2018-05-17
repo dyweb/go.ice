@@ -11,7 +11,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/ext"
 
-	"github.com/at15/go.ice/ice/config"
+	"github.com/dyweb/go.ice/ice/config"
 )
 
 type Server struct {

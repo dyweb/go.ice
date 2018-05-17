@@ -6,8 +6,8 @@ import (
 	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
 
-	"github.com/at15/go.ice/ice/config"
-	"github.com/at15/go.ice/ice/db"
+	"github.com/dyweb/go.ice/ice/config"
+	"github.com/dyweb/go.ice/ice/db"
 )
 
 var _ db.Adapter = (*Adapter)(nil)

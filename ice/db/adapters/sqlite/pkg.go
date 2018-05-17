@@ -1,8 +1,9 @@
+// Package sqlite wraps github.com/mattn/go-sqlite3
 package sqlite
 
 import (
-	"github.com/at15/go.ice/ice/db"
-	"github.com/at15/go.ice/ice/util/logutil"
+	"github.com/dyweb/go.ice/ice/db"
+	"github.com/dyweb/go.ice/ice/util/logutil"
 
 	_ "github.com/mattn/go-sqlite3" // nameless import to register driver
 )

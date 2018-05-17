@@ -6,7 +6,7 @@ import (
 
 	pb "github.com/at15/go.ice/example/github/pkg/icehubpb"
 	"github.com/at15/go.ice/example/github/pkg/server/auth"
-	ihttp "github.com/at15/go.ice/ice/transport/http"
+	ihttp "github.com/dyweb/go.ice/ice/transport/http"
 	"github.com/pkg/errors"
 )
 

@@ -1,7 +1,7 @@
 package cmd
 
 import (
-	"github.com/at15/go.ice/ice/db/migration"
+	"github.com/dyweb/go.ice/ice/db/migration"
 	"github.com/spf13/cobra"
 )
 

@@ -27,8 +27,8 @@
 
 # HACK: ignore all the library that is used by go.ice to avoid vendor problem
 ignored = [
-  "github.com/at15/go.ice/ice",
-  "github.com/at15/go.ice/ice/*",
+  "github.com/dyweb/go.ice/ice",
+  "github.com/dyweb/go.ice/ice/*",
   "github.com/dyweb/gommon/*",
   "github.com/spf13/cobra",
   "github.com/pkg/errors",

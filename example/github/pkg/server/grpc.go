@@ -3,7 +3,7 @@ package server
 import (
 	"context"
 
-	igrpc "github.com/at15/go.ice/ice/transport/grpc"
+	igrpc "github.com/dyweb/go.ice/ice/transport/grpc"
 	dlog "github.com/dyweb/gommon/log"
 
 	pb "github.com/at15/go.ice/example/github/pkg/icehubpb"

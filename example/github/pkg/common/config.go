@@ -1,7 +1,7 @@
 package common
 
 import (
-	"github.com/at15/go.ice/ice/config"
+	"github.com/dyweb/go.ice/ice/config"
 )
 
 // TODO: logging config, need to wait for gommon/log
