@@ -15,6 +15,7 @@ install:
 
 script:
   - make test
+  - make test-cover
 # FIXME: icehubd is broken because we no longer import gommon/config in ice ...
 #  - (cd example/github && make install)
 #  - (cd example/github && icehubd db ping --db sqlite_local --verbose --logSrc)
