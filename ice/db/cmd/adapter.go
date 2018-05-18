@@ -14,7 +14,7 @@ var adapterCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		adapters := db.Adapters()
 		if len(adapters) == 0 {
-			fmt.Println("not ice/db/adapters adapter registered")
+			fmt.Println("no ice/db/adapters adapter registered")
 			return
 		}
 		fmt.Printf("%d adapters registered\n", len(adapters))

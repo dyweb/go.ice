@@ -2,6 +2,10 @@
 test:
 	go test -v -cover ./ice/...
 
+.PHONY: test-cover
+test-cover:
+	go test -coverprofile=coverage.txt -covermode=atomic ./ice/...
+
 .PHONY: loc
 loc:
 	cloc --exclude-dir=vendor,.idea,playground,vagrant,node_modules,example .
@@ -9,6 +13,9 @@ loc:
 .PHONY: fmt
 fmt:
 	gofmt -d -l -w ./ice ./playground
+
+
+
 
 .PHONY: test-playground
 test-playground:

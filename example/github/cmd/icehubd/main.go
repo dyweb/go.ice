@@ -42,7 +42,7 @@ var (
 
 var buildInfo = icli.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
 
-var cli *icli.Root
+var cli *icli.root
 var log = logutil.Registry
 
 // global configuration instance

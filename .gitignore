@@ -16,3 +16,4 @@
 # Custom ignore rules
 .idea
 vendor
+coverage.txt
