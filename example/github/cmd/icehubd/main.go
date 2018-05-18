@@ -26,6 +26,7 @@ import (
 	_ "github.com/dyweb/go.ice/ice/db/adapters/postgres"
 	_ "github.com/dyweb/go.ice/ice/db/adapters/sqlite"
 	_ "github.com/dyweb/go.ice/ice/tracing/jaeger"
+	"github.com/dyweb/gommon/config"
 )
 
 const (
@@ -140,7 +141,7 @@ Start both grpc and http server
 }
 
 func mustLoadConfig() {
-	if err := cli.LoadConfigTo(&cfg); err != nil {
+	if err := config.LoadYAMLDirectStrict(cli.ConfigFile(), &cfg); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -154,7 +155,7 @@ func main() {
 		icli.IsServer())
 	root := cli.Command()
 	dbc := idbcmd.New(func() (icfg.DatabaseManagerConfig, error) {
-		if err := cli.LoadConfigTo(&cfg); err != nil {
+		if err := config.LoadYAMLDirectStrict(cli.ConfigFile(), &cfg); err != nil {
 			return cfg.DatabaseManager, err
 		}
 		return cfg.DatabaseManager, nil

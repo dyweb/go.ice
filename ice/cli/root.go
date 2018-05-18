@@ -3,7 +3,6 @@ package cli
 import (
 	"os"
 
-	"github.com/dyweb/gommon/config"
 	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/dyweb/gommon/log/handlers/cli"
@@ -13,17 +12,12 @@ import (
 type Root struct {
 	cmd *cobra.Command
 
-	// TODO: rework the configuration part
-	// TODO: might add a app struct so application can describe their server ports etc.
-	config       interface{}
-	configFile   string
-	configLoaded bool
-
 	// set by flags
-	verbose   bool
-	logSource bool
-	logColor  bool
+	verbose bool
 	// TODO: might allow setting log level as well
+	logSource  bool
+	logColor   bool
+	configFile string
 
 	// set by compiler
 	buildInfo BuildInfo
@@ -50,13 +44,11 @@ func (root *Root) Command() *cobra.Command {
 type Options func(a *Root)
 
 func New(options ...Options) *Root {
-	root := &Root{
-		config: nil,
-	}
+	root := Root{}
 	for _, opt := range options {
-		opt(root)
+		opt(&root)
 	}
-	return root
+	return &root
 }
 
 func Name(name string) func(app *Root) {
@@ -101,45 +93,8 @@ func (root *Root) Version() string {
 	return root.buildInfo.Version
 }
 
-func (root *Root) Config() interface{} {
-	if root.config == nil {
-		root.logRegistry.Warn("application config is nil")
-	}
-	return root.config
-}
-
 func (root *Root) ConfigFile() string {
 	return root.configFile
-}
-
-// TODO: have a config reader struct instead of using static package level method
-// TODO: config file also specify logging (which package to log etc.)
-func (root *Root) LoadConfigTo(cfg interface{}) error {
-	if err := config.LoadYAMLAsStruct(root.configFile, cfg); err != nil {
-		return errors.Wrap(err, "can't load config file")
-	}
-	return root.loadConfig(cfg)
-}
-
-func (root *Root) LoadConfigToStrict(cfg interface{}) error {
-	if err := config.LoadYAMLDirectStrict(root.configFile, cfg); err != nil {
-		return errors.Wrap(err, "can't load config file in strict mode, check typos")
-	}
-	return root.loadConfig(cfg)
-}
-
-func (root *Root) loadConfig(cfg interface{}) error {
-	root.config = cfg
-	root.configLoaded = true
-	return nil
-}
-
-func (root *Root) IsConfigLoaded() bool {
-	return root.configLoaded
-}
-
-func (root *Root) SetConfigLoaded() {
-	root.configLoaded = true
 }
 
 func (root *Root) makeRootCmd() {
@@ -195,8 +150,7 @@ func (root *Root) updateLogSettings() error {
 
 func (root *Root) bindFlags() {
 	cmd := root.cmd
-
-	// config TODO: subject to change
+	// config
 	cmd.PersistentFlags().StringVar(&root.configFile, "config", root.Name()+".yml", "config file location")
 	// log
 	cmd.PersistentFlags().BoolVar(&root.verbose, "verbose", false, "verbose output and set log level to debug")

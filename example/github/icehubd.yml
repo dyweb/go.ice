@@ -1,7 +1,7 @@
 # example icehub config
 # FIXME: config logging use yaml is not supported by gommon/log yet
-logging:
-  level: info
+#logging:
+#  level: info
 db-manager:
   default: sqlite_local
 #  default: postgres_local
