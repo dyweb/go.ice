@@ -24,7 +24,7 @@ func (info *BuildInfo) PrintTo(w io.Writer) {
 	fmt.Fprintf(w, "go version: %s\n", info.GoVersion)
 }
 
-func makeVersionCmd(root *root) *cobra.Command {
+func makeVersionCmd(root *Root) *cobra.Command {
 	return &cobra.Command{
 		Use:   "version",
 		Short: "print version",

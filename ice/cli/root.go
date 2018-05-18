@@ -10,9 +10,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type root struct {
+type Root struct {
 	cmd *cobra.Command
 
+	// TODO: rework the configuration part
+	// TODO: might add a app struct so application can describe their server ports etc.
 	config       interface{}
 	configFile   string
 	configLoaded bool
@@ -21,6 +23,7 @@ type root struct {
 	verbose   bool
 	logSource bool
 	logColor  bool
+	// TODO: might allow setting log level as well
 
 	// set by compiler
 	buildInfo BuildInfo
@@ -32,12 +35,22 @@ type root struct {
 	logRegistry *dlog.Logger
 }
 
+func (root *Root) Command() *cobra.Command {
+	if root.cmd != nil {
+		return root.cmd
+	}
+	root.makeRootCmd()
+	root.cmd.AddCommand(makeVersionCmd(root))
+	// TODO: add gommon and database
+	return root.cmd
+}
+
 // use functional options https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
 
-type Options func(a *root)
+type Options func(a *Root)
 
-func New(options ...Options) *root {
-	root := &root{
+func New(options ...Options) *Root {
+	root := &Root{
 		config: nil,
 	}
 	for _, opt := range options {
@@ -46,18 +59,91 @@ func New(options ...Options) *root {
 	return root
 }
 
-func (root *root) Command() *cobra.Command {
-	if root.cmd != nil {
-		return root.cmd
+func Name(name string) func(app *Root) {
+	return func(app *Root) {
+		app.name = name
 	}
-	root.cmd = makeRootCmd(root)
-	root.cmd.AddCommand(makeVersionCmd(root))
-	// TODO: add gommon and database
-	return root.cmd
 }
 
-func makeRootCmd(root *root) *cobra.Command {
-	cmd := cobra.Command{
+func Description(desc string) func(app *Root) {
+	return func(app *Root) {
+		app.description = desc
+	}
+}
+
+func Version(info BuildInfo) func(app *Root) {
+	return func(app *Root) {
+		app.buildInfo = info
+	}
+}
+
+func LogRegistry(logger *dlog.Logger) func(app *Root) {
+	return func(app *Root) {
+		app.logRegistry = logger
+	}
+}
+
+func IsServer() func(app *Root) {
+	return func(app *Root) {
+		app.server = true
+	}
+}
+
+func (root *Root) Name() string {
+	return root.name
+}
+
+func (root *Root) Description() string {
+	return root.description
+}
+
+func (root *Root) Version() string {
+	return root.buildInfo.Version
+}
+
+func (root *Root) Config() interface{} {
+	if root.config == nil {
+		root.logRegistry.Warn("application config is nil")
+	}
+	return root.config
+}
+
+func (root *Root) ConfigFile() string {
+	return root.configFile
+}
+
+// TODO: have a config reader struct instead of using static package level method
+// TODO: config file also specify logging (which package to log etc.)
+func (root *Root) LoadConfigTo(cfg interface{}) error {
+	if err := config.LoadYAMLAsStruct(root.configFile, cfg); err != nil {
+		return errors.Wrap(err, "can't load config file")
+	}
+	return root.loadConfig(cfg)
+}
+
+func (root *Root) LoadConfigToStrict(cfg interface{}) error {
+	if err := config.LoadYAMLDirectStrict(root.configFile, cfg); err != nil {
+		return errors.Wrap(err, "can't load config file in strict mode, check typos")
+	}
+	return root.loadConfig(cfg)
+}
+
+func (root *Root) loadConfig(cfg interface{}) error {
+	root.config = cfg
+	root.configLoaded = true
+	return nil
+}
+
+func (root *Root) IsConfigLoaded() bool {
+	return root.configLoaded
+}
+
+func (root *Root) SetConfigLoaded() {
+	root.configLoaded = true
+}
+
+func (root *Root) makeRootCmd() {
+	root.cmd = &cobra.Command{
 		Use:   root.Name(),
 		Short: root.Description(),
 		Long:  root.Description(),
@@ -71,116 +157,49 @@ func makeRootCmd(root *root) *cobra.Command {
 			if cmd.Use == "version" || cmd.Use == root.Name() {
 				return
 			}
-			if root.logRegistry == nil {
-				log.Fatal("logRegistry is not set for root command, pass cli.LogRegistry(logger) when call cli.New")
+			if err := root.updateLogSettings(); err != nil {
+				log.Fatal(err)
 				return
-			}
-			// default log handler has no color
-			if root.logColor {
-				var h dlog.Handler
-				if root.server {
-					// server runs a long time, delta would overflow ...
-					h = cli.New(os.Stderr, false)
-				} else {
-					// client cli normally prefer delta to show time elapsed
-					h = cli.New(os.Stderr, true)
-				}
-				dlog.SetHandlerRecursive(root.logRegistry, h)
-			}
-			if root.logSource {
-				dlog.EnableSourceRecursive(root.logRegistry)
-			}
-			if root.verbose {
-				dlog.SetLevelRecursive(root.logRegistry, dlog.DebugLevel)
-				root.logRegistry.Debug("using debug level logging due to verbose config")
 			}
 		},
 	}
-	cmd.PersistentFlags().StringVar(&root.configFile, "config", root.Name()+".yml", "config file location")
-	cmd.PersistentFlags().BoolVar(&root.verbose, "verbose", false, "verbose output and set log level to debug")
-	cmd.PersistentFlags().BoolVar(&root.logSource, "logSrc", false, "log source line when logging (expensive)")
-	cmd.PersistentFlags().BoolVar(&root.logColor, "logColor", true, "disable log color if set to false")
-	return &cmd
+	root.bindFlags()
 }
 
-func Name(name string) func(app *root) {
-	return func(app *root) {
-		app.name = name
+func (root *Root) updateLogSettings() error {
+	if root.logRegistry == nil {
+		// TODO: might show full solution for error, has a internal knowledge database
+		return errors.New("logRegistry is not set for Root command, pass cli.LogRegistry(logger) when call cli.New")
 	}
-}
-func Description(desc string) func(app *root) {
-	return func(app *root) {
-		app.description = desc
+	// default log handler has no color
+	if root.logColor {
+		var h dlog.Handler
+		if root.server {
+			// server runs a long time, delta would overflow ...
+			h = cli.New(os.Stderr, false)
+		} else {
+			// client cli normally prefer delta to show time elapsed
+			h = cli.New(os.Stderr, true)
+		}
+		dlog.SetHandlerRecursive(root.logRegistry, h)
 	}
-}
-
-func Version(info BuildInfo) func(app *root) {
-	return func(app *root) {
-		app.buildInfo = info
+	if root.logSource {
+		dlog.EnableSourceRecursive(root.logRegistry)
 	}
-}
-
-func LogRegistry(logger *dlog.Logger) func(app *root) {
-	return func(app *root) {
-		app.logRegistry = logger
+	if root.verbose {
+		dlog.SetLevelRecursive(root.logRegistry, dlog.DebugLevel)
+		root.logRegistry.Debug("using debug level logging due to verbose config")
 	}
-}
-
-func IsServer() func(app *root) {
-	return func(app *root) {
-		app.server = true
-	}
-}
-
-func (root *root) Name() string {
-	return root.name
-}
-
-func (root *root) Description() string {
-	return root.description
-}
-
-func (root *root) Version() string {
-	return root.buildInfo.Version
-}
-
-func (root *root) Config() interface{} {
-	if root.config == nil {
-		root.logRegistry.Warn("application config is nil")
-	}
-	return root.config
-}
-
-func (root *root) ConfigFile() string {
-	return root.configFile
-}
-
-// TODO: have a config reader struct instead of using static package level method
-// TODO: config file also specify logging (which package to log etc.)
-func (root *root) LoadConfigTo(cfg interface{}) error {
-	if err := config.LoadYAMLAsStruct(root.configFile, cfg); err != nil {
-		return errors.Wrap(err, "can't load config file")
-	}
-	return root.loadConfig(cfg)
-}
-
-func (root *root) LoadConfigToStrict(cfg interface{}) error {
-	if err := config.LoadYAMLDirectStrict(root.configFile, cfg); err != nil {
-		return errors.Wrap(err, "can't load config file in strict mode, check typos")
-	}
-	return root.loadConfig(cfg)
-}
-
-func (root *root) loadConfig(cfg interface{}) error {
-	root.config = cfg
-	root.configLoaded = true
 	return nil
 }
 
-func (root *root) IsConfigLoaded() bool {
-	return root.configLoaded
-}
+func (root *Root) bindFlags() {
+	cmd := root.cmd
 
-func (root *root) SetConfigLoaded() {
-	root.configLoaded = true
+	// config TODO: subject to change
+	cmd.PersistentFlags().StringVar(&root.configFile, "config", root.Name()+".yml", "config file location")
+	// log
+	cmd.PersistentFlags().BoolVar(&root.verbose, "verbose", false, "verbose output and set log level to debug")
+	cmd.PersistentFlags().BoolVar(&root.logSource, "logSrc", false, "log source line when logging (expensive)")
+	cmd.PersistentFlags().BoolVar(&root.logColor, "logColor", true, "disable log color if set to false")
 }
