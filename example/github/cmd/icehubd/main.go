@@ -2,13 +2,17 @@ package main
 
 import (
 	"fmt"
+
+	"io/ioutil"
 	"os"
 	"runtime"
 	"strings"
 	"sync"
 
+	"github.com/dyweb/gommon/errors"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
+	"gopkg.in/yaml.v2"
 
 	icli "github.com/dyweb/go.ice/ice/cli"
 	icfg "github.com/dyweb/go.ice/ice/config"
@@ -26,7 +30,6 @@ import (
 	_ "github.com/dyweb/go.ice/ice/db/adapters/postgres"
 	_ "github.com/dyweb/go.ice/ice/db/adapters/sqlite"
 	_ "github.com/dyweb/go.ice/ice/tracing/jaeger"
-	"github.com/dyweb/gommon/config"
 )
 
 const (
@@ -141,7 +144,7 @@ Start both grpc and http server
 }
 
 func mustLoadConfig() {
-	if err := config.LoadYAMLDirectStrict(cli.ConfigFile(), &cfg); err != nil {
+	if err := LoadYAMLDirectStrict(cli.ConfigFile(), &cfg); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -155,7 +158,7 @@ func main() {
 		icli.IsServer())
 	root := cli.Command()
 	dbc := idbcmd.New(func() (icfg.DatabaseManagerConfig, error) {
-		if err := config.LoadYAMLDirectStrict(cli.ConfigFile(), &cfg); err != nil {
+		if err := LoadYAMLDirectStrict(cli.ConfigFile(), &cfg); err != nil {
 			return cfg.DatabaseManager, err
 		}
 		return cfg.DatabaseManager, nil
@@ -168,4 +171,15 @@ func main() {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}
+}
+
+func LoadYAMLDirectStrict(file string, cfg interface{}) error {
+	b, err := ioutil.ReadFile(file)
+	if err != nil {
+		return errors.Wrapf(err, "can't read config file %s", file)
+	}
+	if err := yaml.UnmarshalStrict(b, cfg); err != nil {
+		return errors.Wrap(err, "can't parse yaml in strict mode")
+	}
+	return nil
 }
