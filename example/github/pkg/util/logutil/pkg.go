@@ -5,15 +5,21 @@ import (
 	"github.com/dyweb/gommon/log"
 )
 
-var Registry = log.NewApplicationLogger()
+const Project = "github.com/your/project"
 
-func NewPackageLogger() *log.Logger {
-	l := log.NewPackageLoggerWithSkip(1)
-	Registry.AddChild(l)
-	return l
+var registry = log.NewLibraryRegistry(Project)
+
+func Registry() *log.Registry {
+	return &registry
+}
+
+func NewPackageLoggerAndRegistry() (*log.Logger, *log.Registry) {
+	logger, child := log.NewPackageLoggerAndRegistryWithSkip(Project, 1)
+	registry.AddRegistry(child)
+	return logger, child
 }
 
 func init() {
 	// gain control of important libraries
-	Registry.AddChild(icelog.Registry)
+	registry.AddRegistry(icelog.Registry())
 }

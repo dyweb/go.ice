@@ -29,7 +29,7 @@ var (
 
 var buildInfo = icli.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
 
-var log = dlog.NewApplicationLogger()
+var log, logReg = dlog.NewApplicationLoggerAndRegistry("icehubctl")
 var addr = "localhost:7081"
 var conn *grpc.ClientConn
 var client mygrpc.IceHubClient
@@ -53,7 +53,7 @@ func main() {
 		icli.Name(myname),
 		icli.Description("Client of IceHub, which is an example GitHub integration service using go.ice"),
 		icli.Version(buildInfo),
-		icli.LogRegistry(log))
+		icli.LogRegistry(logReg))
 	root := cli.Command()
 	root.AddCommand(pingCmd)
 	if err := root.Execute(); err != nil {

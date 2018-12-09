@@ -1,5 +1,5 @@
 // Package postgres wraps github.com/jackc/pgx
-package postgres // import "github.com/dyweb/go.ice/ice/db/adapters/postgres"
+package postgres
 
 import (
 	"github.com/dyweb/go.ice/ice/db"
@@ -11,7 +11,7 @@ import (
 const adapterName = "postgres"
 const driverName = "pgx"
 
-var log = logutil.NewPackageLogger()
+var log, _ = logutil.NewPackageLoggerAndRegistry()
 
 func init() {
 	db.RegisterAdapterFactory(adapterName, func() db.Adapter {

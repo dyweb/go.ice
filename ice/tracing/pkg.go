@@ -5,4 +5,4 @@ import (
 	"github.com/dyweb/go.ice/ice/util/logutil"
 )
 
-var log = logutil.NewPackageLogger()
+var log, _ = logutil.NewPackageLoggerAndRegistry()

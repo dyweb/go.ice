@@ -10,6 +10,7 @@ import (
 	"sync"
 
 	"github.com/dyweb/gommon/errors"
+	dlog "github.com/dyweb/gommon/log"
 	"github.com/spf13/cobra"
 	"google.golang.org/grpc"
 	"gopkg.in/yaml.v2"
@@ -47,7 +48,7 @@ var (
 var buildInfo = icli.BuildInfo{Version: version, Commit: commit, BuildTime: buildTime, BuildUser: buildUser, GoVersion: goVersion}
 
 var cli *icli.Root
-var log = logutil.Registry
+var log, logReg = dlog.NewApplicationLoggerAndRegistry("icehubd")
 
 // global configuration instance
 var cfg common.ServerConfig
@@ -59,7 +60,9 @@ var logCmd = &cobra.Command{
 	Short: "test log config",
 	Long:  "Test log tree printer etc.",
 	Run: func(cmd *cobra.Command, args []string) {
-		log.PrintTree()
+		//log.PrintTree()
+		// TODO: gommon/log need support print logger
+		log.Fatal("print log tree is not supported")
 	},
 }
 
@@ -150,11 +153,12 @@ func mustLoadConfig() {
 }
 
 func main() {
+	logReg.AddRegistry(logutil.Registry())
 	cli = icli.New(
 		icli.Name(myname),
 		icli.Description("IceHub is an example GitHub integration service using go.ice"),
 		icli.Version(buildInfo),
-		icli.LogRegistry(log),
+		icli.LogRegistry(logReg),
 		icli.IsServer())
 	root := cli.Command()
 	dbc := idbcmd.New(func() (icfg.DatabaseManagerConfig, error) {

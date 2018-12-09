@@ -7,7 +7,7 @@ import (
 
 const adapterName = "jaeger"
 
-var log = logutil.NewPackageLogger()
+var log, _ = logutil.NewPackageLoggerAndRegistry()
 
 func init() {
 	tracing.RegisterAdapterFactory(adapterName, func() tracing.Adapter {

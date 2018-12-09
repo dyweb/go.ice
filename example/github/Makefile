@@ -29,4 +29,4 @@ keygen:
 
 .PHONY: dep-update
 dep-update:
-	dep ensure -update
+	dep ensure -update -v

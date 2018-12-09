@@ -11,7 +11,7 @@ import (
 const adapterName = "sqlite"
 const driverName = "sqlite3"
 
-var log = logutil.NewPackageLogger()
+var log, _ = logutil.NewPackageLoggerAndRegistry()
 
 func init() {
 	db.RegisterAdapterFactory(adapterName, func() db.Adapter {

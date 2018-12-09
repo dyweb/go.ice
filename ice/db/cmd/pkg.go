@@ -1,4 +1,4 @@
-package cmd // import "github.com/dyweb/go.ice/ice/db/cmd"
+package cmd
 
 import (
 	"github.com/dyweb/gommon/errors"
@@ -14,7 +14,7 @@ import (
 // TODO: create/drop database (the user need to be root ... but this is normally the case in local dev ...)
 // TODO: util function for clean up manager
 
-var log = logutil.NewPackageLogger()
+var log, _ = logutil.NewPackageLoggerAndRegistry()
 
 // Command is a wrapper to keep internal states like database manager
 type Command struct {

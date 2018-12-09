@@ -26,7 +26,7 @@ type Root struct {
 	name        string
 	description string
 	server      bool
-	logRegistry *dlog.Logger
+	logRegistry *dlog.Registry
 }
 
 func (root *Root) Command() *cobra.Command {
@@ -69,7 +69,7 @@ func Version(info BuildInfo) func(app *Root) {
 	}
 }
 
-func LogRegistry(logger *dlog.Logger) func(app *Root) {
+func LogRegistry(logger *dlog.Registry) func(app *Root) {
 	return func(app *Root) {
 		app.logRegistry = logger
 	}
@@ -136,14 +136,15 @@ func (root *Root) updateLogSettings() error {
 			// client cli normally prefer delta to show time elapsed
 			h = cli.New(os.Stderr, true)
 		}
-		dlog.SetHandlerRecursive(root.logRegistry, h)
+		dlog.SetHandler(root.logRegistry, h)
 	}
 	if root.logSource {
-		dlog.EnableSourceRecursive(root.logRegistry)
+		dlog.EnableSource(root.logRegistry)
 	}
 	if root.verbose {
-		dlog.SetLevelRecursive(root.logRegistry, dlog.DebugLevel)
-		root.logRegistry.Debug("using debug level logging due to verbose config")
+		dlog.SetLevel(root.logRegistry, dlog.DebugLevel)
+		// FIXME: registry might need to allow caller to have a first logger
+		//root.logRegistry.Debug("using debug level logging due to verbose config")
 	}
 	return nil
 }

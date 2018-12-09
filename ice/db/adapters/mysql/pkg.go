@@ -1,5 +1,5 @@
 // Package mysql wraps github.com/go-sql-driver/mysql
-package mysql // import "github.com/dyweb/go.ice/ice/db/adapters/mysql"
+package mysql
 
 import (
 	"github.com/dyweb/go.ice/ice/db"
@@ -11,7 +11,7 @@ import (
 const adapterName = "mysql"
 const driverName = "mysql"
 
-var log = logutil.NewPackageLogger()
+var log, _ = logutil.NewPackageLoggerAndRegistry()
 
 func init() {
 	db.RegisterAdapterFactory(adapterName, func() db.Adapter {

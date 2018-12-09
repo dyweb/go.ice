@@ -1,20 +1,26 @@
-package logutil // import "github.com/dyweb/go.ice/ice/util/logutil"
+package logutil
 
 import (
 	"github.com/dyweb/gommon/log"
 	gommonlog "github.com/dyweb/gommon/util/logutil"
 )
 
-var Registry = log.NewLibraryLogger()
+const Project = "github.com/dyweb/go.ice"
 
-func NewPackageLogger() *log.Logger {
-	l := log.NewPackageLoggerWithSkip(1)
-	Registry.AddChild(l)
-	return l
+var registry = log.NewLibraryRegistry(Project)
+
+func Registry() *log.Registry {
+	return &registry
+}
+
+func NewPackageLoggerAndRegistry() (*log.Logger, *log.Registry) {
+	logger, child := log.NewPackageLoggerAndRegistryWithSkip(Project, 1)
+	registry.AddRegistry(child)
+	return logger, child
 }
 
 func init() {
 	// gain control of important libraries, NOTE: there could be duplicate and cycle when various library is involved
 	// thus gommon/log would keep track of visited logger when doing recursive version of SetLevel and SetHandler
-	Registry.AddChild(gommonlog.Registry)
+	registry.AddRegistry(gommonlog.Registry())
 }

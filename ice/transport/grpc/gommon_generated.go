@@ -12,6 +12,6 @@ func (srv *Server) GetLogger() *dlog.Logger {
 	return srv.log
 }
 
-func (srv *Server) LoggerIdentity(justCallMe func() *dlog.Identity) *dlog.Identity {
+func (srv *Server) LoggerIdentity(justCallMe func() dlog.Identity) dlog.Identity {
 	return justCallMe()
 }

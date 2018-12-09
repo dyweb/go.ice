@@ -18,11 +18,11 @@ func NewLoggingHandler(h http.Handler, log *dlog.Logger) http.Handler {
 
 func logAccess(log *dlog.Logger, tw *TrackedWriter, r *http.Request) {
 	// TODO: duration, but gommon/log can't handle float?
-	log.InfoF("http", dlog.Fields{
+	log.InfoF("http",
 		dlog.Str("remote", r.RemoteAddr),
 		dlog.Str("proto", r.Proto),
 		dlog.Str("url", r.URL.String()),
 		dlog.Int("size", tw.Size()),
 		dlog.Int("status", tw.Status()),
-	})
+	)
 }

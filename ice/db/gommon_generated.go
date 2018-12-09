@@ -12,7 +12,7 @@ func (mgr *Manager) GetLogger() *dlog.Logger {
 	return mgr.log
 }
 
-func (mgr *Manager) LoggerIdentity(justCallMe func() *dlog.Identity) *dlog.Identity {
+func (mgr *Manager) LoggerIdentity(justCallMe func() dlog.Identity) dlog.Identity {
 	return justCallMe()
 }
 
@@ -24,6 +24,6 @@ func (w *Wrapper) GetLogger() *dlog.Logger {
 	return w.log
 }
 
-func (w *Wrapper) LoggerIdentity(justCallMe func() *dlog.Identity) *dlog.Identity {
+func (w *Wrapper) LoggerIdentity(justCallMe func() dlog.Identity) dlog.Identity {
 	return justCallMe()
 }

@@ -36,17 +36,17 @@ func newLogger(service string) *logger {
 }
 
 func (l *logger) Error(msg string) {
-	log.ErrorF(msg, dlog.Fields{
+	log.ErrorF(msg,
 		dlog.Str("svc", l.service),
 		dlog.Str("trc", "jaeger"),
-	})
+	)
 }
 
 func (l *logger) Infof(msg string, args ...interface{}) {
-	log.InfoF(fmt.Sprintf(msg, args...), dlog.Fields{
+	log.InfoF(fmt.Sprintf(msg, args...),
 		dlog.Str("svc", l.service),
 		dlog.Str("trc", "jaeger"),
-	})
+	)
 }
 
 func New() *Adapter {

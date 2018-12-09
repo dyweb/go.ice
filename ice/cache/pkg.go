@@ -1,6 +1,6 @@
 // Package cache defines interfaces for using Key-Value cache and Redis
 // TODO: not implemented
-package cache // import "github.com/dyweb/go.ice/ice/cache"
+package cache
 
 type KV interface {
 	Get(key string) (val interface{}, err error)
