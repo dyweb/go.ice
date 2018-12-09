@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/dyweb/go.ice.svg?branch=master)](https://travis-ci.org/dyweb/go.ice)
 [![codecov](https://codecov.io/gh/dyweb/go.ice/branch/master/graph/badge.svg)](https://codecov.io/gh/dyweb/go.ice)
+[![](https://tokei.rs/b1/github/dyweb/go.ice)](https://github.com/dyweb/go.ice)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fat15%2Fgo.ice.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fat15%2Fgo.ice?ref=badge_shield)
 
 A server application toolkit with profiling in mind
@@ -17,7 +18,7 @@ Non Goals
 
 - a Rails like web framework
 
-## Roadmap
+## Road map
 
 cli
 
