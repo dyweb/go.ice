@@ -1,5 +1,7 @@
 # Design
 
+**Deprecated** see new [design](design)
+
 [Previous design](design-old.md) focus on building API gateway, now we need to it to be a full web application framework
 that just work, and don't focus on security and reliability (not that gateway).
 
