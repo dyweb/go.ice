@@ -9,9 +9,9 @@ import "encoding/json"
 // ParameterObject
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#path-item-object
-type PathItem struct {
+type Path struct {
 	// TODO: how to deal with Ref, we could inline everything when generate though ....
-	Ref         string      `json:"$ref" yaml:"$ref"`
+	//Ref         string      `json:"$ref" yaml:"$ref"`
 	Summary     string      `json:"summary" yaml:"summary"`
 	Description string      `json:"description" yaml:"description"`
 	Servers     []Server    `json:"servers,omitempty" yaml:"servers,omitempty"`
@@ -72,14 +72,14 @@ func (r ParameterOrRef) MarshalJSON() ([]byte, error) {
 //  "style": "simple"
 // }
 type Parameter struct {
-	Name            string      `json:"name" yaml:"name"`
-	In              string      `json:"in" yaml:"in"`
-	Description     string      `json:"description" yaml:"description"`
-	Schema          SchemaOrRef `json:"schema" yaml:"schema"`
-	Style           string      `json:"style" yaml:"style"`
-	Required        bool        `json:"required" yaml:"required"`
-	Deprecated      bool        `json:"deprecated" yaml:"deprecated"`
-	AllowEmptyValue bool        `json:"allowEmptyValue" yaml:"allowEmptyValue"`
+	Name            string       `json:"name" yaml:"name"`
+	In              string       `json:"in" yaml:"in"`
+	Description     string       `json:"description" yaml:"description"`
+	Schema          *SchemaOrRef `json:"schema" yaml:"schema"`
+	Style           string       `json:"style" yaml:"style"`
+	Required        bool         `json:"required" yaml:"required"`
+	Deprecated      bool         `json:"deprecated" yaml:"deprecated"`
+	AllowEmptyValue bool         `json:"allowEmptyValue" yaml:"allowEmptyValue"`
 }
 
 type RequestBodyOrRef struct {
@@ -126,6 +126,6 @@ type Response struct {
 
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#mediaTypeObject
 type MediaType struct {
-	Schema SchemaOrRef `json:"schema" yaml:"schema"`
+	Schema *SchemaOrRef `json:"schema" yaml:"schema"`
 	// TODO: example, examples
 }

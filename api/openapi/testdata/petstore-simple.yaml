@@ -1,0 +1,47 @@
+openapi: 3.0.2
+info:
+  title: Simple Pet Store
+  description: I am *mark down*
+  termsOfService: ""
+  version: 0.0.1
+servers:
+- url: https://dyweb.com/petstore/v1
+  description: Testing server
+tags:
+- name: pet
+  description: Everything about your **Pet**
+paths:
+  /pets:
+    summary: ""
+    description: ""
+    get:
+      tags:
+      - pet
+      summary: List all pets
+      description: ""
+      operationId: listPets
+      responses:
+        "200":
+          description: A paged array of pets
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Pets'
+      deprecated: false
+components:
+  schemas:
+    Pet:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        name:
+          type: string
+      required:
+      - id
+      - name
+    Pets:
+      type: array
+      items:
+        $ref: '#/components/schemas/Pet'

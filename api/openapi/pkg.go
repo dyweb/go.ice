@@ -5,7 +5,10 @@
 package openapi
 
 // TODO: use pointer and omit empty for struct
-// TODO: deal with ref
+// TODO: deal with ref, NOTE: need to consider both json and YAML
+// TODO: move take aways to doc
+// - use pointer to struct to avoid recursive type
+// - need to define marshaler for both JSON and YAML
 
 const Version = "3.0.2"
 
@@ -24,24 +27,24 @@ type Reference struct {
 // - tags is how you group the paths
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#openapi-object
 type Document struct {
-	Openapi      string              `json:"openapi" yaml:"openapi"`
-	Info         Info                `json:"info" yaml:"info"`
-	Servers      []Server            `json:"servers" yaml:"servers"`
-	Paths        map[string]PathItem `json:"paths" yaml:"paths"`
-	Components   *Components         `json:"components,omitempty" yaml:"components,omitempty"`
-	Security     *Security           `json:"security,omitempty" yaml:"security,omitempty"`
-	Tags         []Tag               `json:"tags,omitempty" yaml:"tags,omitempty"`
-	ExternalDocs *ExternalDoc        `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
+	Openapi      string          `json:"openapi" yaml:"openapi"`
+	Info         Info            `json:"info" yaml:"info"`
+	Servers      []Server        `json:"servers" yaml:"servers"`
+	Tags         []Tag           `json:"tags,omitempty" yaml:"tags,omitempty"`
+	ExternalDocs *ExternalDoc    `json:"externalDocs,omitempty" yaml:"externalDocs,omitempty"`
+	Paths        map[string]Path `json:"paths" yaml:"paths"`
+	Components   Components      `json:"components,omitempty" yaml:"components,omitempty"`
+	Security     *Security       `json:"security,omitempty" yaml:"security,omitempty"`
 }
 
 // Components contains reusable objects that can be referenced
 // https://github.com/OAI/OpenAPI-Specification/blob/master/versions/3.0.2.md#componentsObject
 type Components struct {
-	Schemas   map[string]SchemaOrRef   `json:"schemas" yaml:"schemas"`
-	Responses map[string]ResponseOrRef `json:"responses" yaml:"responses"`
+	Schemas   map[string]*SchemaOrRef  `json:"schemas" yaml:"schemas"`
+	Responses map[string]ResponseOrRef `json:"responses,omitempty" yaml:"responses,omitempty"`
 	// TODO: parameters
 	// TODO: examples
-	RequestBodies map[string]RequestBodyOrRef `json:"requestBodies" yaml:"requestBodies"`
+	RequestBodies map[string]RequestBodyOrRef `json:"requestBodies,omitempty" yaml:"requestBodies,omitempty"`
 	// TODO: headers
 	// TODO: securitySchemes TODO: it is not securitySchema?
 	// TODO: links
