@@ -32,7 +32,7 @@
     "util/runtimeutil",
   ]
   pruneopts = "UT"
-  revision = "66e18e136f73f0e8e6d5dc654f7e4b3a62cc1fcc"
+  revision = "851911fe2f98ace9ec0c18ca60016fa665b2d82d"
 
 [[projects]]
   branch = "master"
