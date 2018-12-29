@@ -1,5 +1,13 @@
 # go.ice
 
+<h1 align="center">
+        <br>
+        <img width="100%" src="doc/media/go.ice.png" alt="go.ice">
+        <br>
+        <br>
+        <br>
+</h1>
+
 [![Build Status](https://travis-ci.org/dyweb/go.ice.svg?branch=master)](https://travis-ci.org/dyweb/go.ice)
 [![codecov](https://codecov.io/gh/dyweb/go.ice/branch/master/graph/badge.svg)](https://codecov.io/gh/dyweb/go.ice)
 [![](https://tokei.rs/b1/github/dyweb/go.ice)](https://github.com/dyweb/go.ice)
