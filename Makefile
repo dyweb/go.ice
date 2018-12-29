@@ -1,6 +1,10 @@
+# --- packages ---
+PKGST=./api ./cli ./db ./httpclient ./udash
+# --- packages ---
+
 .PHONY: fmt
 fmt:
-	gofmt -d -l -w ./ice ./playground
+	gofmt -d -l -w $(PKGST)
 
 # --- test ---
 .PHONY: test

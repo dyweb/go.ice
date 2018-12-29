@@ -1,0 +1,119 @@
+# 2018-12-16 Components continued
+
+This doc is a follow up on [previous](2018-12-15-components.md) on what should be included in go.ice.
+
+Initial goal is to have a web framework that is similar to django, laravel, provide cli helper, 
+database wrapping, migration etc, ui skeleton.
+
+The ultimate goal is to have a spec that allow generate most part of server, client, cli, UI,
+so developer only need to fill in application specific logic. 
+however this can't work until we have the underlying library to support the generated stub, 
+also the spec design can be awkward if it is not coming from real application, 
+so we need to build the library and some app first.
+
+## Components
+
+- ice
+  - as example for cli, database etc.
+  - can be embed into application as sub command, db, log etc.
+  - standalone for generating stub etc.
+- cli
+  - use context to abstract the underlying cli framework and make the cli logic easier to test
+    - it's very likely we will replace [spf13/cobra](https://github.com/spf13/cobra) with our own wheel in the future
+  - provide common output format like table, csv, markdown using [olekukonko/tablewriter](https://github.com/olekukonko/tablewriter)
+  - auto complete
+  - interactive mode
+- http server
+  - json encode & decode
+  - router, can use [gorilla/mux](https://github.com/gorilla/mux) for now, but should have or own compact trie based router
+  - session, can use [gorilla/sessions](https://github.com/gorilla/sessions) for now, only useful part is secure cookie
+  - auth, don't want to use things like [casbin](https://github.com/casbin/casbin)
+- http client
+  - json encode & decode
+  - built in retry
+  - github client
+  - docker client
+  - elasticsearch client
+- database
+  - use [sqlx](https://github.com/jmoiron/sqlx) to handle mysql and postgresql
+  - migration
+  - dashboard as example application
+- task runner
+  - follow the unfinished in [benchhub/runner](https://github.com/benchhub/benchhub/tree/master/pkg/runner)
+  - adhoc task like database migration
+  - background task likes cron and run as long as the server lives
+  - distributed task (well if you have a data store as source of truth, this is not that hard as it seems)
+- grpc
+  - some util and wrapper?
+- tracing
+  - opencensus
+  - integrate with http, grpc, database
+- ui
+ - common templates (stuff to copy and paste, table, ajax etc.)
+- udash
+  - the demo application of go.ice universal dashboard for databases
+
+## Directory layout
+
+The folder layout for packages should be following (remove the top level ice folder), current one will be abandoned entirely.
+We prefer use a flat package layout and don't put a `/pkg`, `/src`, `/ice` so people can know what is offered by the framework
+in a glance.
+
+Udash will be the example application developed along with the framework, it is in tree so the dependency management would be
+much easier in early development.
+
+- cmd
+  - ice the standalone ice cli, like rake, django etc. also contains udash
+- cli
+  - context.go     context for output etc.
+  - completion.go  wrap advanced auto completion in cobra
+  - interactive.go allow a REPL like experience, auto completion with drop down if there are library support it
+  - util.go        asking password etc. might have a termutil in gommon
+- httpsrv
+  - json.go     need to consider generator if I want to avoid using `interface{}` and cast
+  - router.go   allow print all the registered routes
+- httpclient
+  - context.go  per request control over request, trace etc, make it interface or struct?
+  - client.go   wrapper for support retry
+  - dockerclient    only use types package, avoid using docker's own client
+    - image.go      pull/push image
+    - container.go  star/stop container
+  - elasticsearchclient
+- database
+  - cmd         commands that be import or work standalone
+  - adapter
+    - mysql
+    - postgres
+    - sqlite
+    - cassandra
+  - migration
+  - dashboard   the built in universal database dashboard, see ui in ui/database
+- task
+  - cmd         commands that be import or work standalone
+  - cron.go  
+  - routine.go  task as a single goroutine
+  - shell.go    shell out
+  - task.go     task interface & registry? need to be able to track/pause/stop launched task
+  - dockertask
+    - task.go   task using docker, put in own package to reduce import
+  - k8stask
+    - task.go   task using kubernetes? gonna drag half the github in ...
+- grpc
+  - util.go   not much to do for grpc until we have the spec based generator
+- tracing
+  - tracer.go     interface to wrap around opencensus?
+  - http
+    - tracer.go   integration with http server/client, new package to reduce import TODO: might move under http
+  - database
+    - tracer.go   integration with database TODO: might move under database
+  - opencensus
+    - wrapper.go  wrap/unwrap opencensus
+- ui
+  - database   the universal dashboard UI
+  - log        built in UI for filter log generated by gommon/log, might put it in gommon itself as logx
+- udash
+  - cmd
+    - udash/main.go
+  - pkg
+    - server.go   if go.ice is powerful enough, then one file is enough ...
+  - ui
