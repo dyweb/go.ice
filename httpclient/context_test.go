@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/dyweb/go.ice/httpclient"
+	"github.com/dyweb/gommon/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -32,5 +33,20 @@ func TestContext_SetParam(t *testing.T) {
 }
 
 func TestContext_SetErrorHandler(t *testing.T) {
-	// TODO: return different custom error
+	mux := http.NewServeMux()
+	mux.HandleFunc("/404/nobody", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(404)
+	})
+	srv := httptest.NewServer(mux)
+	defer srv.Close()
+	client, err := httpclient.New(srv.URL, httpclient.UseJSON())
+	require.Nil(t, err)
+
+	h := httpclient.ErrorHandlerFunc(func(status int, body []byte, res *http.Response) error {
+		return errors.Errorf("custom %d", status)
+	})
+	ctx := httpclient.Bkg().SetErrorHandler(h)
+	res, err := client.Get(ctx, "/404/nobody")
+	assert.NotNil(t, res, "application error has no nil response")
+	assert.Equal(t, "custom 404", err.Error())
 }

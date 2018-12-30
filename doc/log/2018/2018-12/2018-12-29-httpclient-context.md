@@ -52,3 +52,6 @@ There are two things we allow user to do
 - error detection, `ErrorDetector(status, res) bool`
   - default just check status code range
 - error handler, `ErrorHandler(status, body []byte, res) error`
+
+Since error detection is quite common, might shrink the size of interface or just 
+make it a function instead of interface, the drawback is you can't list implementations

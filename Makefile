@@ -1,5 +1,6 @@
 # --- packages ---
 PKGST=./api ./cli ./cmd ./db ./httpclient ./udash
+PKGS=./httpclient/...
 # --- packages ---
 
 .PHONY: install
@@ -11,13 +12,17 @@ fmt:
 	goimports -d -l -w $(PKGST)
 
 # --- test ---
-.PHONY: test
-test:
-	go test -v -cover ./ice/...
+.PHONY: test test-cover test-cover-html
 
-.PHONY: test-cover
+test:
+	go test -v -cover $(PKGS)
+
 test-cover:
-	go test -coverprofile=coverage.txt -covermode=atomic ./ice/...
+# https://github.com/codecov/example-go
+	go test -coverprofile=coverage.txt -covermode=atomic $(PKGS)
+
+test-cover-html: test-cover
+	go tool cover -html=coverage.txt
 
 .PHONY: test-playground
 test-playground:

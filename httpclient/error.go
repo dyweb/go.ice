@@ -12,6 +12,20 @@ type ErrorHandler interface {
 	DecodeError(status int, body []byte, res *http.Response) (decodedError error)
 }
 
+// ErrorHandlerFunc use status code for IsError
+type ErrorHandlerFunc func(status int, body []byte, res *http.Response) (decodedError error)
+
+func (f ErrorHandlerFunc) IsError(status int, res *http.Response) bool {
+	return !IsSuccess(status)
+}
+
+func (f ErrorHandlerFunc) DecodeError(status int, body []byte, res *http.Response) error {
+	if f != nil {
+		return f(status, body, res)
+	}
+	return defaultHandler.DecodeError(status, body, res)
+}
+
 var defaultHandler ErrorHandler = BasicErrorHandler{}
 
 func DefaultHandler() ErrorHandler {

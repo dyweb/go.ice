@@ -103,8 +103,8 @@ func (c *Client) Do(ctx *Context, method httputil.Method, path string, reqBody i
 	// handle application error
 	errHandler := c.errHandler
 	// request specific error handle override using context
-	if c.errHandler != nil {
-		errHandler = c.errHandler
+	if ctx.errHandler != nil {
+		errHandler = ctx.errHandler
 	}
 	if errHandler.IsError(res.StatusCode, res) {
 		b, err := DrainResponseBody(res)
