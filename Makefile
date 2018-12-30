@@ -1,10 +1,14 @@
 # --- packages ---
-PKGST=./api ./cli ./db ./httpclient ./udash
+PKGST=./api ./cli ./cmd ./db ./httpclient ./udash
 # --- packages ---
+
+.PHONY: install
+install: fmt
+	go install ./cmd/dk
 
 .PHONY: fmt
 fmt:
-	gofmt -d -l -w $(PKGST)
+	goimports -d -l -w $(PKGST)
 
 # --- test ---
 .PHONY: test

@@ -6,6 +6,7 @@ import (
 )
 
 var _ context.Context = (*Context)(nil)
+
 // initTime is just a dummy time so we can return a garbage value when time.Time is required
 var initTime = time.Now()
 
@@ -18,7 +19,7 @@ type Context struct {
 	// headers is request specific headers, headers configured in client will be override
 	headers map[string]string
 	// params is the query parameters attached to url, i.e. query?name=foo&type=bar
-	params  map[string]string
+	params map[string]string
 
 	// values improve performance by set value in place
 	// TODO: do I really need this map?

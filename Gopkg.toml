@@ -37,6 +37,13 @@ ignored = [
   name = "github.com/go-sql-driver/mysql"
   branch = "master"
 
+# TODO: force docker version using git hash, dep was picking 1.13 because tags on the docker project starts from 17.03
+# and stop updating after 17.04, thanks to the moby rename ...
+[[constraint]]
+  name = "github.com/docker/docker"
+  source = "https://github.com/moby/moby.git"
+  revision = "f76d6a078d881f410c00e8d900dcdfc2e026c841"
+
 [prune]
   go-tests = true
   unused-packages = true
