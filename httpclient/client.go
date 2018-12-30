@@ -19,7 +19,8 @@ type Client struct {
 	// json means both request and response are talking in json
 	json bool
 	// headers are base headers send out in every request
-	headers map[string]string
+	headers    map[string]string
+	errHandler ErrorHandler
 
 	// h is the underlying http.Client
 	h *http.Client
@@ -52,6 +53,7 @@ func New(base string, opts ...Option) (*Client, error) {
 	default:
 		return nil, errors.Errorf("unknown protocol, didn't find http or unix in %s", base)
 	}
+	c.errHandler = DefaultHandler()
 	return c, applyOptions(c, opts...)
 }
 
@@ -85,8 +87,38 @@ func (c *Client) GetTo(ctx *Context, path string, val interface{}) error {
 	return nil
 }
 
-// TODO: error handling based on status code is required, it should be configured at client and
-func (c *Client) Do(ctx *Context, method httputil.Method, path string, body interface{}) (*http.Response, error) {
+// Do handles application level error, default is based on status code and drain entire body as string.
+// User can give a handler when create client or have request specific handler using context
+func (c *Client) Do(ctx *Context, method httputil.Method, path string, reqBody interface{}) (*http.Response, error) {
+	req, err := c.NewRequest(ctx, method, path, reqBody)
+	if err != nil {
+		return nil, err
+	}
+	res, err := c.h.Do(req)
+	// network error
+	if err != nil {
+		return nil, err
+	}
+
+	// handle application error
+	errHandler := c.errHandler
+	// request specific error handle override using context
+	if c.errHandler != nil {
+		errHandler = c.errHandler
+	}
+	if errHandler.IsError(res.StatusCode, res) {
+		b, err := DrainResponseBody(res)
+		if err != nil {
+			return res, err
+		}
+		return res, errHandler.DecodeError(res.StatusCode, b, res)
+	}
+
+	// TODO: we should drain response body by default and make GetTo the default interface
+	return res, nil
+}
+
+func (c *Client) NewRequest(ctx *Context, method httputil.Method, path string, reqBody interface{}) (*http.Request, error) {
 	if c == nil || c.h == nil {
 		return nil, errors.New("client is not initialized")
 	}
@@ -95,8 +127,8 @@ func (c *Client) Do(ctx *Context, method httputil.Method, path string, body inte
 		encodedBody io.Reader
 		err         error
 	)
-	if body != nil {
-		if encodedBody, err = encodeBody(body, c.json); err != nil {
+	if reqBody != nil {
+		if encodedBody, err = encodeBody(reqBody, c.json); err != nil {
 			return nil, err
 		}
 	}
@@ -105,7 +137,6 @@ func (c *Client) Do(ctx *Context, method httputil.Method, path string, body inte
 	if err != nil {
 		return nil, errors.Wrap(err, "error create http request")
 	}
-	// TODO: I think range through nil map is a noop?
 	if len(c.headers) > 0 {
 		for k, v := range c.headers {
 			req.Header.Set(k, v)
@@ -124,11 +155,7 @@ func (c *Client) Do(ctx *Context, method httputil.Method, path string, body inte
 		req.URL.RawQuery = q.Encode()
 	}
 	req = req.WithContext(ctx)
-	res, err := c.h.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	return res, nil
+	return req, nil
 }
 
 func encodeBody(body interface{}, encodeToJson bool) (io.Reader, error) {

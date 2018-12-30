@@ -30,3 +30,7 @@ func TestContext_SetParam(t *testing.T) {
 	assert.Nil(t, client.GetTo(ctx, "/param", &dump))
 	assert.Equal(t, "bar", dump["foo"][0])
 }
+
+func TestContext_SetErrorHandler(t *testing.T) {
+	// TODO: return different custom error
+}

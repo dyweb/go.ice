@@ -17,6 +17,9 @@ type Context struct {
 	headers map[string]string
 	// params is the query parameters attached to url, i.e. query?name=foo&type=bar
 	params map[string]string
+	// errHandler is per request error handler, it will overwrite client level error handler
+	// if it has non nil value
+	errHandler ErrorHandler
 
 	// values improve performance by set value in place
 	// TODO: do I really need this map?
@@ -65,6 +68,11 @@ func (c *Context) SetParam(k, v string) *Context {
 		c.params = make(map[string]string)
 	}
 	c.params[k] = v
+	return c
+}
+
+func (c *Context) SetErrorHandler(h ErrorHandler) *Context {
+	c.errHandler = h
 	return c
 }
 
