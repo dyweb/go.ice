@@ -9,8 +9,11 @@ import (
 	"github.com/dyweb/go.ice/httpclient"
 )
 
+const DefaultVersion = "1.37"
+
 type Client struct {
-	h *httpclient.Client
+	version string
+	h       *httpclient.Client
 }
 
 func New(host string) (*Client, error) {
@@ -24,7 +27,10 @@ func New(host string) (*Client, error) {
 	if err != nil {
 		return nil, err
 	}
-	return &Client{h: h}, nil
+	return &Client{
+		version: DefaultVersion,
+		h:       h,
+	}, nil
 }
 
 func (dc *Client) Ping() (types.Ping, error) {

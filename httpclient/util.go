@@ -1,6 +1,8 @@
 package httpclient
 
-import "strings"
+import (
+	"strings"
+)
 
 // JoinPath does not sanitize path like path.Join, which would change https:// to https:/, it only remove duplicated
 // slashes to avoid // in url i.e. http://myapi.com/api/v1//comments/1

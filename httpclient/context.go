@@ -7,9 +7,6 @@ import (
 
 var _ context.Context = (*Context)(nil)
 
-// initTime is just a dummy time so we can return a garbage value when time.Time is required
-var initTime = time.Now()
-
 // Context
 //
 // It is lazy initialized, only call `make` when they are actually write to,
@@ -43,6 +40,32 @@ func NewContext(ctx context.Context) *Context {
 	return &Context{
 		stdCtx: ctx,
 	}
+}
+
+// ConvertContext returns the original context if it is already *httpclient.Context,
+// Otherwise it wraps the context using NewContext
+func ConvertContext(ctx context.Context) *Context {
+	c, ok := ctx.(*Context)
+	if ok {
+		return c
+	}
+	return NewContext(ctx)
+}
+
+func (c *Context) SetHeader(k, v string) *Context {
+	if c.headers == nil {
+		c.headers = make(map[string]string)
+	}
+	c.headers[k] = v
+	return c
+}
+
+func (c *Context) SetParam(k, v string) *Context {
+	if c.params == nil {
+		c.params = make(map[string]string)
+	}
+	c.params[k] = v
+	return c
 }
 
 // Deadline returns Deadline() from underlying context.Context if set

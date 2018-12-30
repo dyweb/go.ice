@@ -17,7 +17,8 @@ type Client struct {
 	// configured by user
 	base string
 	// json means both request and response are talking in json
-	json    bool
+	json bool
+	// headers are base headers send out in every request
 	headers map[string]string
 
 	// h is the underlying http.Client
@@ -56,6 +57,10 @@ func New(base string, opts ...Option) (*Client, error) {
 
 func (c *Client) Get(ctx *Context, path string) (*http.Response, error) {
 	return c.Do(ctx, httputil.Get, path, nil)
+}
+
+func (c *Client) Post(ctx *Context, path string, body interface{}) (*http.Response, error) {
+	return c.Do(ctx, httputil.Post, path, body)
 }
 
 func (c *Client) GetTo(ctx *Context, path string, val interface{}) error {
@@ -148,6 +153,7 @@ func encodeBody(body interface{}, encodeToJson bool) (io.Reader, error) {
 	return &buf, nil
 }
 
+// TODO: add a client method to return underlying client
 // Transport returns the transport of the http.Client being used for user to modify tls config etc.
 // It returns (nil, false) if the transport is the default transport or the type didn't match.
 // You should NOT use http.DefaultTransport in the first place, and modify it is even worse

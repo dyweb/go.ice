@@ -34,11 +34,11 @@ Non Goals
 
 ## About
 
-THe name `go.ice` comes from [@arrowrowe](https://github.com/arrowrowe). 
+The name `go.ice` comes from [@arrowrowe](https://github.com/arrowrowe). 
 The banner is drawn by [@at15][at15].
 
 The project was started by [@at15][at15] as a server framework for developing tsdb benchmark tools & tsdb.
 ([Xephonhq](https://github.com/xephonhq) and [BenchHub](https://github.com/benchhub)) 
 and later transferred to dyweb.
 
-at15: https://github.com/at15
+[at15]: https://github.com/at15
