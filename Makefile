@@ -1,3 +1,5 @@
+GOMOD = GO111MODULE=on go mod
+
 # --- packages ---
 PKGST=./api ./cli ./cmd ./db ./httpclient ./udash
 PKGS=./httpclient/...
@@ -34,11 +36,15 @@ generate:
 	gommon generate -v
 
 # --- dependency management ---
-.PHONY: dep-install
+.PHONY: dep-install dep-update
+dep-install:
 	dep ensure -v
-.PHONY: dep-update
 dep-update:
 	dep ensure -update -v
+mod-init:
+	$(GOMOD) init
+mod-update:
+	$(GOMOD) tidy
 # --- dependency management ---
 
 .PHONY: loc

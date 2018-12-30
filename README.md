@@ -26,7 +26,7 @@ Goals
 
 Non Goals
 
-- a Rails like web framework, [buffalo](https://github.com/gobuffalo/buffalo) is a good choice
+- a Rails like web framework, [buffalo](https://github.com/gobuffalo/buffalo) is a good choice if you want one
 
 ## License
 
