@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 
 	"github.com/dyweb/go.ice/api/openapi"
 )

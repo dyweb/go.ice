@@ -9,7 +9,9 @@ Use 0.1.x for v2 features, the v2 is actually v0.2.x since there weren't a usabl
 Implementation orders
 
 - [ ] [#37](https://github.com/dyweb/go.ice/issues/37) httpclient
+  - [x] basic client
   - [ ] docker client
+    - [x] simple getter
   - [ ] elastic search client
 - [ ] cli wrapper
   - [ ] use ctx for table writer etc.
@@ -26,7 +28,7 @@ Dependencies
 
 - gommon, of course
 
-GitHub
+GitHub issue labels
 
 - pkg
   - api
@@ -54,7 +56,7 @@ GitHub
   - new-package
   - new-version
  
-Projects
+GitHub Projects
 
 - api
 - cli

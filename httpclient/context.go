@@ -6,8 +6,6 @@ import (
 )
 
 var _ context.Context = (*Context)(nil)
-// initTime is just a dummy time so we can return a garbage value when time.Time is required
-var initTime = time.Now()
 
 // Context
 //
@@ -18,7 +16,10 @@ type Context struct {
 	// headers is request specific headers, headers configured in client will be override
 	headers map[string]string
 	// params is the query parameters attached to url, i.e. query?name=foo&type=bar
-	params  map[string]string
+	params map[string]string
+	// errHandler is per request error handler, it will overwrite client level error handler
+	// if it has non nil value
+	errHandler ErrorHandler
 
 	// values improve performance by set value in place
 	// TODO: do I really need this map?
@@ -42,6 +43,37 @@ func NewContext(ctx context.Context) *Context {
 	return &Context{
 		stdCtx: ctx,
 	}
+}
+
+// ConvertContext returns the original context if it is already *httpclient.Context,
+// Otherwise it wraps the context using NewContext
+func ConvertContext(ctx context.Context) *Context {
+	c, ok := ctx.(*Context)
+	if ok {
+		return c
+	}
+	return NewContext(ctx)
+}
+
+func (c *Context) SetHeader(k, v string) *Context {
+	if c.headers == nil {
+		c.headers = make(map[string]string)
+	}
+	c.headers[k] = v
+	return c
+}
+
+func (c *Context) SetParam(k, v string) *Context {
+	if c.params == nil {
+		c.params = make(map[string]string)
+	}
+	c.params[k] = v
+	return c
+}
+
+func (c *Context) SetErrorHandler(h ErrorHandler) *Context {
+	c.errHandler = h
+	return c
 }
 
 // Deadline returns Deadline() from underlying context.Context if set
