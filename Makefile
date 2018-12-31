@@ -1,12 +1,19 @@
 GOMOD = GO111MODULE=on go mod
 
+# --- build vars ---
+VERSION = 0.0.2
+BUILD_COMMIT := $(shell git rev-parse HEAD)
+BUILD_TIME := $(shell date +%Y-%m-%dT%H:%M:%S%z)
+DOCKER_REPO = dyweb/go.ice
+# --- build vars ---
+
 # --- packages ---
 PKGST=./api ./cli ./cmd ./db ./httpclient ./lib ./udash
 PKGS=./httpclient/...
 # --- packages ---
 
 .PHONY: install
-install: fmt
+install: fmt test
 	go install ./cmd/dk
 
 .PHONY: fmt
@@ -14,9 +21,12 @@ fmt:
 	goimports -d -l -w $(PKGST)
 
 # --- test ---
-.PHONY: test test-cover test-cover-html
+.PHONY: test test-verbose test-cover test-cover-html
 
 test:
+	go test -cover $(PKGS)
+
+test-verbose:
 	go test -v -cover $(PKGS)
 
 test-cover:
@@ -36,7 +46,7 @@ generate:
 	gommon generate -v
 
 # --- dependency management ---
-.PHONY: dep-install dep-update
+.PHONY: dep-install dep-update mod-init mod-update
 dep-install:
 	dep ensure -v
 dep-update:
@@ -46,6 +56,16 @@ mod-init:
 mod-update:
 	$(GOMOD) tidy
 # --- dependency management ---
+
+# --- docker ---
+.PHONY: docker-build docker-push
+
+docker-build:
+	docker build -t $(DOCKER_REPO):$(VERSION) .
+
+docker-push:
+	docker push $(DOCKER_REPO):$(VERSION)
+# --- docker ---
 
 .PHONY: loc
 loc:

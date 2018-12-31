@@ -15,6 +15,7 @@ import (
 
 // TODO: signal should be typed
 // TODO: kill -l to list all the signals
+// https://www.linux.org/threads/kill-commands-and-signals.8881/
 // https://github.com/docker/cli/blob/master/cli/command/container/kill.go
 // https://github.com/moby/moby/blob/master/client/container_kill.go
 func (dc *Client) ContainerKill(ctx context.Context, containerId, signal string) error {
