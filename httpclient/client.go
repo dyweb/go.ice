@@ -26,7 +26,7 @@ type Client struct {
 	h *http.Client
 }
 
-// TODO: allow user config transport using options and config
+// TODO: allow using config struct
 func New(base string, opts ...Option) (*Client, error) {
 	base = strings.TrimSpace(base)
 	if base == "" {
@@ -57,38 +57,74 @@ func New(base string, opts ...Option) (*Client, error) {
 	return c, applyOptions(c, opts...)
 }
 
-func (c *Client) Get(ctx *Context, path string) (*http.Response, error) {
+func (c *Client) Get(ctx *Context, path string, resBody interface{}) error {
+	return c.FetchTo(ctx, httputil.Get, path, nil, resBody)
+}
+
+func (c *Client) GetRaw(ctx *Context, path string) (*http.Response, error) {
 	return c.Do(ctx, httputil.Get, path, nil)
 }
 
-func (c *Client) Post(ctx *Context, path string, body interface{}) (*http.Response, error) {
-	return c.Do(ctx, httputil.Post, path, body)
+func (c *Client) GetIgnoreRes(ctx *Context, path string) error {
+	return c.FetchToNull(ctx, httputil.Get, path, nil)
 }
 
-func (c *Client) GetTo(ctx *Context, path string, val interface{}) error {
+func (c *Client) Post(ctx *Context, path string, reqBody interface{}, resBody interface{}) error {
+	return c.FetchTo(ctx, httputil.Post, path, reqBody, resBody)
+}
+
+func (c *Client) PostIgnoreRes(ctx *Context, path string, reqBody interface{}) error {
+	return c.FetchToNull(ctx, httputil.Post, path, reqBody)
+}
+
+func (c *Client) FetchTo(ctx *Context, method httputil.Method, path string, reqBody interface{}, resBody interface{}) error {
 	if !c.json {
-		return errors.New("only json encoding is support for GeTo")
+		return errors.New("only json encoding is support for FetchTo")
 	}
-	res, err := c.Do(ctx, httputil.Get, path, nil)
+	if reqBody == resBody {
+		return errors.New("request body and response body are same interface{}, typo?")
+	}
+	if resBody == nil {
+		return errors.New("response body can't be nil")
+	}
+
+	res, err := c.Do(ctx, method, path, reqBody)
 	if err != nil {
 		return err
 	}
-	// TODO: the decode to logic should be generated for all methods
-	b, err := ioutil.ReadAll(res.Body)
+	b, err := DrainResponseBody(res)
 	if err != nil {
-		return errors.Wrap(err, "error drain response body")
+		return err
 	}
-	if closeErr := res.Body.Close(); closeErr != nil {
-		// TODO: warn it? this should rarely happen
+	if err := json.NewDecoder(bytes.NewReader(b)).Decode(resBody); err != nil {
+		// TODO: might add error wrapping to provide deeper stack
+		return &ErrDecoding{
+			Codec: "json",
+			Err:   err,
+			Body:  string(b),
+		}
 	}
-	if err := json.Unmarshal(b, val); err != nil {
-		return errors.Wrap(err, "error decode response body as json to struct")
+	return nil
+}
+
+func (c *Client) FetchToNull(ctx *Context, method httputil.Method, path string, reqBody interface{}) error {
+	res, err := c.Do(ctx, method, path, reqBody)
+	if err != nil {
+		return err
+	}
+	if _, err := io.Copy(ioutil.Discard, res.Body); err != nil {
+		return errors.Wrap(err, "error copy response body to /dev/null")
+	}
+	if err := res.Body.Close(); err != nil {
+		return errors.Wrap(err, "error close response body after drain to /dev/null")
 	}
 	return nil
 }
 
 // Do handles application level error, default is based on status code and drain entire body as string.
 // User can give a handler when create client or have request specific handler using context
+//
+// It does not drain response body, use FetchTo if want to decode body as json
 func (c *Client) Do(ctx *Context, method httputil.Method, path string, reqBody interface{}) (*http.Response, error) {
 	req, err := c.NewRequest(ctx, method, path, reqBody)
 	if err != nil {
@@ -113,11 +149,13 @@ func (c *Client) Do(ctx *Context, method httputil.Method, path string, reqBody i
 		}
 		return res, errHandler.DecodeError(res.StatusCode, b, res)
 	}
-
-	// TODO: we should drain response body by default and make GetTo the default interface
 	return res, nil
 }
 
+// NewRequest create a http.Request by concat base path in client and path,
+// it will encode the body if the body is not already encoded and it's a json client
+//
+// You should use high level wrapper like FetchTo most of the time
 func (c *Client) NewRequest(ctx *Context, method httputil.Method, path string, reqBody interface{}) (*http.Request, error) {
 	if c == nil || c.h == nil {
 		return nil, errors.New("client is not initialized")

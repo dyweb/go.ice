@@ -1,7 +1,7 @@
 GOMOD = GO111MODULE=on go mod
 
 # --- packages ---
-PKGST=./api ./cli ./cmd ./db ./httpclient ./udash
+PKGST=./api ./cli ./cmd ./db ./httpclient ./lib ./udash
 PKGS=./httpclient/...
 # --- packages ---
 

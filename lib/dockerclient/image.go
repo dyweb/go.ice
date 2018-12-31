@@ -2,6 +2,7 @@ package dockerclient
 
 import (
 	"context"
+
 	"github.com/docker/docker/api/types"
 	"github.com/docker/docker/api/types/filters"
 	"github.com/docker/docker/api/types/versions"
@@ -33,5 +34,5 @@ func (dc *Client) ImageList(ctx context.Context, options types.ImageListOptions)
 	if options.All {
 		hCtx.SetParam("all", "1")
 	}
-	return images, dc.h.GetTo(hCtx, "/images/json", &images)
+	return images, dc.h.Get(hCtx, "/images/json", &images)
 }

@@ -15,6 +15,10 @@ type ErrorHandler interface {
 // ErrorHandlerFunc use status code for IsError
 type ErrorHandlerFunc func(status int, body []byte, res *http.Response) (decodedError error)
 
+func IsSuccess(status int) bool {
+	return status >= 200 && status <= 299
+}
+
 func (f ErrorHandlerFunc) IsError(status int, res *http.Response) bool {
 	return !IsSuccess(status)
 }
@@ -47,8 +51,14 @@ func (e *ErrApplication) Error() string {
 	return fmt.Sprintf("%d %s %s %s", e.Status, e.Method, e.Path, e.Body)
 }
 
-func IsSuccess(status int) bool {
-	return status >= 200 && status <= 299
+type ErrDecoding struct {
+	Codec string
+	Err   error
+	Body  string
+}
+
+func (e *ErrDecoding) Error() string {
+	return fmt.Sprintf("decode %s got %s body %s", e.Codec, e.Err, e.Body)
 }
 
 // BasicErrorHandler use value receiver because it does not have any fields

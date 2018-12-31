@@ -15,6 +15,20 @@ func UseJSON() Option {
 	}
 }
 
+func WithErrorHandler(h ErrorHandler) Option {
+	return func(c *Client) error {
+		c.errHandler = h
+		return nil
+	}
+}
+
+func WithErrorHandlerFunc(f ErrorHandlerFunc) Option {
+	return func(c *Client) error {
+		c.errHandler = f
+		return nil
+	}
+}
+
 func WithTransport(tr *http.Transport) Option {
 	return func(c *Client) error {
 		if c.h == nil {
