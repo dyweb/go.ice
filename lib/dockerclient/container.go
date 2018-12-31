@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/dyweb/go.ice/httpclient"
-	"github.com/pkg/errors"
+	"github.com/dyweb/gommon/errors"
 )
 
 // TODO

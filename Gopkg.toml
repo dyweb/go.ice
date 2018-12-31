@@ -31,7 +31,7 @@ ignored = [
 # NOTE: we lock gommon version because dep will use lastest release but gommon is adding new features when go.ice need it ...
 [[constraint]]
   name = "github.com/dyweb/gommon"
-  branch = "errors/categorization/init"
+  branch = "master"
 
 [[constraint]]
   name = "github.com/go-sql-driver/mysql"

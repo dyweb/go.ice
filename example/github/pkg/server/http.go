@@ -7,7 +7,7 @@ import (
 	pb "github.com/dyweb/go.ice/example/github/pkg/icehubpb"
 	"github.com/dyweb/go.ice/example/github/pkg/server/auth"
 	ihttp "github.com/dyweb/go.ice/ice/transport/http"
-	"github.com/pkg/errors"
+	"github.com/dyweb/gommon/errors"
 )
 
 type HttpServer struct {

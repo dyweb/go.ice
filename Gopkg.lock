@@ -55,8 +55,8 @@
   version = "v0.3.3"
 
 [[projects]]
-  branch = "errors/categorization/init"
-  digest = "1:10d0bd24d9a683fdc2296a96c265ecbe46572ac9d5850b29adcb152f243b4e23"
+  branch = "master"
+  digest = "1:2501fef9abf51e806e9baa9012a62cc0fb2725116eff69571213991b2d8b0ffe"
   name = "github.com/dyweb/gommon"
   packages = [
     "errors",
@@ -70,7 +70,7 @@
     "util/runtimeutil",
   ]
   pruneopts = "UT"
-  revision = "5ad6c01705efbfa92657523e6d59a2e9cc5dcdf2"
+  revision = "86998fde0a4b635152deb4bcc142ad77cd3cba6c"
 
 [[projects]]
   branch = "master"
@@ -361,6 +361,8 @@
   analyzer-version = 1
   input-imports = [
     "github.com/docker/docker/api/types",
+    "github.com/docker/docker/api/types/filters",
+    "github.com/docker/docker/api/types/versions",
     "github.com/dyweb/gommon/errors",
     "github.com/dyweb/gommon/log",
     "github.com/dyweb/gommon/log/handlers/cli",
