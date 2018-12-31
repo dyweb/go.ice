@@ -11,10 +11,11 @@ import (
 const DefaultVersion = "1.37"
 
 type ErrDocker struct {
-	Method  httputil.Method
-	Url     string
-	Path    string
-	Status  int
+	Method httputil.Method
+	Url    string
+	Path   string
+	Status int
+	// Message is the decoded error message from docker daemon
 	Message string
 	Body    string
 }

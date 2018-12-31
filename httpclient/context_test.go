@@ -28,7 +28,7 @@ func TestContext_SetParam(t *testing.T) {
 
 	ctx := httpclient.Bkg().SetParam("foo", "bar")
 	dump := make(map[string][]string)
-	assert.Nil(t, client.GetTo(ctx, "/param", &dump))
+	assert.Nil(t, client.Get(ctx, "/param", &dump))
 	assert.Equal(t, "bar", dump["foo"][0])
 }
 
@@ -46,7 +46,7 @@ func TestContext_SetErrorHandler(t *testing.T) {
 		return errors.Errorf("custom %d", status)
 	})
 	ctx := httpclient.Bkg().SetErrorHandler(h)
-	res, err := client.Get(ctx, "/404/nobody")
+	res, err := client.GetRaw(ctx, "/404/nobody")
 	assert.NotNil(t, res, "application error has no nil response")
 	assert.Equal(t, "custom 404", err.Error())
 }

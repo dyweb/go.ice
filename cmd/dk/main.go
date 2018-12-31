@@ -10,6 +10,8 @@ import (
 	"github.com/dyweb/go.ice/lib/dockerclient"
 )
 
+// TODO: start using cobra for handling sub commands
+
 func main() {
 	//version()
 	images()

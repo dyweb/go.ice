@@ -25,7 +25,7 @@ func TestDefaultHandler(t *testing.T) {
 	client, err := httpclient.New(srv.URL, httpclient.UseJSON())
 	require.Nil(t, err)
 
-	res, err := client.Get(httpclient.Bkg(), "/404/nobody")
+	res, err := client.GetRaw(httpclient.Bkg(), "/404/nobody")
 	assert.NotNil(t, res, "application error has no nil response")
 	appErr, ok := err.(*httpclient.ErrApplication)
 	require.True(t, ok, "default error handler gives ErrApplication")
@@ -33,7 +33,7 @@ func TestDefaultHandler(t *testing.T) {
 	assert.Equal(t, httputil.Get, appErr.Method)
 	assert.Equal(t, "/404/nobody", appErr.Path)
 
-	res, err = client.Get(httpclient.Bkg(), "/404/body")
+	res, err = client.GetRaw(httpclient.Bkg(), "/404/body")
 	appErr, ok = err.(*httpclient.ErrApplication)
 	require.True(t, ok, "default error handler gives ErrApplication")
 	assert.Equal(t, "nginx 0.0.1 404", appErr.Body)
