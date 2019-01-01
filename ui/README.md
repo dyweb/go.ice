@@ -10,3 +10,7 @@ For now, use the clipboard, Luke.
 - `vue create --no-git -m yarn ui` then choose default preset
 - in `package.json` rename `ui` to your project name
 - use `vue ui` to add newly created project
+
+Adding libraries
+
+- `yarn add element-ui`
