@@ -19,7 +19,5 @@ Vertical Centering
 
 - https://philipwalton.github.io/solved-by-flexbox/ real example
 - https://css-tricks.com/snippets/css/a-guide-to-flexbox/ detail explanation
-
-Not very useful
-
 - https://www.bitovi.com/blog/use-flexbox-to-create-a-sticky-header-and-sidebar-with-flexible-content
+  - `flex-grow: 1;  /*ensures that the container will take up the full height of the parent container*/`
