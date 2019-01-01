@@ -15,6 +15,13 @@ Vertical Centering
 - [blog](https://philipwalton.github.io/solved-by-flexbox/demos/vertical-centering/)
 - use `justify-content` and `align-items` on different axis
 
+udash
+
+- [ ] sidebar height is not same as content when context is really long
+  - changed `height` to `min-height`
+- fixed content on sidebar http://jsfiddle.net/8hm3849m/
+  - https://stackoverflow.com/questions/31722839/flex-layout-with-fixed-position-no-scrolling-sidebar
+
 ## Ref
 
 - https://philipwalton.github.io/solved-by-flexbox/ real example

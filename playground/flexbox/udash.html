@@ -1,0 +1,121 @@
+<html>
+
+<head>
+    <title>udash</title>
+    <style>
+        body {
+            /*  chrome set it to 8px ... */
+            margin: 0;
+            height: 100%;
+        }
+
+        .u-hidden {
+            display: none !important;
+        }
+
+        #dashboard {
+            min-height: 100%;
+            display: flex;
+        }
+
+        #side-bar {
+            /* width: 20%; */
+            /* position: fixed; */
+            /* height: 100%; */
+            background-color: green;
+            flex: 0 0 20%;
+        }
+
+        .fixed {
+            position: fixed;
+        }
+
+        #content {
+            display: flex;
+            flex-direction: column;
+            /* height: 100%; */
+        }
+
+        #content-main {
+            flex-grow: 1;
+        }
+
+        #login {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            height: 100%;
+        }
+
+        #login-box {
+            background-color: blue;
+            color: white;
+            padding: 50px;
+            border-radius: 5%;
+        }
+    </style>
+
+    <script>
+        function login() {
+            document.getElementById("login").classList.add("u-hidden");
+            document.getElementById("dashboard").classList.remove("u-hidden");
+        }
+
+        function logout() {
+            document.getElementById("login").classList.remove("u-hidden");
+            document.getElementById("dashboard").classList.add("u-hidden");
+        }
+    </script>
+</head>
+
+<body>
+    <!-- this is the top container of the vue app -->
+    <div id="app">
+        <!-- NOTE: in vue,this should be the router view -->
+        <!-- rout 1 /dashboard -->
+        <div id="dashboard">
+            <div id="side-bar">
+                I am side bar
+                <div class="fixed">
+                    I am fixed
+                    <button onclick="logout()">logout</button>
+                </div>
+            </div>
+            <div id="content">
+                <div id="content-header">
+                    I am header
+                </div>
+                <div id="content-main">
+                    I am main
+                </div>
+                <div id="content-footer">
+                    I am footer
+                </div>
+            </div>
+        </div>
+
+        <!-- route 2 /login -->
+        <div id="login">
+            <div id="login-box">
+                I am the login box
+                <form>
+                    <label for="username">User name</label>
+                    <input type="text" id="username">
+                </form>
+                <button onclick="login()">login</button>
+            </div>
+        </div>
+    </div>
+    <script>
+        // hide dashboard by default
+        document.getElementById("dashboard").classList.add("u-hidden");
+        var scrollMe = "<p>scroll me</p>";
+        for (var i = 0; i < 6; i++) {
+            scrollMe += scrollMe;
+        }
+        document.getElementById("content-main").innerHTML = scrollMe;
+    </script>
+</body>
+
+</html>
