@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/dyweb/go.ice/httpclient"
+	"github.com/dyweb/gommon/errors"
 	"github.com/dyweb/gommon/util/httputil"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -18,7 +19,7 @@ func TestMethod(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/method", func(w http.ResponseWriter, r *http.Request) {
 		assert.Equal(t, string(m), r.Method)
-		w.Write([]byte(`{"foo": "bar"}`))
+		errors.Ignore2(w.Write([]byte(`{"foo": "bar"}`)))
 	})
 	srv := httptest.NewServer(mux)
 	defer srv.Close()
