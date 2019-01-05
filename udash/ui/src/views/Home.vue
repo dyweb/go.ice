@@ -5,7 +5,7 @@
         <!-- a row hs 24 span-->
         <el-col :span="24">
           <el-menu
-            default-active="2"
+            default-active="1"
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
@@ -31,10 +31,10 @@
             <el-menu-item index="2">
               <i class="el-icon-menu"></i> <span>Navigator Two</span>
             </el-menu-item>
-            <el-menu-item index="3" disabled>
-              <i class="el-icon-document"></i> <span>Navigator Three</span>
-            </el-menu-item>
-            <el-menu-item index="4">
+            <!--<el-menu-item index="3" disabled>-->
+              <!--<i class="el-icon-document"></i> <span>Navigator Three</span>-->
+            <!--</el-menu-item>-->
+            <el-menu-item index="3">
               <i class="el-icon-setting"></i> <span>Navigator Four</span>
             </el-menu-item>
           </el-menu>
@@ -65,4 +65,28 @@ export default {
 };
 </script>
 
-<style scoped></style>
+<style scoped>
+#dashboard {
+  min-height: 100%;
+  display: flex;
+}
+
+#side-bar {
+  /*background-color: green;*/
+  flex: 0 0 15%;
+}
+
+.fixed {
+  position: fixed;
+}
+
+#content {
+  display: flex;
+  flex-direction: column;
+  /* height: 100%; */
+}
+
+#content-main {
+  flex-grow: 1;
+}
+</style>
