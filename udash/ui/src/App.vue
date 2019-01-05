@@ -34,9 +34,6 @@ body {
 }
 
 #side-bar {
-  /* width: 20%; */
-  /* position: fixed; */
-  /* height: 100%; */
   background-color: green;
   flex: 0 0 20%;
 }
