@@ -19,31 +19,4 @@ export default {
 };
 </script>
 
-<style scoped>
-#dashboard {
-  min-height: 100%;
-  display: flex;
-}
-
-#side-bar {
-  /* width: 20%; */
-  /* position: fixed; */
-  /* height: 100%; */
-  background-color: green;
-  flex: 0 0 20%;
-}
-
-.fixed {
-  position: fixed;
-}
-
-#content {
-  display: flex;
-  flex-direction: column;
-  /* height: 100%; */
-}
-
-#content-main {
-  flex-grow: 1;
-}
-</style>
+<style scoped></style>

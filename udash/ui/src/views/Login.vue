@@ -17,19 +17,4 @@ export default {
 };
 </script>
 
-<style scoped>
-#login {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  height: 100%;
-}
-
-#login-box {
-  background-color: blue;
-  color: white;
-  padding: 50px;
-  border-radius: 5%;
-}
-</style>
+<style scoped></style>
