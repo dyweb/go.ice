@@ -1,0 +1,56 @@
+<html>
+
+<head>
+    <title>flex</title>
+    <style>
+        html {
+            height: 100%;
+        }
+
+        body {
+            height: 100%;
+            overflow: hidden;
+            /*makes the body non-scrollable (we will add scrolling to the sidebar and main content containers)*/
+            margin: 0px;
+            /*removes default style*/
+            display: flex;
+            /*enables flex content for its children*/
+            box-sizing: border-box;
+        }
+
+        .column {
+            height: 100%;
+            /*allows both columns to span the full height of the browser window*/
+            display: flex;
+            flex-direction: column;
+            /*places the left and right headers above the bottom content*/
+        }
+
+        .bottom {
+            background-color: grey;
+            height: 50%;
+        }
+    </style>
+</head>
+
+<!-- based on https://www.bitovi.com/blog/use-flexbox-to-create-a-sticky-header-and-sidebar-with-flexible-content -->
+<body>
+    <div id="left" class="column">
+        <div class="top-left">
+            I am top left
+        </div>
+        <div class="bottom">
+            left bottom
+        </div>
+    </div>
+    <div id="right" class="column">
+        <div class="top-right">
+            top right
+        </div>
+        <div class="bottom">
+            right bottom
+        </div>
+    </div>
+</body>
+
+</html>

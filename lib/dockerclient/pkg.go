@@ -8,7 +8,10 @@ import (
 	"github.com/dyweb/gommon/util/httputil"
 )
 
-const DefaultVersion = "1.37"
+const (
+	DefaultVersion   = "1.37"
+	DefaultLocalHost = "unix:///var/run/docker.sock"
+)
 
 type ErrDocker struct {
 	Method httputil.Method

@@ -11,6 +11,7 @@ type Option func(c *Client) error
 func UseJSON() Option {
 	return func(c *Client) error {
 		c.json = true
+		c.SetHeader("Content-Type", "application/json").SetHeader("Accept", "application/json")
 		return nil
 	}
 }
@@ -38,6 +39,8 @@ func WithTransport(tr *http.Transport) Option {
 		return nil
 	}
 }
+
+// TODO: add skip verify
 
 func applyOptions(c *Client, opts ...Option) error {
 	for _, opt := range opts {

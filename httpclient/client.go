@@ -19,7 +19,9 @@ type Client struct {
 	// json means both request and response are talking in json
 	json bool
 	// headers are base headers send out in every request
-	headers    map[string]string
+	headers map[string]string
+	// errHandler determines how to detect error and decode response when error,
+	// by default it checks status code and drain response body
 	errHandler ErrorHandler
 
 	// h is the underlying http.Client
@@ -55,6 +57,27 @@ func New(base string, opts ...Option) (*Client, error) {
 	}
 	c.errHandler = DefaultHandler()
 	return c, applyOptions(c, opts...)
+}
+
+func (c *Client) SetHeader(k, v string) *Client {
+	if c.headers == nil {
+		c.headers = make(map[string]string)
+	}
+	c.headers[k] = v
+	return c
+}
+
+// GetHeaders a copy of headers set on the client,
+// it will return a empty but non nil map even if no header is set
+func (c *Client) GetHeaders() map[string]string {
+	if c.headers == nil {
+		return make(map[string]string)
+	}
+	cp := make(map[string]string, len(c.headers))
+	for k, v := range c.headers {
+		cp[k] = v
+	}
+	return cp
 }
 
 func (c *Client) FetchTo(ctx *Context, method httputil.Method, path string, reqBody interface{}, resBody interface{}) error {
@@ -198,7 +221,8 @@ func encodeBody(body interface{}, encodeToJson bool) (io.Reader, error) {
 	return &buf, nil
 }
 
-// TODO: add a client method to return underlying client
+// TODO: add a client method to return underlying client, we should only use it if it is provided by user ...
+
 // Transport returns the transport of the http.Client being used for user to modify tls config etc.
 // It returns (nil, false) if the transport is the default transport or the type didn't match.
 // You should NOT use http.DefaultTransport in the first place, and modify it is even worse
@@ -213,9 +237,17 @@ func (c *Client) Transport() (tr *http.Transport, ok bool) {
 		return
 	}
 	// it's default, you should not modify it
-	// TODO: might add our own un exported transports
-	if tr == http.DefaultTransport {
+	switch tr {
+	// stdlib
+	case http.DefaultTransport:
 		return nil, false
+	// defaults in our lib, we allow user to use them,
+	// but no one can modify it since we never return the pointer to them
+	case defaultTransport:
+		return nil, false
+	case defaultTransportSkipVerify:
+		return nil, false
+	default:
+		return tr, true
 	}
-	return
 }

@@ -1,0 +1,198 @@
+<html>
+
+<head>
+    <title>Holy Grail</title>
+    <!-- <link rel="stylesheet" href="https://yarnpkg.com/en/package/normalize.css"> -->
+    <style>
+        body {
+            margin: 0;
+        }
+
+        .Site {
+            display: flex;
+            /* top down */
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .Site-header {
+            background-color: brown;
+            color: white;
+        }
+
+        .Site-content {
+            background-color: yellowgreen;
+            /* Added for holy grails in order to handle its children */
+            display: flex;
+            /*  TODO: why flex: 1 does the magic? this is flex-grow */
+            flex: 1 0 auto;
+            flex-direction: row;
+        }
+
+        .Content-nav {
+            background-color: purple;
+            flex:0 0 12em;
+            /* TODO: using fixed won't work ... */
+            /* position: fixed; */
+        }
+
+        .Content-ad {
+            background-color: orange;
+            flex:0 0 12em;
+        }
+
+        .Site-footer {
+            background-color: blue;
+            min-height: 60px;
+            /*  TODO: text vertical align */
+        }
+
+        .u-hidden {
+            display: none !important;
+        }
+    </style>
+    <script>
+        var hidden = false;
+        function toogle() {
+            if (!hidden) {
+                document.getElementById("collapsable-content").classList.add("u-hidden");
+                hidden = true;
+            } else {
+                document.getElementById("collapsable-content").classList.remove("u-hidden");
+                hidden = false;
+            }
+        }
+    </script>
+</head>
+
+<!-- based on https://philipwalton.github.io/solved-by-flexbox/demos/sticky-footer/ -->
+
+<body class="Site">
+    <header class="Site-header">
+        <h1>This is my awesome header</h1>
+    </header>
+    <div class="Site-content">
+        <div class="Content-nav">
+            I am the nav bar
+        </div>
+        <div class="Content-main">
+            this is main content
+            <button onclick="toogle()">Toggle</button>
+            <!-- a lengthy content so the height is larger than browser, copied from original example in solved by flexbox -->
+            <div id="collapsable-content">
+                <div>
+                    <p>Getting the footer to stick to the bottom of pages with sparse content is something just about
+                        every
+                        Web
+                        developer has tried to tackle at some point in his or her career. And, for the most part, it’s
+                        a
+                        solved
+                        problem. Yet all the <a href="http://ryanfait.com/resources/footer-stick-to-bottom-of-page/">existing
+                            solutions</a> have one significant shortcoming — they don’t work if the height of your
+                        footer
+                        is
+                        unknown.</p>
+                    <p>Flexbox is a perfect fit for this type of problem. While mostly known for laying out content in
+                        the
+                        horizontal direction, Flexbox actually works just as well for vertical layout problems. All you
+                        have to
+                        do is wrap the vertical sections in a flex container and choose which ones you want to expand.
+                        They’ll
+                        automatically take up all the available space in their container.</p>
+                    <p>In the example below, the container is set to the height of the window, and the content area is
+                        told
+                        to
+                        expand as needed. <em>(Note: in the vertical direction you need to specify a height for the
+                            container.
+                            This is different from the horizontal direction, which automatically expands to fit.)</em></p>
+                    <h2>The HTML</h2>
+                    <pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"Site"</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span>…<span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"Site-content"</span>&gt;</span>…<span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span>
+                                <span class="hljs-tag">&lt;<span class="hljs-name">footer</span>&gt;</span>…<span class="hljs-tag">&lt;/<span class="hljs-name">footer</span>&gt;</span>
+                              <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+                              </code></pre>
+                    <h2>The CSS</h2>
+                    <pre><code class="language-css"><span class="hljs-selector-class">.Site</span> {
+                                <span class="hljs-attribute">display</span>: flex;
+                                <span class="hljs-attribute">min-height</span>: <span class="hljs-number">100vh</span>;
+                                <span class="hljs-attribute">flex-direction</span>: column;
+                              }
+                              
+                              <span class="hljs-selector-class">.Site-content</span> {
+                                <span class="hljs-attribute">flex</span>: <span class="hljs-number">1</span>;
+                              }
+                              </code></pre>
+                    <p>View the full <a href="https://github.com/philipwalton/solved-by-flexbox/blob/master/assets/css/components/site.css">source</a>
+                        for the <code>Site</code> component used in this demo on Github.</p>
+                    <aside class="Notice"><strong>Note:</strong>&nbsp; the CSS required to make this demo work
+                        cross-browser is
+                        slightly different from the CSS shown in the example above, which assumes a fully
+                        spec-compliant
+                        browser. See the <a href="https://github.com/philipwalton/solved-by-flexbox/blob/master/assets/css/components/site.css">comments
+                            in the source</a> for more details.</aside>
+                </div>
+                <div>
+                    <p>Getting the footer to stick to the bottom of pages with sparse content is something just about
+                        every
+                        Web
+                        developer has tried to tackle at some point in his or her career. And, for the most part, it’s
+                        a
+                        solved
+                        problem. Yet all the <a href="http://ryanfait.com/resources/footer-stick-to-bottom-of-page/">existing
+                            solutions</a> have one significant shortcoming — they don’t work if the height of your
+                        footer
+                        is
+                        unknown.</p>
+                    <p>Flexbox is a perfect fit for this type of problem. While mostly known for laying out content in
+                        the
+                        horizontal direction, Flexbox actually works just as well for vertical layout problems. All you
+                        have to
+                        do is wrap the vertical sections in a flex container and choose which ones you want to expand.
+                        They’ll
+                        automatically take up all the available space in their container.</p>
+                    <p>In the example below, the container is set to the height of the window, and the content area is
+                        told
+                        to
+                        expand as needed. <em>(Note: in the vertical direction you need to specify a height for the
+                            container.
+                            This is different from the horizontal direction, which automatically expands to fit.)</em></p>
+                    <h2>The HTML</h2>
+                    <pre><code class="language-xml"><span class="hljs-tag">&lt;<span class="hljs-name">body</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"Site"</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">header</span>&gt;</span>…<span class="hljs-tag">&lt;/<span class="hljs-name">header</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">main</span> <span class="hljs-attr">class</span>=<span class="hljs-string">"Site-content"</span>&gt;</span>…<span class="hljs-tag">&lt;/<span class="hljs-name">main</span>&gt;</span>
+                                    <span class="hljs-tag">&lt;<span class="hljs-name">footer</span>&gt;</span>…<span class="hljs-tag">&lt;/<span class="hljs-name">footer</span>&gt;</span>
+                                  <span class="hljs-tag">&lt;/<span class="hljs-name">body</span>&gt;</span>
+                                  </code></pre>
+                    <h2>The CSS</h2>
+                    <pre><code class="language-css"><span class="hljs-selector-class">.Site</span> {
+                                    <span class="hljs-attribute">display</span>: flex;
+                                    <span class="hljs-attribute">min-height</span>: <span class="hljs-number">100vh</span>;
+                                    <span class="hljs-attribute">flex-direction</span>: column;
+                                  }
+                                  
+                                  <span class="hljs-selector-class">.Site-content</span> {
+                                    <span class="hljs-attribute">flex</span>: <span class="hljs-number">1</span>;
+                                  }
+                                  </code></pre>
+                    <p>View the full <a href="https://github.com/philipwalton/solved-by-flexbox/blob/master/assets/css/components/site.css">source</a>
+                        for the <code>Site</code> component used in this demo on Github.</p>
+                    <aside class="Notice"><strong>Note:</strong>&nbsp; the CSS required to make this demo work
+                        cross-browser is
+                        slightly different from the CSS shown in the example above, which assumes a fully
+                        spec-compliant
+                        browser. See the <a href="https://github.com/philipwalton/solved-by-flexbox/blob/master/assets/css/components/site.css">comments
+                            in the source</a> for more details.</aside>
+                </div>
+            </div>
+        </div>
+        <div class="content-ad">
+            I am the ads
+        </div>
+    </div>
+    <footer class="Site-footer">
+        I am footer content
+    </footer>
+</body>
+
+</html>

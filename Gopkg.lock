@@ -18,7 +18,7 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:cedf588cb475ae52657a1abe442b1a104826aeb7ee334a468d9c64ca7d98108a"
+  digest = "1:cc7011d2ef5af0a915027927defe68350b2b9868ee98e7ba8b01329649ae05f3"
   name = "github.com/docker/docker"
   packages = [
     "api/types",
@@ -31,8 +31,10 @@
     "api/types/strslice",
     "api/types/swarm",
     "api/types/swarm/runtime",
+    "api/types/time",
     "api/types/versions",
     "errdefs",
+    "pkg/stdcopy",
   ]
   pruneopts = "UT"
   revision = "f76d6a078d881f410c00e8d900dcdfc2e026c841"
@@ -55,13 +57,14 @@
   version = "v0.3.3"
 
 [[projects]]
-  branch = "master"
-  digest = "1:2501fef9abf51e806e9baa9012a62cc0fb2725116eff69571213991b2d8b0ffe"
+  branch = "errors/types"
+  digest = "1:1c79f6355a2fff91ae98f1b4fd0e8ec48a52ebc5acea030b7b72d021310de148"
   name = "github.com/dyweb/gommon"
   packages = [
     "errors",
     "log",
     "log/handlers/cli",
+    "log/logx",
     "structure",
     "util/color",
     "util/hashutil",
@@ -70,7 +73,7 @@
     "util/runtimeutil",
   ]
   pruneopts = "UT"
-  revision = "86998fde0a4b635152deb4bcc142ad77cd3cba6c"
+  revision = "a9ec95961d7f95755982ff14df38fc22c67107b1"
 
 [[projects]]
   branch = "master"
@@ -104,6 +107,30 @@
   version = "v1.2.0"
 
 [[projects]]
+  digest = "1:c79fb010be38a59d657c48c6ba1d003a8aa651fa56b579d959d74573b7dff8e1"
+  name = "github.com/gorilla/context"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "08b5f424b9271eedf6f9f0ce86cb9396ed337a42"
+  version = "v1.1.1"
+
+[[projects]]
+  digest = "1:e73f5b0152105f18bc131fba127d9949305c8693f8a762588a82a48f61756f5f"
+  name = "github.com/gorilla/mux"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e3702bed27f0d39777b0b37b664b6280e8ef8fbf"
+  version = "v1.6.2"
+
+[[projects]]
+  digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
+  version = "v1.4.0"
+
+[[projects]]
   digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
@@ -128,12 +155,36 @@
   version = "v3.3.0"
 
 [[projects]]
+  digest = "1:29d28429a93b076908a36420a7ecb2bf429d24c15a4b5e2c220ea00fc84b71af"
+  name = "github.com/kr/pty"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "db8e3cd836b82e82e0a9c8edc6896967dd31374f"
+  version = "v1.1.3"
+
+[[projects]]
+  digest = "1:0356f3312c9bd1cbeda81505b7fd437501d8e778ab66998ef69f00d7f9b3a0d7"
+  name = "github.com/mattn/go-runewidth"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "3ee7d812e62a0804a7d0a324e0249ca2db3476d3"
+  version = "v0.0.4"
+
+[[projects]]
   digest = "1:4a49346ca45376a2bba679ca0e83bec949d780d4e927931317904bad482943ec"
   name = "github.com/mattn/go-sqlite3"
   packages = ["."]
   pruneopts = "UT"
   revision = "c7c4067b79cc51e6dfdcef5c702e74b1e0fa7c75"
   version = "v1.10.0"
+
+[[projects]]
+  digest = "1:abcdbf03ca6ca13d3697e2186edc1f33863bbdac2b3a44dfa39015e8903f7409"
+  name = "github.com/olekukonko/tablewriter"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "e6d60cf7ba1f42d86d54cdf5508611c4aafb3970"
+  version = "v0.0.1"
 
 [[projects]]
   digest = "1:ee4d4af67d93cc7644157882329023ce9a7bcfce956a079069a9405521c7cc8d"
@@ -167,12 +218,12 @@
   version = "v1.0.2"
 
 [[projects]]
-  digest = "1:40e195917a951a8bf867cd05de2a46aaf1806c50cf92eebf4c16f78cd196f747"
+  digest = "1:cf31692c14422fa27c83a05292eb5cbe0fb2775972e8f1f8446a71549bd8980b"
   name = "github.com/pkg/errors"
   packages = ["."]
   pruneopts = "UT"
-  revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
-  version = "v0.8.0"
+  revision = "ba968bfe8b2f7e042a574c888954fccecfa385b4"
+  version = "v0.8.1"
 
 [[projects]]
   digest = "1:0028cb19b2e4c3112225cd871870f2d9cf49b9b4276531f03438a88e94be86fe"
@@ -199,15 +250,15 @@
   version = "v1.0.3"
 
 [[projects]]
-  digest = "1:c40d65817cdd41fac9aa7af8bed56927bb2d6d47e4fea566a74880f5c2b1c41e"
+  digest = "1:5da8ce674952566deae4dbc23d07c85caafc6cfa815b0b3e03e41979cedb8750"
   name = "github.com/stretchr/testify"
   packages = [
     "assert",
     "require",
   ]
   pruneopts = "UT"
-  revision = "f35b8ab0b5a2cef36673838d662e249dd9c94686"
-  version = "v1.2.2"
+  revision = "ffdc059bfe9ce6a4e144ba849dbedead332c6053"
+  version = "v1.3.0"
 
 [[projects]]
   digest = "1:ac6f26e917fd2fb3194a7ebe2baf6fb32de2f2fbfed130c18aac0e758a6e1d22"
@@ -261,11 +312,11 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:5b7594f7c43cb5fc8f31c3f4a9f6a61ee798dbd5fcb36b70cb3d4780aad4c509"
+  digest = "1:5004e851e5eccde563d17871cd9d11c82e2faa578b1a0de81dc74867ad3845a4"
   name = "golang.org/x/sys"
   packages = ["unix"]
   pruneopts = "UT"
-  revision = "9a3f9b0469bbc6b8802087ae5c0af9f61502de01"
+  revision = "badf5585203e739f88c2c6cd34188a6f54b5d619"
 
 [[projects]]
   digest = "1:a2ab62866c75542dd18d2b069fec854577a20211d7c0ea6ae746072a1dccdd18"
@@ -362,15 +413,22 @@
   input-imports = [
     "github.com/docker/docker/api/types",
     "github.com/docker/docker/api/types/filters",
+    "github.com/docker/docker/api/types/time",
     "github.com/docker/docker/api/types/versions",
+    "github.com/docker/docker/pkg/stdcopy",
     "github.com/dyweb/gommon/errors",
     "github.com/dyweb/gommon/log",
     "github.com/dyweb/gommon/log/handlers/cli",
+    "github.com/dyweb/gommon/log/logx",
     "github.com/dyweb/gommon/util/httputil",
     "github.com/dyweb/gommon/util/logutil",
     "github.com/go-sql-driver/mysql",
+    "github.com/gorilla/mux",
+    "github.com/gorilla/websocket",
     "github.com/jackc/pgx/stdlib",
+    "github.com/kr/pty",
     "github.com/mattn/go-sqlite3",
+    "github.com/olekukonko/tablewriter",
     "github.com/opentracing/opentracing-go",
     "github.com/opentracing/opentracing-go/ext",
     "github.com/spf13/cobra",
