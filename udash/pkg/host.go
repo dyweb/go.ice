@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	"io"
+	"bufio"
 	"net/http"
 	"os/exec"
 
@@ -24,7 +24,9 @@ func (srv *Server) HostShell(w http.ResponseWriter, r *http.Request) {
 	}
 
 	defer ws.Close()
-	cmd := exec.Command("/bin/bash")
+	// FIXME: it seems to be /bin/bash problem ...
+	//cmd := exec.Command("/bin/bash")
+	cmd := exec.Command("/usr/bin/top")
 	tty, err := pty.Start(cmd)
 	if err != nil {
 		writeErr(w, err)
@@ -33,20 +35,56 @@ func (srv *Server) HostShell(w http.ResponseWriter, r *http.Request) {
 	defer tty.Close()
 
 	// FIXME: the websocket is just echoing ... it is not executing bash
-	wrapper := wsWrapper{ws}
+	//wrapper := wsWrapper{ws}
 	go func() {
 		// stdout
-		if _, err := io.Copy(tty, &wrapper); err != nil {
-			log.Warnf("error read input from ws to tty: %s", err)
+		//if _, err := io.Copy(tty, &wrapper); err != nil {
+		//	log.Warnf("error read input from ws to tty: %s", err)
+		//}
+		s := bufio.NewScanner(tty)
+		for s.Scan() {
+			if err := ws.WriteMessage(websocket.TextMessage, s.Bytes()); err != nil {
+				log.Warnf("write err: %s", err)
+				ws.Close()
+				break
+			} else {
+				//log.Infof("scanned %s", s.Text())
+			}
 		}
+		if s.Err() != nil {
+			log.Warnf("scan err: %s", s.Err())
+		}
+		//for {
+		//	buf := make([]byte, 100)
+		//	n, err := tty.Read(buf)
+		//	if err != nil {
+		//		log.Warnf("read tty error: %s", err)
+		//		break
+		//	}
+		//	log.Infof("read tty got %d %s", n, buf[:n])
+		//}
 	}()
 	//go func() {
 	// stdin
-	if _, err := io.Copy(&wrapper, tty); err != nil {
-		log.Warnf("error write output from tty to ws: %s", err)
-	}
+	//if _, err := io.Copy(&wrapper, tty); err != nil {
+	//	log.Warnf("error write output from tty to ws: %s", err)
+	//}
 	//}()
-
+	go func() {
+		for {
+			_, message, err := ws.ReadMessage()
+			if err != nil {
+				log.Warnf("error read ws message %s", err)
+				break
+			}
+			if n, err := tty.Write(message); err != nil {
+				log.Warnf("error write ws message to stdin %s", err)
+				break
+			} else {
+				log.Infof("write %d into tty", n)
+			}
+		}
+	}()
 	if err := cmd.Wait(); err != nil {
 		log.Warnf("error wait cmd: %s", err)
 	}

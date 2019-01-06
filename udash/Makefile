@@ -1,4 +1,4 @@
-GO = CGO_ENABLED=0 go
+GO = go
 
 install:
 	$(GO) install ./cmd/udash
