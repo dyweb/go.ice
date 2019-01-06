@@ -27,5 +27,7 @@ func (srv *Server) mountHandlers() {
 	// a flat way to list all the routes
 	r.HandleFunc("/api/local/docker/containers", srv.ListContainers)
 	r.HandleFunc("/api/local/docker/images", srv.ListImages)
+	r.HandleFunc("/api/local/host/shell", srv.HostShell)
+	r.HandleFunc("/host/shell", srv.HostShellStatic)
 	srv.mux = r
 }

@@ -31,6 +31,7 @@ func (srv *Server) ListImages(w http.ResponseWriter, res *http.Request) {
 }
 
 func writeErr(w http.ResponseWriter, err error) {
+	log.Warnf("write err: %s", err.Error())
 	w.Write([]byte(err.Error()))
 }
 

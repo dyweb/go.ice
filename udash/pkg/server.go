@@ -35,6 +35,7 @@ func (srv *Server) Run(addr string) error {
 	httpd := http.Server{
 		Addr:    addr,
 		Handler: srv.LoggedHandler(),
+		//Handler: srv.Handler(),
 	}
 	srv.logger.Infof("listen on %s", addr)
 	// wait for 3s

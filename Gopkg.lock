@@ -58,7 +58,7 @@
 
 [[projects]]
   branch = "errors/types"
-  digest = "1:f65a80c5a2216f74b8367a3312fd4837ee69d3106771993b9a89e3ba755eb56c"
+  digest = "1:1c79f6355a2fff91ae98f1b4fd0e8ec48a52ebc5acea030b7b72d021310de148"
   name = "github.com/dyweb/gommon"
   packages = [
     "errors",
@@ -73,7 +73,7 @@
     "util/runtimeutil",
   ]
   pruneopts = "UT"
-  revision = "6093eb60e28d7a29c3fae6115345d094f9c87e50"
+  revision = "a9ec95961d7f95755982ff14df38fc22c67107b1"
 
 [[projects]]
   branch = "master"
@@ -123,6 +123,14 @@
   version = "v1.6.2"
 
 [[projects]]
+  digest = "1:7b5c6e2eeaa9ae5907c391a91c132abfd5c9e8a784a341b5625e750c67e6825d"
+  name = "github.com/gorilla/websocket"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "66b9c49e59c6c48f0ffce28c2d8b8a5678502c6d"
+  version = "v1.4.0"
+
+[[projects]]
   digest = "1:870d441fe217b8e689d7949fef6e43efbc787e50f200cb1e70dbca9204a1d6be"
   name = "github.com/inconshreveable/mousetrap"
   packages = ["."]
@@ -145,6 +153,14 @@
   pruneopts = "UT"
   revision = "c59c9cac59ab95eceb0c12ff338923c62f411ea2"
   version = "v3.3.0"
+
+[[projects]]
+  digest = "1:29d28429a93b076908a36420a7ecb2bf429d24c15a4b5e2c220ea00fc84b71af"
+  name = "github.com/kr/pty"
+  packages = ["."]
+  pruneopts = "UT"
+  revision = "db8e3cd836b82e82e0a9c8edc6896967dd31374f"
+  version = "v1.1.3"
 
 [[projects]]
   digest = "1:0356f3312c9bd1cbeda81505b7fd437501d8e778ab66998ef69f00d7f9b3a0d7"
@@ -408,7 +424,9 @@
     "github.com/dyweb/gommon/util/logutil",
     "github.com/go-sql-driver/mysql",
     "github.com/gorilla/mux",
+    "github.com/gorilla/websocket",
     "github.com/jackc/pgx/stdlib",
+    "github.com/kr/pty",
     "github.com/mattn/go-sqlite3",
     "github.com/olekukonko/tablewriter",
     "github.com/opentracing/opentracing-go",
