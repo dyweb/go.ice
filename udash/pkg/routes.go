@@ -25,6 +25,7 @@ func (srv *Server) LoggedHandler() http.Handler {
 func (srv *Server) mountHandlers() {
 	r := mux.NewRouter()
 	// a flat way to list all the routes
+	r.HandleFunc("/api/local/docker/containers", srv.ListContainers)
 	r.HandleFunc("/api/local/docker/images", srv.ListImages)
 	srv.mux = r
 }

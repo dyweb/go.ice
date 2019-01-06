@@ -12,13 +12,13 @@ import (
 )
 
 // TODO
-// - list
 // - start
 // - stop
 // - kill
 
 // https://github.com/docker/cli/blob/master/cli/command/container/list.go
 // https://github.com/moby/moby/blob/master/client/container_list.go
+// https://docs.docker.com/engine/reference/commandline/ps/#usage
 func (dc *Client) ContainerList(ctx context.Context, options types.ContainerListOptions) ([]types.Container, error) {
 	hCtx := httpclient.ConvertContext(ctx)
 

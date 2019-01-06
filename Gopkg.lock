@@ -18,7 +18,7 @@
   version = "v1.1.1"
 
 [[projects]]
-  digest = "1:cedf588cb475ae52657a1abe442b1a104826aeb7ee334a468d9c64ca7d98108a"
+  digest = "1:cc7011d2ef5af0a915027927defe68350b2b9868ee98e7ba8b01329649ae05f3"
   name = "github.com/docker/docker"
   packages = [
     "api/types",
@@ -31,8 +31,10 @@
     "api/types/strslice",
     "api/types/swarm",
     "api/types/swarm/runtime",
+    "api/types/time",
     "api/types/versions",
     "errdefs",
+    "pkg/stdcopy",
   ]
   pruneopts = "UT"
   revision = "f76d6a078d881f410c00e8d900dcdfc2e026c841"
@@ -395,7 +397,9 @@
   input-imports = [
     "github.com/docker/docker/api/types",
     "github.com/docker/docker/api/types/filters",
+    "github.com/docker/docker/api/types/time",
     "github.com/docker/docker/api/types/versions",
+    "github.com/docker/docker/pkg/stdcopy",
     "github.com/dyweb/gommon/errors",
     "github.com/dyweb/gommon/log",
     "github.com/dyweb/gommon/log/handlers/cli",
