@@ -2,100 +2,50 @@
 <html lang="en">
 <head>
     <title>Command Example</title>
-    <script type="text/javascript">
-        window.onload = function () {
-            var conn;
-            var msg = document.getElementById("msg");
-            var log = document.getElementById("log");
-            function appendLog(item) {
-                var doScroll = log.scrollTop > log.scrollHeight - log.clientHeight - 1;
-                log.appendChild(item);
-                if (doScroll) {
-                    log.scrollTop = log.scrollHeight - log.clientHeight;
-                }
-            }
-            document.getElementById("form").onsubmit = function () {
-                console.log("submit", msg.value);
-                if (!conn) {
-                    return false;
-                }
-                if (!msg.value) {
-                    return false;
-                }
-                console.log('sending', msg.value);
-                conn.send(msg.value);
-                msg.value = "";
-                return false;
-            };
-            if (window["WebSocket"]) {
-                conn = new WebSocket("ws://" + document.location.host + "/api/local/host/shell");
-                conn.onclose = function (evt) {
-                    var item = document.createElement("div");
-                    item.innerHTML = "<b>Connection closed.</b>";
-                    appendLog(item);
-                };
-                conn.onmessage = function (evt) {
-                    var messages = evt.data.split('\n');
-                    for (var i = 0; i < messages.length; i++) {
-                        var item = document.createElement("div");
-                        item.innerText = messages[i];
-                        appendLog(item);
-                    }
-                };
-            } else {
-                var item = document.createElement("div");
-                item.innerHTML = "<b>Your browser does not support WebSockets.</b>";
-                appendLog(item);
-            }
-        };
-
-        // function send() {
-        //     var val = document.getElementById("msg").value;
-        //     console.log()
-        // }
-    </script>
-    <style type="text/css">
-        html {
-            overflow: hidden;
-        }
-        body {
-            overflow: hidden;
-            padding: 0;
-            margin: 0;
-            width: 100%;
-            height: 100%;
-            background: gray;
-        }
-        #log {
-            background: white;
-            margin: 0;
-            padding: 0.5em 0.5em 0.5em 0.5em;
-            position: absolute;
-            top: 0.5em;
-            left: 0.5em;
-            right: 0.5em;
-            bottom: 3em;
-            overflow: auto;
-        }
-        #log pre {
-            margin: 0;
-        }
-        #form {
-            padding: 0 0.5em 0 0.5em;
-            margin: 0;
-            position: absolute;
-            bottom: 1em;
-            left: 0px;
-            width: 100%;
-            overflow: hidden;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.8.0/xterm.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.8.0/xterm.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.8.0/addons/attach/attach.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xterm/3.8.0/addons/fit/fit.min.js"></script>
 </head>
 <body>
-<div id="log"></div>
-<form id="form">
-    <input type="submit" value="Send"/>
-    <input type="text" id="msg" size="64"/>
-</form>
+<div id="terminal-container"></div>
+<script>
+
+    var conn, term;
+    var terminalContainer = document.getElementById('terminal-container');
+    createTerminal();
+
+    function createTerminal() {
+        // FIXME: that's strange.. when you use cdn, you got global var? ...
+        Terminal.applyAddon(attach);
+        Terminal.applyAddon(fit);
+        term = new Terminal({
+            // cursorBlink: true,
+            // screenKeys: true,
+            // /* Initial terminal size to match the session originator's terminal */
+            // cols: 100,
+            // rows: 30,
+        });
+        conn = new WebSocket("ws://" + document.location.host + "/api/local/host/shell");
+        term.open(terminalContainer);
+        term.on("data", function (v) {
+           console.log('data', v);
+        });
+        // term.winptyCompatInit();
+        // term.webLinksInit();
+        term.fit();
+        term.focus();
+        conn.onopen = runRealTerminal;
+        conn.onclose = runRealTerminal;
+        conn.onerror = runRealTerminal;
+    }
+
+    function runRealTerminal() {
+        // console.log(term);
+        // FIXME: attach is sending single character to server one at a time, it is not waiting for \n
+        term.attach(conn, true, true);
+    }
+
+</script>
 </body>
 </html>
