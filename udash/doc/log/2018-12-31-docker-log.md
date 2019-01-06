@@ -5,7 +5,7 @@ This doc discuss how to implement a docker log UI in udash [#40](https://github.
 Backend
 
 - [x] a container that generates log (could be udash itself ...)
-  - `docker run --rm nginx -p 8080:80`
+  - `docker run --rm -p nginx 8080:80`
 - [ ] allow stream log using docker client
 
 UI

@@ -3,6 +3,7 @@ package main
 
 import (
 	"context"
+	"io"
 	"os"
 	"strconv"
 
@@ -22,7 +23,8 @@ func main() {
 	//version()
 	//images()
 	//containers()
-	containerLog(os.Args[1])
+	//containerLog(os.Args[1])
+	containerExec(os.Args[1])
 }
 
 func ping() {
@@ -99,6 +101,40 @@ func containerLog(container string) {
 	// actually it's not supported https://github.com/moby/moby/issues/33778
 	stdcopy.StdCopy(os.Stdout, os.Stderr, res)
 	//io.Copy(os.Stdout, res)
+}
+
+func containerExec(container string) {
+	cfg := types.ExecConfig{
+		Tty:          true,
+		Cmd:          []string{"/bin/sh"},
+		Detach:       false,
+		AttachStdout: true,
+		AttachStderr: true,
+		AttachStdin:  true,
+	}
+	c := cli()
+	res, err := c.ContainerExecCreate(context.Background(), container, cfg)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	log.Infof("exec id is %s", res.ID)
+	conn, err := c.ContainerExecAttach(context.Background(), res.ID, types.ExecStartCheck{
+		Detach: false,
+		Tty:    true,
+	})
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	go func() {
+		if _, err := io.Copy(os.Stdout, conn); err != nil {
+			log.Warnf("err copy conn to stdout: %s", err)
+		}
+	}()
+	if _, err := io.Copy(conn, os.Stdin); err != nil {
+		log.Fatalf("err copy stdin to conn: %s", err)
+	}
 }
 
 func cli() *dockerclient.Client {
