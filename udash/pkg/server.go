@@ -2,7 +2,6 @@ package pkg
 
 import (
 	"net/http"
-	"sync"
 	"time"
 
 	"github.com/dyweb/go.ice/lib/dockerclient"
@@ -13,11 +12,9 @@ import (
 var log, logReg = dlog.NewPackageLoggerAndRegistryWithSkip("udash", 0)
 
 type Server struct {
-	mu  sync.Mutex
 	mux http.Handler
 	dc  *dockerclient.Client
 
-	// TODO: struct logger
 	logger *dlog.Logger
 }
 
@@ -37,7 +34,7 @@ func NewServer() (*Server, error) {
 func (srv *Server) Run(addr string) error {
 	httpd := http.Server{
 		Addr:    addr,
-		Handler: srv.Handler(),
+		Handler: srv.LoggedHandler(),
 	}
 	srv.logger.Infof("listen on %s", addr)
 	// wait for 3s

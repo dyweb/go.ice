@@ -55,13 +55,14 @@
   version = "v0.3.3"
 
 [[projects]]
-  branch = "master"
-  digest = "1:2501fef9abf51e806e9baa9012a62cc0fb2725116eff69571213991b2d8b0ffe"
+  branch = "errors/types"
+  digest = "1:f65a80c5a2216f74b8367a3312fd4837ee69d3106771993b9a89e3ba755eb56c"
   name = "github.com/dyweb/gommon"
   packages = [
     "errors",
     "log",
     "log/handlers/cli",
+    "log/logx",
     "structure",
     "util/color",
     "util/hashutil",
@@ -70,7 +71,7 @@
     "util/runtimeutil",
   ]
   pruneopts = "UT"
-  revision = "86998fde0a4b635152deb4bcc142ad77cd3cba6c"
+  revision = "6093eb60e28d7a29c3fae6115345d094f9c87e50"
 
 [[projects]]
   branch = "master"
@@ -398,6 +399,7 @@
     "github.com/dyweb/gommon/errors",
     "github.com/dyweb/gommon/log",
     "github.com/dyweb/gommon/log/handlers/cli",
+    "github.com/dyweb/gommon/log/logx",
     "github.com/dyweb/gommon/util/httputil",
     "github.com/dyweb/gommon/util/logutil",
     "github.com/go-sql-driver/mysql",

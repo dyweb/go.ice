@@ -3,6 +3,7 @@ package pkg
 import (
 	"net/http"
 
+	"github.com/dyweb/gommon/log/logx"
 	"github.com/gorilla/mux"
 )
 
@@ -16,28 +17,10 @@ func (srv *Server) Handler() http.Handler {
 	return srv.mux
 }
 
-//func (srv *Server) LoggedHandler() http.Handler {
-//	// TODO: the traced writer need a factory method ...
-//	return http.HandlerFunc(func(res http.ResponseWriter, req *http.Request) {
-//		//tracker := httputil.TrackedWriter{
-//		//	w: res,
-//		//}
-//		//start := time.Now()
-//		//l.mux.ServeHTTP(&tracker, req)
-//		//duration := time.Now().Sub(start)
-//		//l.logger.InfoF(fmt.Sprintf("%d %s %s", tracker.Status(), req.Method, req.URL.Path),
-//		//	dlog.Int("status", tracker.Status()),
-//		//	dlog.Int("size", tracker.Size()),
-//		//	dlog.Str("duration", duration.String()),
-//		//	dlog.Str("method", req.Method),
-//		//	dlog.Str("url", req.URL.String()),
-//		//	dlog.Str("remote", req.RemoteAddr),
-//		//	dlog.Str("refer", req.Referer()), // TODO: refer could be empty, not sure if dlog can handle it properly ...
-//		//	dlog.Str("proto", req.Proto),
-//		//)
-//	})
-//
-//}
+func (srv *Server) LoggedHandler() http.Handler {
+	return logx.NewHttpAccessLogger(srv.logger, srv.Handler())
+
+}
 
 func (srv *Server) mountHandlers() {
 	r := mux.NewRouter()
