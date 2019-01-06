@@ -1,8 +1,13 @@
 package main
 
 import (
+	"io"
+	"os"
+	"os/exec"
+
 	"github.com/dyweb/go.ice/udash/pkg"
 	dlog "github.com/dyweb/gommon/log"
+	"github.com/kr/pty"
 	"github.com/spf13/cobra"
 )
 
@@ -14,10 +19,36 @@ func main() {
 		Short:        "Univerisal dashboard, a demo for go.ice",
 		SilenceUsage: true,
 	}
-	root.AddCommand(srvCmd())
+	root.AddCommand(srvCmd(), ptyTest())
 	if err := root.Execute(); err != nil {
 		log.Fatal(err)
 	}
+}
+
+// TODO: pty test is working for bash
+func ptyTest() *cobra.Command {
+	cmd := cobra.Command{
+		Use:   "pty",
+		Short: "test pty",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return runPty()
+		},
+	}
+	return &cmd
+}
+
+func runPty() error {
+	cmd := exec.Command("bash")
+	//cmd := exec.Command("/usr/bin/
+	tty, err := pty.Start(cmd)
+	if err != nil {
+		return err
+	}
+	go func() {
+		io.Copy(os.Stdout, tty)
+	}()
+	io.Copy(tty, os.Stdin)
+	return nil
 }
 
 func srvCmd() *cobra.Command {

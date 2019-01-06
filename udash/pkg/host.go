@@ -1,7 +1,6 @@
 package pkg
 
 import (
-	"bufio"
 	"net/http"
 	"os/exec"
 
@@ -25,8 +24,8 @@ func (srv *Server) HostShell(w http.ResponseWriter, r *http.Request) {
 
 	defer ws.Close()
 	// FIXME: it seems to be /bin/bash problem ...
-	//cmd := exec.Command("/bin/bash")
-	cmd := exec.Command("/usr/bin/top")
+	cmd := exec.Command("bash")
+	//cmd := exec.Command("/usr/bin/
 	tty, err := pty.Start(cmd)
 	if err != nil {
 		writeErr(w, err)
@@ -41,28 +40,28 @@ func (srv *Server) HostShell(w http.ResponseWriter, r *http.Request) {
 		//if _, err := io.Copy(tty, &wrapper); err != nil {
 		//	log.Warnf("error read input from ws to tty: %s", err)
 		//}
-		s := bufio.NewScanner(tty)
-		for s.Scan() {
-			if err := ws.WriteMessage(websocket.TextMessage, s.Bytes()); err != nil {
-				log.Warnf("write err: %s", err)
-				ws.Close()
-				break
-			} else {
-				//log.Infof("scanned %s", s.Text())
-			}
-		}
-		if s.Err() != nil {
-			log.Warnf("scan err: %s", s.Err())
-		}
-		//for {
-		//	buf := make([]byte, 100)
-		//	n, err := tty.Read(buf)
-		//	if err != nil {
-		//		log.Warnf("read tty error: %s", err)
+		//s := bufio.NewScanner(tty)
+		//for s.Scan() {
+		//	if err := ws.WriteMessage(websocket.TextMessage, s.Bytes()); err != nil {
+		//		log.Warnf("write err: %s", err)
+		//		ws.Close()
 		//		break
+		//	} else {
+		//		log.Infof("scanned %s", s.Text())
 		//	}
-		//	log.Infof("read tty got %d %s", n, buf[:n])
 		//}
+		//if s.Err() != nil {
+		//	log.Warnf("scan err: %s", s.Err())
+		//}
+		for {
+			buf := make([]byte, 200)
+			n, err := tty.Read(buf)
+			if err != nil {
+				log.Warnf("read tty error: %s", err)
+				break
+			}
+			log.Infof("read tty got %d %s", n, buf[:n])
+		}
 	}()
 	//go func() {
 	// stdin
@@ -77,6 +76,8 @@ func (srv *Server) HostShell(w http.ResponseWriter, r *http.Request) {
 				log.Warnf("error read ws message %s", err)
 				break
 			}
+			// FIXED: this is the key have bash working ....
+			message = append(message, '\n')
 			if n, err := tty.Write(message); err != nil {
 				log.Warnf("error write ws message to stdin %s", err)
 				break
