@@ -11,6 +11,34 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func TestContext_SetBase(t *testing.T) {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/api/version", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(t, w, map[string]string{
+			"version": "1.0",
+		})
+	})
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		writeJSON(t, w, map[string]string{
+			"health": "green",
+		})
+	})
+	srv := httptest.NewServer(mux)
+	defer srv.Close()
+	client, err := httpclient.New(srv.URL+"/api/", httpclient.UseJSON())
+	require.Nil(t, err)
+
+	ver := make(map[string]string)
+	require.Nil(t, client.Get(httpclient.Bkg(), "version", &ver))
+	assert.Equal(t, ver["version"], "1.0")
+	require.NotNil(t, client.Get(httpclient.Bkg(), "health", &ver)) // api/health does not exist
+	// override base in context
+	ctx := httpclient.Bkg().SetBase(srv.URL)
+	health := make(map[string]string)
+	require.Nil(t, client.Get(ctx, "health", &health))
+	assert.Equal(t, health["health"], "green")
+}
+
 func TestContext_SetParam(t *testing.T) {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/param", func(w http.ResponseWriter, r *http.Request) {

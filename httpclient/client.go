@@ -173,7 +173,11 @@ func (c *Client) NewRequest(ctx *Context, method httputil.Method, path string, r
 			return nil, err
 		}
 	}
-	u := JoinPath(c.base, path)
+	base := c.base
+	if ctx.base != "" {
+		base = ctx.base
+	}
+	u := JoinPath(base, path)
 	req, err := http.NewRequest(string(method), u, encodedBody)
 	if err != nil {
 		return nil, errors.Wrap(err, "error create http request")

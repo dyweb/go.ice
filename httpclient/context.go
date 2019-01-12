@@ -13,6 +13,8 @@ var _ context.Context = (*Context)(nil)
 // so all the maps are EMPTY even when using factory func.
 // User (including this package itself) should use setter when set value.
 type Context struct {
+	// base overrides base path set in client if it is not empty
+	base string
 	// headers is request specific headers, headers configured in client will be override
 	headers map[string]string
 	// params is the query parameters attached to url, i.e. query?name=foo&type=bar
@@ -53,6 +55,11 @@ func ConvertContext(ctx context.Context) *Context {
 		return c
 	}
 	return NewContext(ctx)
+}
+
+func (c *Context) SetBase(s string) *Context {
+	c.base = s
+	return c
 }
 
 func (c *Context) SetHeader(k, v string) *Context {
