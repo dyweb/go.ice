@@ -17,7 +17,8 @@ import (
 
 // TODO: start using cobra for handling sub commands
 // TODO: support output like kubectl
-var log, logReg = dlog.NewApplicationLoggerAndRegistry("dk")
+var logReg = dlog.NewRegistry()
+var log = logReg.Logger()
 
 func main() {
 	//version()
