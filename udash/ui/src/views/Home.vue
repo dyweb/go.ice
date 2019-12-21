@@ -22,9 +22,7 @@
                 <el-menu-item index="1-3">item three</el-menu-item>
               </el-menu-item-group>
               <el-submenu index="1-4">
-                <template slot="title"
-                  >item four</template
-                >
+                <template slot="title">item four</template>
                 <el-menu-item index="1-4-1">item one</el-menu-item>
               </el-submenu>
             </el-submenu>
@@ -32,7 +30,7 @@
               <i class="el-icon-menu"></i> <span>Navigator Two</span>
             </el-menu-item>
             <!--<el-menu-item index="3" disabled>-->
-              <!--<i class="el-icon-document"></i> <span>Navigator Three</span>-->
+            <!--<i class="el-icon-document"></i> <span>Navigator Three</span>-->
             <!--</el-menu-item>-->
             <el-menu-item index="3">
               <i class="el-icon-setting"></i> <span>Navigator Four</span>
