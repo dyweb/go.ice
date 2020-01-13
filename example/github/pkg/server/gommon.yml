@@ -1,3 +1,0 @@
-loggers:
-  - struct: "*GrpcServer"
-    receiver: "srv"
