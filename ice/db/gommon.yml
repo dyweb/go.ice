@@ -1,5 +1,0 @@
-loggers:
-  - struct: "*Manager"
-    receiver: "mgr"
-  - struct: "*Wrapper"
-    receiver: "w"
