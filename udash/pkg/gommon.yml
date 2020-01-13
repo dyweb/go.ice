@@ -1,4 +1,0 @@
-loggers:
-  - struct: "*Server"
-    receiver: "srv"
-    field: "logger"

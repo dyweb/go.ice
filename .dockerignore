@@ -1,6 +1,0 @@
-# ignore vendor folder because we install it using dep
-build
-doc
-example
-playground
-vendor
