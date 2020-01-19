@@ -3,7 +3,6 @@ package cli
 import (
 	"os"
 
-	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/dyweb/gommon/log/handlers/cli"
 	"github.com/spf13/cobra"
@@ -28,7 +27,6 @@ type Root struct {
 	name        string
 	description string
 	server      bool
-	logRegistry *dlog.Registry
 }
 
 func (root *Root) Command() *cobra.Command {
@@ -67,12 +65,6 @@ func Description(desc string) func(app *Root) {
 func Version(info BuildInfo) func(app *Root) {
 	return func(app *Root) {
 		app.buildInfo = info
-	}
-}
-
-func LogRegistry(logger *dlog.Registry) func(app *Root) {
-	return func(app *Root) {
-		app.logRegistry = logger
 	}
 }
 
@@ -123,10 +115,6 @@ func (root *Root) makeRootCmd() {
 }
 
 func (root *Root) updateLogSettings() error {
-	if root.logRegistry == nil {
-		// TODO: might show full solution for error, has a internal knowledge database
-		return errors.New("logRegistry is not set for Root command, pass cli.LogRegistry(logger) when call cli.New")
-	}
 	// default log handler has no color
 	if root.logColor {
 		var h dlog.Handler
@@ -137,13 +125,13 @@ func (root *Root) updateLogSettings() error {
 			// client cli normally prefer delta to show time elapsed
 			h = cli.New(os.Stderr, true)
 		}
-		dlog.SetHandler(root.logRegistry, h)
+		dlog.SetHandler(h)
 	}
 	if root.logSource {
-		dlog.EnableSource(root.logRegistry)
+		dlog.EnableSource()
 	}
 	if root.verbose {
-		dlog.SetLevel(root.logRegistry, dlog.DebugLevel)
+		dlog.SetLevel(dlog.DebugLevel)
 		// FIXME: registry might need to allow caller to have a first logger
 		//root.logRegistry.Debug("using debug level logging due to verbose config")
 	}
