@@ -8,8 +8,8 @@ DOCKER_REPO = dyweb/go.ice
 # --- build vars ---
 
 # --- packages ---
-PKGST=./api ./cli ./cmd ./db ./httpclient ./lib ./udash
-PKGS=./httpclient/...
+PKGST=./cli
+PKGS=./cli/...
 # --- packages ---
 
 .PHONY: install
