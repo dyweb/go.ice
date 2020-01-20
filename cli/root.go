@@ -1,11 +1,14 @@
 package cli
 
 import (
+	"io/ioutil"
 	"os"
 
+	"github.com/dyweb/gommon/errors"
 	dlog "github.com/dyweb/gommon/log"
 	"github.com/dyweb/gommon/log/handlers/cli"
 	"github.com/spf13/cobra"
+	"gopkg.in/yaml.v2"
 )
 
 // root.go is the root command
@@ -29,13 +32,13 @@ type Root struct {
 	server      bool
 }
 
-func (root *Root) Command() *cobra.Command {
-	if root.cmd != nil {
-		return root.cmd
+func (r *Root) Command() *cobra.Command {
+	if r.cmd != nil {
+		return r.cmd
 	}
-	root.makeRootCmd()
-	root.cmd.AddCommand(makeVersionCmd(root))
-	return root.cmd
+	r.makeRootCmd()
+	r.cmd.AddCommand(makeVersionCmd(r))
+	return r.cmd
 }
 
 // use functional options https://dave.cheney.net/2014/10/17/functional-options-for-friendly-apis
@@ -74,27 +77,38 @@ func IsServer() func(app *Root) {
 	}
 }
 
-func (root *Root) Name() string {
-	return root.name
+func (r *Root) Name() string {
+	return r.name
 }
 
-func (root *Root) Description() string {
-	return root.description
+func (r *Root) Description() string {
+	return r.description
 }
 
-func (root *Root) Version() string {
-	return root.buildInfo.Version
+func (r *Root) Version() string {
+	return r.buildInfo.Version
 }
 
-func (root *Root) ConfigFile() string {
-	return root.configFile
+func (r *Root) ConfigFile() string {
+	return r.configFile
 }
 
-func (root *Root) makeRootCmd() {
-	root.cmd = &cobra.Command{
-		Use:   root.Name(),
-		Short: root.Description(),
-		Long:  root.Description(),
+func (r *Root) LoadConfigTo(v interface{}) error {
+	b, err := ioutil.ReadFile(r.configFile)
+	if err != nil {
+		return err
+	}
+	if err := yaml.UnmarshalStrict(b, v); err != nil {
+		return errors.Wrap(err, "error decode config as YAML")
+	}
+	return nil
+}
+
+func (r *Root) makeRootCmd() {
+	r.cmd = &cobra.Command{
+		Use:   r.Name(),
+		Short: r.Description(),
+		Long:  r.Description(),
 		Run: func(cmd *cobra.Command, args []string) {
 			cmd.Help()
 			// we exit 1 because user may pass nothing and hope it run, which is never the case for go.ice based app,
@@ -102,23 +116,23 @@ func (root *Root) makeRootCmd() {
 			os.Exit(1)
 		},
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
-			if cmd.Use == "version" || cmd.Use == root.Name() {
+			if cmd.Use == "version" || cmd.Use == r.Name() {
 				return
 			}
-			if err := root.updateLogSettings(); err != nil {
+			if err := r.updateLogSettings(); err != nil {
 				log.Fatal(err)
 				return
 			}
 		},
 	}
-	root.bindFlags()
+	r.bindFlags()
 }
 
-func (root *Root) updateLogSettings() error {
+func (r *Root) updateLogSettings() error {
 	// default log handler has no color
-	if root.logColor {
+	if r.logColor {
 		var h dlog.Handler
-		if root.server {
+		if r.server {
 			// server runs a long time, delta would overflow ...
 			h = cli.New(os.Stderr, false)
 		} else {
@@ -127,23 +141,23 @@ func (root *Root) updateLogSettings() error {
 		}
 		dlog.SetHandler(h)
 	}
-	if root.logSource {
+	if r.logSource {
 		dlog.EnableSource()
 	}
-	if root.verbose {
+	if r.verbose {
 		dlog.SetLevel(dlog.DebugLevel)
 		// FIXME: registry might need to allow caller to have a first logger
-		//root.logRegistry.Debug("using debug level logging due to verbose config")
+		//r.logRegistry.Debug("using debug level logging due to verbose config")
 	}
 	return nil
 }
 
-func (root *Root) bindFlags() {
-	cmd := root.cmd
+func (r *Root) bindFlags() {
+	cmd := r.cmd
 	// config
-	cmd.PersistentFlags().StringVar(&root.configFile, "config", root.Name()+".yml", "config file location")
+	cmd.PersistentFlags().StringVar(&r.configFile, "config", r.Name()+".yml", "config file location")
 	// log
-	cmd.PersistentFlags().BoolVar(&root.verbose, "verbose", false, "verbose output and set log level to debug")
-	cmd.PersistentFlags().BoolVar(&root.logSource, "logSrc", false, "log source line when logging (expensive)")
-	cmd.PersistentFlags().BoolVar(&root.logColor, "logColor", true, "disable log color if set to false")
+	cmd.PersistentFlags().BoolVar(&r.verbose, "verbose", false, "verbose output and set log level to debug")
+	cmd.PersistentFlags().BoolVar(&r.logSource, "logSrc", false, "log source line when logging (expensive)")
+	cmd.PersistentFlags().BoolVar(&r.logColor, "logColor", true, "disable log color if set to false")
 }
