@@ -14,7 +14,7 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fat15%2Fgo.ice.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fat15%2Fgo.ice?ref=badge_shield)
 
 go.ice is a server application toolkit with profiling in mind. It is still under early development.
-See [roadmap](ROADMAP.md) for current progress.
+See [roadmap](doc/ROADMAP.md) for current progress.
 
 Goals
 
