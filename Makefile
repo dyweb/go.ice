@@ -8,7 +8,7 @@ DOCKER_REPO = dyweb/go.ice
 # --- build vars ---
 
 # --- packages ---
-PKGST=./cli
+PKGST=./cli ./cmd ./dockerclient ./containertest
 PKGS=./cli/...
 # --- packages ---
 
