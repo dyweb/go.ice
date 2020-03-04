@@ -29,6 +29,10 @@ Non Goals
 
 ## License
 
+MIT
+
+NOTE: code under [dockerclient/types](dockerclient/types) are copied from [moby](https://github.com/moby/moby/tree/master/api/types) and licensed under Apache-2.0
+
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fat15%2Fgo.ice.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fat15%2Fgo.ice?ref=badge_large)
 
 ## About

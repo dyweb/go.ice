@@ -1,5 +1,9 @@
 # Roadmap
 
+## v0.0.4
+
+- [ ] container test, used by BenchHub
+
 ## 0.1.x
 
 Use 0.1.x for v2 features, the v2 is actually v0.2.x since there weren't a usable v2
