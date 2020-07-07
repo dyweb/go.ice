@@ -13,8 +13,7 @@
 [![codecov](https://codecov.io/gh/dyweb/go.ice/branch/master/graph/badge.svg)](https://codecov.io/gh/dyweb/go.ice)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fat15%2Fgo.ice.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fat15%2Fgo.ice?ref=badge_shield)
 
-go.ice is a server application toolkit with profiling in mind. It is still under early development.
-See [roadmap](doc/ROADMAP.md) for current progress.
+go.ice is a server application toolkit with profiling in mind. It is NOT under active development.
 
 Goals
 
@@ -33,9 +32,9 @@ Non Goals
 
 ## About
 
-The name `go.ice` comes from [@arrowrowe](https://github.com/arrowrowe). The banner is drawn by [@at15][at15].
+The name `go.ice` comes from [@arrowrowe](https://github.com/arrowrowe). [@at15][at15] draws the banner.
 
-The project was started by [@at15][at15] as a server framework for developing tsdb benchmark tools & tsdb.
-([Xephonhq](https://github.com/xephonhq) and [BenchHub](https://github.com/benchhub) and later transferred to dyweb.
+[@at15][at15] started the project when working on ([Xephonhq](https://github.com/xephonhq) and [BenchHub](https://github.com/benchhub).
+The project transferred to dyweb later on.
 
 [at15]: https://github.com/at15
