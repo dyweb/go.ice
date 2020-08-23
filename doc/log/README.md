@@ -1,7 +1,6 @@
 # Log
 
-Log is for tracking development through out time so developer can remember what they were doing before they pause.
-It's not for logging in go.ice. For logging, see [gommon/log](https://github.com/dyweb/gommon/tree/master/log)
+This folder tracks developer's work progress. They can save context of ongoing development and resume at a later time.
+It's not for logging in go.ice. For logging library, see [gommon/log](https://github.com/dyweb/gommon/tree/master/log)
 
-- [2018](2018)
-- [2020](2020)
+- [@at15](at15)
